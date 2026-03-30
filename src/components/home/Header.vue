@@ -16,7 +16,7 @@ const user = computed(() => uResData?.value?.data?.user)
 </script>
 
 <template>
-    <header class="p-4 flex items-center justify-between w-full bg-[#1c1c1c] text-white shadow-lg">
+    <header class="p-4 flex items-center justify-between w-full bg-dark-secondary text-white shadow-lg">
         <div class="flex items-center">
             <button
                 @click="isMenuOpen = true"
@@ -40,6 +40,6 @@ const user = computed(() => uResData?.value?.data?.user)
         :is-visible="isMenuOpen"
         :user="user"
         :is-user-loading="uResPending"
-        :close-menu="() => isMenuOpen = false"
+        @close-menu="() => isMenuOpen = false"
     />
 </template>

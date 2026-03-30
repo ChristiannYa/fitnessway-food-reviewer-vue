@@ -2,14 +2,17 @@
 import { useLogoutMutation } from "@/hooks/mutations/authMutations";
 import type { User } from "@/types/userTypes";
 import { ArrowLeft, Home } from "lucide-vue-next";
-import Spinner from "../elements/Spinner.vue";
+import Spinner from "@/components/elements/Spinner.vue";
 
 const props = defineProps<{
 	isVisible: boolean;
     user?: User;
     isUserLoading: boolean;
-    closeMenu: () => void;
 }>();
+
+const emit = defineEmits<{
+    closeMenu: []
+}>()
 
 const navConfig = {
     items: [{ to: "/home", label: "Home", icon: Home }],
@@ -19,14 +22,14 @@ const navConfig = {
 const logoutMutation = useLogoutMutation()
 
 function handleLogout() {
-    props.closeMenu()
+    emit('closeMenu')
     logoutMutation.mutate(undefined)
 }
 </script>
 
 <template>
 	<aside
-		class="fixed top-0 left-0 h-full w-80 bg-[#1c1c1c] text-white shadow-2xl
+		class="fixed top-0 left-0 h-full w-80 bg-dark-tertiary text-white shadow-2xl
                z-50 transform transition-transform duration-300 ease-in-out 
                flex flex-col"
 		:class="isVisible ? 'translate-x-0' : '-translate-x-full'"
@@ -35,7 +38,7 @@ function handleLogout() {
         <div class="flex items-center justify-between p-4 border-b border-b-white/10">
             <h2 class="text-xl font-bold">Quick Links</h2>
             <button
-                @click="closeMenu"
+                @click="emit('closeMenu')"
                 class="p-2 hover:cursor-pointer rounded-lg transition-colors"
                 aria-label="Close menu"
             >
@@ -73,7 +76,7 @@ function handleLogout() {
                     </nav>
 
                     <!-- User data -->
-                     <p v-if="user" className="text-white opacity-60 font-medium mx-auto">
+                     <p v-if="user" class="text-white opacity-60 font-medium mx-auto">
                         {{ user.name }}
                      </p>
                 </div>

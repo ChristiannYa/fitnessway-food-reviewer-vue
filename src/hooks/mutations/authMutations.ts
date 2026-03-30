@@ -15,7 +15,7 @@ export const useLoginMutation = () => {
 				return;
 			}
 
-			store.save(ctx.data.accessToken);
+			store.set(ctx.data.accessToken);
 			await router.push("/home");
 		},
 		onError: (error) => {

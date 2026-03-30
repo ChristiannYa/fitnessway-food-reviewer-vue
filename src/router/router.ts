@@ -36,7 +36,7 @@ router.beforeEach(async () => {
 	const res = await refreshAccessToken(refreshToken);
 	if (!res.data) return;
 
-	store.save(res.data.accessToken);
+	store.set(res.data.accessToken);
 });
 
 export default router;

@@ -7,7 +7,7 @@ import {
 	clientError,
 	clientSuccess,
 	type ClientResponse
-} from "@/mappers/clientResponseMapper";
+} from "@/builders/clientResponseMapper";
 import type { KtServerResponse } from "@/types/serverTypes";
 import { API_BASE_URL, PROXY_BASE_URL } from "@/config/config";
 import { refreshAccessToken } from "@/auth/authHandlers";
@@ -89,7 +89,7 @@ const createApiClient = (
 					return clientError(refreshRes.message, refreshRes.status);
 				}
 
-				useAccessTokenStore().save(refreshRes.data.accessToken);
+				useAccessTokenStore().set(refreshRes.data.accessToken);
 
 				// Retry same request with refreshed access token
 				return handleRequest<R>({ ...req, isRetry: true });

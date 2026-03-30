@@ -4,13 +4,8 @@ import { ref } from "vue";
 export const useAccessTokenStore = defineStore("accessToken", () => {
 	const accessToken = ref<string | null>(null);
 
-	function save(token: string) {
-		accessToken.value = token;
-	}
+	const set = (token: string) => accessToken.value = token;
+	const clear = () => accessToken.value = null;
 
-	function clear() {
-		accessToken.value = null;
-	}
-
-	return { accessToken, save, clear };
+	return { accessToken, set, clear };
 });
