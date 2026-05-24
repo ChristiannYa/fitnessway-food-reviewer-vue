@@ -43,6 +43,7 @@ const {
     enabled: false, 
 })
 
+// TODO: make temporary error a reusable feature
 let errorTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch([pfResIsError, pfResData, pfResIsFetching], () => {

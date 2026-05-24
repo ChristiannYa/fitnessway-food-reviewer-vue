@@ -5,12 +5,11 @@ import { computed, ref } from "vue";
 import { Eye, EyeClosed } from "lucide-vue-next";
 import View from "@/components/shared/View.vue";
 
-const isPasswordVisible = ref(false);
-
 const { mutate, data, isPending, isError } = useLoginMutation();
 
 const email = ref("");
 const password = ref("");
+const isPasswordVisible = ref(false);
 
 const isSubmitDisabled = computed(() => 
 	isPending.value || !email.value || !password.value
@@ -28,7 +27,7 @@ function handleLogin(_: Event) {
 </script>
 
 <template>
-	<View>
+	<View :has-padding="false" class="justify-center">
 		<div class="flex flex-col gap-4 w-100 my-auto">
 			<h1 class="text-xl font-semibold">
 				Fitnessway Admin Panel

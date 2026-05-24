@@ -13,24 +13,22 @@ const pendingFoodStatus = ref<PendingFoodStatus | null>(null)
 
 <template>
     <View>
-		<div class="pt-10 px-4">
-			<div class="max-w-164 w-full">
-				<div class="flex flex-col items-center gap-2 w-full">
-					<UserSearchScope
-						:search-scope="userSearchScope"
-						@select="(s) => userSearchScope = s === userSearchScope ? null : s"
-					/>
-					<StatusFilter
-						:pending-food-status="pendingFoodStatus"
-						@select="(s) => pendingFoodStatus = s === pendingFoodStatus ? null : s"
-					/>
-				</div>
-				<ByUserId
-					v-if="userSearchScope === 'ID'"
+		<div class="max-w-164 w-full">
+			<div class="flex flex-col items-center gap-2 w-full">
+				<UserSearchScope
+					:search-scope="userSearchScope"
+					@select="(s) => userSearchScope = s === userSearchScope ? null : s"
+				/>
+				<StatusFilter
 					:pending-food-status="pendingFoodStatus"
-					class="mt-2"
+					@select="(s) => pendingFoodStatus = s === pendingFoodStatus ? null : s"
 				/>
 			</div>
+			<ByUserId
+				v-if="userSearchScope === 'ID'"
+				:pending-food-status="pendingFoodStatus"
+				class="mt-2"
+			/>
 		</div>
     </View>
 </template>

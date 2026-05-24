@@ -1,7 +1,12 @@
-<script></script>
+<script setup lang="ts">
+import View from "@/components/shared/View.vue";
+
+</script>
 
 <template>
-	<div>
-		<h1>Submit screen</h1>
-	</div>
+	<View>
+		<div>
+			<h1>Submision screen</h1>
+		</div>
+	</View>
 </template>
