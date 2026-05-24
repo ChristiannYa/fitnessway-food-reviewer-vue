@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import Base from './Base.vue';
 import Section from '@/components/nutrients/Section.vue';
 import { isReviewed } from '@/utils/foodUtils';
-import ActionButton from '@/components/elements/ActionButton.vue';
+import ActionButton from '@/components/shared/ActionButton.vue';
 import { Check, X } from 'lucide-vue-next';
 import ReviewData from './ReviewData.vue';
 import { buildPendingFoodReview } from '@/builders/foodMappers';

@@ -5,8 +5,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
-	{ path: "/login", component: () => import("@/views/LoginView.vue") },
-	{ path: "/", redirect: "/home" },
+	{ 
+		path: "/login", 
+		component: () => import("@/views/LoginView.vue") 
+	},
+	{ 
+		path: "/", 
+		redirect: "submit" 
+	},
 	{
 		path: "/",
 		component: () => import("@/layouts/ProtectedOutlet.vue"),
@@ -14,7 +20,16 @@ const routes: RouteRecordRaw[] = [
 			const store = useAccessTokenStore();
 			if (!store.accessToken) return "/login";
 		},
-		children: [{ path: "home", component: () => import("@/views/HomeView.vue") }]
+		children: [
+			{ 	
+				path: "submit", 
+				component: () => import("@/views/SubmitView.vue") 
+			},
+			{
+				path: "review",
+				component: () => import("@/views/ReviewView.vue")
+			}
+		]
 	}
 ];
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import PagesCount from '@/components/elements/PagesCount.vue';
-import Spinner from '@/components/elements/Spinner.vue';
+import PagesCount from '@/components/shared/PagesCount.vue';
+import Spinner from '@/components/shared/Spinner.vue';
 import { pagination } from '@/constants/pagination';
 import { usePendingFoodsByUserIdQuery } from '@/hooks/queries/foodQueries';
 import type { PendingFood, PendingFoodsReqParams, PendingFoodStatus } from '@/types/foodTypes';
@@ -9,7 +9,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import Grid from '@/components/foods/pending/Grid.vue';
 import Full from '@/components/foods/pending/information/Full.vue';
 import { useReviewMutation } from '@/hooks/mutations/foodMutations';
-import ProgressLine from '@/components/elements/ProgressLine.vue';
+import ProgressLine from '@/components/shared/ProgressLine.vue';
 import ui from '@/constants/ui';
 import { useQueryClient } from '@tanstack/vue-query';
 import { queryKeys } from '@/constants/queryKeys';

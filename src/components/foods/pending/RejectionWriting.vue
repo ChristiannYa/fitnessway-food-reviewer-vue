@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ActionButton from '@/components/elements/ActionButton.vue';
+import ActionButton from '@/components/shared/ActionButton.vue';
 import { isStringNullOrEmpty } from '@/utils/textUtils';
 import { ref } from 'vue';
 

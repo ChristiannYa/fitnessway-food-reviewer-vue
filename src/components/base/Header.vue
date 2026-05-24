@@ -3,7 +3,7 @@ import { useUserQuery } from '@/hooks/queries/userQueries';
 import { Menu } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import SideBar from './SideBar.vue';
-import Spinner from '../elements/Spinner.vue';
+import Spinner from '@/components/shared/Spinner.vue'
 
 const isMenuOpen = ref(false)
 
@@ -16,7 +16,7 @@ const user = computed(() => uResData?.value?.data?.user)
 </script>
 
 <template>
-    <header class="p-4 flex items-center justify-between w-full bg-dark-secondary text-white shadow-lg">
+    <header class="p-4 flex items-center justify-between w-full bg-dark-secondary shadow-lg">
         <div class="flex items-center">
             <button
                 @click="isMenuOpen = true"
@@ -28,7 +28,7 @@ const user = computed(() => uResData?.value?.data?.user)
                 <RouterLink
                     to="/"
                 >
-                    Fitnessway - Food Review
+                    Fitnessway - Admin Panel
                 </RouterLink>
             </h1>
         </div>

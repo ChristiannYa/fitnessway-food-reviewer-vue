@@ -14,7 +14,7 @@ export const useLoginMutation = () => {
 			if (!ctx.success) throw new Error(ctx.message);
 
 			store.set(ctx.data.accessToken);
-			await router.push("/home");
+			await router.push("/submit");
 		},
 		onError: (error) => {
 			console.log("error logging in: ", error.message);
@@ -39,7 +39,7 @@ export const useLogoutMutation = () => {
             await router.push("/login")
         },
         onError: (error) => {
-            console.log("(E) error logging out: ", error.message)
+            console.log("error logging out: ", error.message)
         }
     })
 }

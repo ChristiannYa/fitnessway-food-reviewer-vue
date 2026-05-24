@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useLogoutMutation } from "@/hooks/mutations/authMutations";
 import type { User } from "@/types/userTypes";
-import { ArrowLeft, Home } from "lucide-vue-next";
-import Spinner from "@/components/elements/Spinner.vue";
+import { ArrowLeft, FileSearchCorner, CirclePlus } from "lucide-vue-next";
+import Spinner from "@/components/shared/Spinner.vue";
 
 const props = defineProps<{
 	isVisible: boolean;
@@ -15,15 +15,18 @@ const emit = defineEmits<{
 }>()
 
 const navConfig = {
-    items: [{ to: "/home", label: "Home", icon: Home }],
+    items: [
+		{ to: "/submit", label: "Submit", icon: CirclePlus },
+		{ to: "/review", label: "Review", icon: FileSearchCorner },
+	],
     itemBaseClass: "flex items-center gap-3 p-3 mb-2 font-medium rounded-lg transition-colors"
 }
 
-const logoutMutation = useLogoutMutation()
+const { mutate } = useLogoutMutation()
 
 function handleLogout() {
     emit('closeMenu')
-    logoutMutation.mutate(undefined)
+    mutate(undefined)
 }
 </script>
 
@@ -84,8 +87,11 @@ function handleLogout() {
             <!-- Logout button -->
             <button
                 @click="handleLogout"
-                :class="[navConfig.itemBaseClass, 'justify-center  bg-red-600  hover:bg-red-500 w-full mt-4',
-                        'hover:cursor-pointer']"
+                :class="[
+					navConfig.itemBaseClass, 
+					'justify-center bg-red-600 hover:bg-red-500 w-full mt-4',
+					'hover:cursor-pointer'
+				]"
             >
                 Log out
             </button>
