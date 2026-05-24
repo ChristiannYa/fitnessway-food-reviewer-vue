@@ -4,14 +4,14 @@ import { queryKeys } from "@/constants/queryKeys"
 import type { PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
 import { queryOptions, useQuery,  } from "@tanstack/vue-query"
 
-export const getPendingFoodByUserIdQueryOptions = (params: PendingFoodsReqParams) => queryOptions({
+export const getByUserIdOptions = (params: PendingFoodsReqParams) => queryOptions({
     queryKey: queryKeys.food.pending.byUserId(params),
     queryFn: async () => {
         await new Promise(resolve => setTimeout(resolve, 150));
 
         return apiClientApp.req<PendingFoodsByUserIdRes>({
             method: "GET",
-            path: "/food/pending/find-by/user-id",
+            path: "/edible/pending/find-by/user-id",
             params: {
                 limit: `${pagination.limit}`,
                 offset: `${params.offset}`,
@@ -24,10 +24,10 @@ export const getPendingFoodByUserIdQueryOptions = (params: PendingFoodsReqParams
     }
 })
 
-export const usePendingFoodsByUserIdQuery = (
+export const useGetByUserId = (
     params: PendingFoodsReqParams,
-    extraOptions?: Partial<NonNullable<ReturnType<typeof getPendingFoodByUserIdQueryOptions>>>
+    extraOptions?: Partial<NonNullable<ReturnType<typeof getByUserIdOptions>>>
 ) => useQuery({
-    ...getPendingFoodByUserIdQueryOptions(params),
+    ...getByUserIdOptions(params),
     ...extraOptions
 })

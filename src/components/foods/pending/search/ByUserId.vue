@@ -2,7 +2,7 @@
 import PagesCount from '@/components/shared/PagesCount.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { pagination } from '@/constants/pagination';
-import { usePendingFoodsByUserIdQuery } from '@/hooks/queries/foodQueries';
+import { useGetByUserId } from '@/hooks/queries/edibleQueries';
 import type { PendingFood, PendingFoodsReqParams, PendingFoodStatus } from '@/types/foodTypes';
 import { isStringNullOrEmpty } from '@/utils/textUtils';
 import { computed, reactive, ref, watch } from 'vue';
@@ -39,7 +39,7 @@ const {
     isFetching: pfResIsFetching,
     data: pfResData,
     refetch: pfResRefetch
-} = usePendingFoodsByUserIdQuery(params, { 
+} = useGetByUserId(params, { 
     enabled: false, 
 })
 
