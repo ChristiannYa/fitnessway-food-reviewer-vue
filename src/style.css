@@ -23,6 +23,10 @@
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 	}
+
+	.view {
+		@apply w-full min-h-dvh flex flex-col items-center;
+	}
 }
 
 :root {

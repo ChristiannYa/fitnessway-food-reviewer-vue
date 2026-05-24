@@ -3,6 +3,7 @@ import { useLoginMutation } from "@/hooks/mutations/authMutations";
 import type { LoginReq } from "@/schemas/authSchema";
 import { computed, ref } from "vue";
 import { Eye, EyeClosed } from "lucide-vue-next";
+import View from "@/components/shared/View.vue";
 
 const isPasswordVisible = ref(false);
 
@@ -27,8 +28,8 @@ function handleLogin(_: Event) {
 </script>
 
 <template>
-	<div class="w-full h-dvh flex flex-col items-center justify-center">
-		<div class="flex flex-col gap-4 w-100">
+	<View>
+		<div class="flex flex-col gap-4 w-100 my-auto">
 			<h1 class="text-xl font-semibold">
 				Fitnessway Admin Panel
 			</h1>
@@ -87,5 +88,5 @@ function handleLogin(_: Event) {
 				</button>
 			</form>
 		</div>
-	</div>
+	</View>
 </template>
