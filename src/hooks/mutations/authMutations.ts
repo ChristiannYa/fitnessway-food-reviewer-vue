@@ -10,16 +10,14 @@ export const useLoginMutation = () => {
 	return useMutation({
 		mutationFn: login,
 		onSuccess: async (ctx) => {
-			if (!ctx.success) {
-				console.log("error logging in: ", ctx.message);
-				return;
-			}
+			if (ctx.status === 401) return
+			if (!ctx.success) throw new Error(ctx.message);
 
 			store.set(ctx.data.accessToken);
 			await router.push("/home");
 		},
 		onError: (error) => {
-			console.log("(E) error logging in: ", error.message);
+			console.log("error logging in: ", error.message);
 		}
 	});
 };
@@ -31,7 +29,6 @@ export const useLogoutMutation = () => {
     return useMutation({
         mutationFn: logout,
         onSuccess: async (ctx) => {
-            // Clear access token regardles of the server response
             store.clear()
 
             if (!ctx.success) {

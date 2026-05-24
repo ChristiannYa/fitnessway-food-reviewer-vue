@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { useLoginMutation } from "@/hooks/mutations/authMutations";
 import type { LoginReq } from "@/schemas/authSchema";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Eye, EyeClosed } from "lucide-vue-next";
 
 const isPasswordVisible = ref(false);
 
-const { mutate, isPending } = useLoginMutation();
+const { mutate, data, isPending, isError } = useLoginMutation();
 
-function handleLogin(e: Event) {
-	const formData = new FormData(e.target as HTMLFormElement);
+const email = ref("");
+const password = ref("");
+
+const isSubmitDisabled = computed(() => 
+	isPending.value || !email.value || !password.value
+);
+
+function handleLogin(_: Event) {
 	const loginData: LoginReq = {
-		email: formData.get("email") as string,
-		password: formData.get("password") as string,
+		email: email.value,
+		password: password.value,
 		deviceName: "HP Envy x360 (Web)"
 	};
 
@@ -21,43 +27,65 @@ function handleLogin(e: Event) {
 </script>
 
 <template>
-	<div class="flex flex-col gap-4 w-100 mx-auto pt-4">
-		<form @submit.prevent="handleLogin" class="flex flex-col gap-4 w-full">
-			<input
-				type="email"
-				name="email"
-				placeholder="Enter your email"
-				class="border p-2 w-full"
-			/>
-			<div class="w-full relative">
-				<input
-					:type="isPasswordVisible ? 'text' : 'password'"
-					name="password"
-					placeholder="Enter your password"
-					class="border pl-2 py-2 pr-10 w-full"
-				/>
-				<button
-					type="button"
-					@click="isPasswordVisible = !isPasswordVisible"
-					class="absolute top-1/2 right-2 -translate-y-1/2 hover:cursor-pointer"
-				>
-					<Eye v-if="isPasswordVisible" />
-					<EyeClosed v-else />
-				</button>
-			</div>
+	<div class="w-full h-dvh flex flex-col items-center justify-center">
+		<div class="flex flex-col gap-4 w-100">
+			<h1 class="text-xl font-semibold">
+				Fitnessway Admin Panel
+			</h1>
 
-			<button
-				type="submit"
-				:disabled="isPending"
-				class="h-10 bg-cyan-700 p-2 rounded-md hover:cursor-pointer"
-			>
-				<span
-					v-if="isPending"
-					class="block mx-auto w-6 h-6 border-4 border-transparent border-x-white/70 
-                         border-t-white/70 rounded-full animate-spin"
+			<form @submit.prevent="handleLogin" class="text-chalk flex flex-col gap-4 w-full">
+				<input
+					v-model="email"
+					type="email"
+					name="email"
+					placeholder="Enter your email"
+					class="border border-chalk focus:outline-none p-3 w-full"
+					style="color: inherit;"
 				/>
-				<p v-else>Login</p>
-			</button>
-		</form>
+				<div class="w-full relative">
+					<input
+						v-model="password"
+						:type="isPasswordVisible ? 'text' : 'password'"
+						name="password"
+						placeholder="Enter your password"
+						class="border border-chalk focus:outline-none pl-3 py-3 pr-10 w-full"
+					/>
+					<button
+						type="button"
+						@click="isPasswordVisible = !isPasswordVisible"
+						class="absolute top-1/2 right-2 -translate-y-1/2 hover:cursor-pointer"
+					>
+						<Eye v-if="isPasswordVisible" />
+						<EyeClosed v-else />
+					</button>
+				</div>
+
+				<p v-if="data?.status === 401" class="text-center text-amber-500">
+					Invalid credentials
+				</p>
+
+				<p v-if="isError" class="text-red-500 text-center">
+					Login failed
+				</p>
+
+				<button
+					type="submit"
+					:disabled="isSubmitDisabled"
+					:class="[ 
+						'bg-accent-primary rounded-xl h-10 p-2',
+						isSubmitDisabled 
+							? 'opacity-70 cursor-default' 
+							: 'opacity-100 cursor-pointer', 
+					]"
+				>
+					<span
+						v-if="isPending"
+						class="block mx-auto w-6 h-6 border-4 border-transparent border-x-white/70 
+							border-t-white/70 rounded-full animate-spin"
+					/>
+					<p v-else class="text-white">Login</p>
+				</button>
+			</form>
+		</div>
 	</div>
 </template>
