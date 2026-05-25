@@ -10,7 +10,7 @@ import ActionButton from '@/components/shared/ActionButton.vue';
 import { Check, X } from 'lucide-vue-next';
 import ReviewData from './ReviewData.vue';
 import { buildPendingFoodReview } from '@/builders/foodBuilders';
-import RejectionWriting from '../RejectionWriting.vue';
+import RejectionWriting from '../../../review/RejectionWriting.vue';
 
 const {
     pendingFood,

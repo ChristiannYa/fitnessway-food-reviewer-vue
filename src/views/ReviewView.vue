@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ByUserId from '@/components/foods/pending/search/ByUserId.vue';
+import ByUserId from '@/components/review/search/ByUserId.vue';
 import StatusFilter from '@/components/review/StatusFilter.vue';
 import UserSearchScope from '@/components/review/UserSearchScope.vue';
 import type { PendingFoodStatus } from '@/types/foodTypes';

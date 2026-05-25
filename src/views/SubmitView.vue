@@ -27,7 +27,7 @@ const nutrientListTyped = computed(() => {
 			>
 				<p>{{ nutrientList.type }}</p>
 
-				<div class="space-y-2">
+				<div>
 					<p 
 						v-for="nutrient in nutrientList.nutrients"
 						:key="nutrient.base.id"
