@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { USER_SEARCH_SCOPE, type UserSearchScope } from '@/types/userTypes';
-import ActionButton from '../shared/ActionButton.vue';
+import ActionButton from '@/components/shared/ActionButton.vue';
 
 const { searchScope } = defineProps<{
     searchScope: UserSearchScope | null
