@@ -9,7 +9,7 @@ import { isReviewed } from '@/utils/foodUtils';
 import ActionButton from '@/components/shared/ActionButton.vue';
 import { Check, X } from 'lucide-vue-next';
 import ReviewData from './ReviewData.vue';
-import { buildPendingFoodReview } from '@/builders/foodMappers';
+import { buildPendingFoodReview } from '@/builders/foodBuilders';
 import RejectionWriting from '../RejectionWriting.vue';
 
 const {

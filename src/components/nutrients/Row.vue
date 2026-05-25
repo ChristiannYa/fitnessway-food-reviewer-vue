@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { NutrientInFood } from '@/types/nutrientTypes';
+import type { NutrienDataAmount } from '@/types/nutrientTypes';
 
 const { nutrientInFood } = defineProps<{
-    nutrientInFood: NutrientInFood
+    nutrientInFood: NutrienDataAmount
 }>()
 
-const base = nutrientInFood.nutrientData.base
+const base = nutrientInFood.data.base
 </script>
 
 <template>

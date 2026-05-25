@@ -1,12 +1,17 @@
 import type { ServingUnit } from "@/types/foodTypes";
 
-export type NutrientType = "BASIC" | "VITAMIN" | "MINERAL"
-
-export type NutrientsByType = {
-    basic: NutrientInFood[];
-    vitamins: NutrientInFood[];
-    minerals: NutrientInFood[];
+export interface NutrientGroupable {
+	readonly typeDerived: NutrientType;
 }
+
+export const NUTRIENT_TYPE = ["BASIC", "VITAMIN", "MINERAL"] as const;
+export type NutrientType = (typeof NUTRIENT_TYPE)[number];
+
+export type NutrientsByType<T extends NutrientGroupable> = {
+    basic: T[];
+    vitamin: T[];
+    mineral: T[];
+};
 
 export type NutrientBase = {
 	id: number;
@@ -22,13 +27,13 @@ export type NutrientPreferences = {
 	goal?: number;
 };
 
-export type NutrientData = {
+export type NutrientData = NutrientGroupable & {
 	base: NutrientBase;
 	preferences: NutrientPreferences;
 };
 
-export type NutrientInFood = {
-	nutrientData: NutrientData;
+export type NutrienDataAmount = NutrientGroupable & {
+	data: NutrientData;
 	amount: number;
 };
 
@@ -36,3 +41,7 @@ export type NutrientIdWithAmount = {
 	id: number;
 	amount: number;
 };
+
+export type NutrientsRes = {
+	nutrients: NutrientsByType<NutrientData>;
+}

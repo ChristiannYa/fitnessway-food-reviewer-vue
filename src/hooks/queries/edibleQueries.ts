@@ -1,4 +1,4 @@
-import { apiClientApp } from "@/api/apiClient"
+import { apiClientAppKt } from "@/api/apiClient"
 import { pagination } from "@/constants/pagination"
 import { queryKeys } from "@/constants/queryKeys"
 import type { PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
@@ -9,7 +9,7 @@ export const getByUserIdOptions = (params: PendingFoodsReqParams) => queryOption
     queryFn: async () => {
         await new Promise(resolve => setTimeout(resolve, 150));
 
-        return apiClientApp.req<PendingFoodsByUserIdRes>({
+        return apiClientAppKt.req<PendingFoodsByUserIdRes>({
             method: "GET",
             path: "/edible/pending/find-by/user-id",
             params: {

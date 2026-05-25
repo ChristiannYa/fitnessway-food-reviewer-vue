@@ -7,9 +7,9 @@ import {
 	clientError,
 	clientSuccess,
 	type ClientResponse
-} from "@/builders/clientResponseMapper";
+} from "@/builders/clientResponseBuilders";
 import type { KtServerResponse } from "@/types/serverTypes";
-import { API_BASE_URL, PROXY_BASE_URL } from "@/config/config";
+import { API_BASE_URL_KT, API_BASE_URL_GO, PROXY_BASE_URL } from "@/config/config";
 import { refreshAccessToken } from "@/auth/authHandlers";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -107,5 +107,6 @@ const createApiClient = (
 };
 
 export const apiClientPxy = createApiClient(PROXY_BASE_URL);
-export const apiClientPub = createApiClient(API_BASE_URL);
-export const apiClientApp = createApiClient(API_BASE_URL, refreshAccessToken);
+export const apiClientPub = createApiClient(API_BASE_URL_KT);
+export const apiClientAppKt = createApiClient(API_BASE_URL_KT, refreshAccessToken);
+export const apiClientAppGo = createApiClient(API_BASE_URL_GO, refreshAccessToken);

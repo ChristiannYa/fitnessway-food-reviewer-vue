@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { NutrientInFood } from '@/types/nutrientTypes';
+import type { NutrienDataAmount } from '@/types/nutrientTypes';
 import Row from './Row.vue';
 
 defineProps<{
-    nutrientsInFood: NutrientInFood[]
+    nutrientsInFood: NutrienDataAmount[]
 }>()
 </script>
 
@@ -14,7 +14,7 @@ defineProps<{
     >
         <Row 
             v-for="nutrientInFood in nutrientsInFood" 
-            :key="nutrientInFood.nutrientData.base.id"
+            :key="nutrientInFood.data.base.id"
             :nutrient-in-food="nutrientInFood" 
         />  
     </div>

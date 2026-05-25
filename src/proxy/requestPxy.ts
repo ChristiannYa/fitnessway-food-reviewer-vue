@@ -6,7 +6,7 @@ import {
 	clientError,
 	clientSuccess,
 	type ClientResponse
-} from "@/builders/clientResponseMapper";
+} from "@/builders/clientResponseBuilders";
 import { catchingErrorT } from "@/utils/errorUtils";
 
 async function makePxyRequest<R>(
