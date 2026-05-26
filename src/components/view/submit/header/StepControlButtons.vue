@@ -6,11 +6,9 @@ defineProps<{
 	current: number;
 	prevStepLabel?: string;
 	nextStepLabel: string;
-	onPrev: () => void;
-	onNext: () => void;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	prev: [];
 	next: [];
 }>()
@@ -25,7 +23,7 @@ defineEmits<{
 			:icon-size="16"
 			background-color="var(--color-accent-primary)"
 			:is-inverted="true"
-			@click="onPrev"
+			@click="emit('prev')"
 			class="flex-1"
 		/>
 	
@@ -34,7 +32,7 @@ defineEmits<{
 			:icon="current < 5 ? ArrowRight : Check"
 			:icon-size="16"
 			background-color="var(--color-accent-primary)"
-			@click="onNext"
+			@click="emit('next')"
 			class="flex-1"
 		/>
 	</div>
