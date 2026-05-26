@@ -32,7 +32,7 @@ export type NutrientData = NutrientGroupable & {
 	preferences: NutrientPreferences;
 };
 
-export type NutrienDataAmount = NutrientGroupable & {
+export type NutrientDataAmount = NutrientGroupable & {
 	data: NutrientData;
 	amount: number;
 };

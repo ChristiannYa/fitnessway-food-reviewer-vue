@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ActionButton from "@/components/shared/ActionButton.vue";
 import { ref, computed } from "vue";
-import { ArrowLeft, ArrowRight, Check } from 'lucide-vue-next';
+import StepIndicator from "./StepIndicator.vue";
+import StepControlButtons from "./StepControlButtons.vue";
 
 type StepData = {
 	title: string;
@@ -48,8 +48,6 @@ const stepData = computed((): StepData | null => {
 	}
 });
 
-const steps = Array.from({ length: 5 }, (_, i) => i + 1);
-
 function onPrev() {
 	if (currentStep.value > 1) currentStep.value--;
 };
@@ -80,40 +78,21 @@ function onNext() {
 			</p>
 			
 			<!-- Current step indicator -->
-			<div class="w-full flex gap-2">
-				<span 
-					v-for="step in steps"
-					:class="[
-						'border-3 border-accent-primary rounded-full flex-1',
-						step <= currentStep 
-							? 'opacity-100' 
-							: 'opacity-10'
-					]"
-				/>
-			</div>
+			<StepIndicator 
+				:amount="5" 
+				:current="currentStep" 
+				class="w-full flex gap-2"
+			/>
 
 			<!-- Step Control Buttons -->
-			<div class="w-full flex justify-between gap-x-4">
-				<ActionButton
-					v-if="stepData.prevStepLabel"
-					:label="stepData.prevStepLabel"
-					:icon="ArrowLeft"
-					:icon-size="16"
-					background-color="var(--color-accent-primary)"
-					:is-inverted="true"
-					@click="onPrev"
-					class="flex-1"
-				/>
-			
-				<ActionButton
-					:label="stepData.nextStepLabel"
-					:icon="currentStep < 5 ? ArrowRight : Check"
-					:icon-size="16"
-					background-color="var(--color-accent-primary)"
-					@click="onNext"
-					class="flex-1"
-				/>
-			</div>
+			<StepControlButtons
+				:current="currentStep"
+				:prev-step-label="stepData.prevStepLabel"
+				:next-step-label="stepData.nextStepLabel"
+				@prev="onPrev"
+				@next="onNext"
+				class="w-full flex justify-between gap-x-4"
+			/>
 		</div>
 	</div>
 </template>

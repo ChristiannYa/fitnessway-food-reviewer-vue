@@ -53,9 +53,9 @@ function handleRejection(reason: string) {
 
         <div class="px-4 pt-3 pb-4 gap-2 flex flex-col">
             <Base :food-base="pendingFood.information.base" />
-            <Section :nutrients-in-food="pendingFood.information.nutrients.basic"/>
-            <Section :nutrients-in-food="pendingFood.information.nutrients.vitamins"/>
-            <Section :nutrients-in-food="pendingFood.information.nutrients.minerals"/>
+            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.basic"/>
+            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.vitamin"/>
+            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.mineral"/>
         </div>
 
         <div
