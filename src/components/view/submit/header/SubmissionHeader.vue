@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import StepIndicator from "./StepIndicator.vue";
 import StepControlButtons from "./StepControlButtons.vue";
+
+const {
+	currentStep
+} = defineProps<{
+	currentStep: number;
+}>();
+
+const emit = defineEmits<{
+	prev: [];
+	next: [];
+}>();
 
 type StepData = {
 	title: string;
 	prevStepLabel?: string;
 	nextStepLabel: string;
 }
-
-const currentStep = ref(1);
 
 const stepData = computed((): StepData | null => {
 	const stepTitle1 = "Information";
@@ -18,7 +27,7 @@ const stepData = computed((): StepData | null => {
 	const stepTitle4 = "Minerals";
 	const stepTitle5 = "Barcode"
 
-	switch (currentStep.value) {
+	switch (currentStep) {
 		case 1: return {
 			title: stepTitle1,
 			prevStepLabel: undefined,
@@ -47,23 +56,6 @@ const stepData = computed((): StepData | null => {
 		default: return null;
 	}
 });
-
-function onPrev() {
-	if (currentStep.value > 1) currentStep.value--;
-};
-
-function onNext() {
-	switch (currentStep.value) {
-		case 5: {
-			console.log("Submitting form")
-			return
-		};
-		default: {
-			currentStep.value++
-			return
-		};
-	};
-};
 </script>
 
 <template>
@@ -89,8 +81,8 @@ function onNext() {
 				:current="currentStep"
 				:prev-step-label="stepData.prevStepLabel"
 				:next-step-label="stepData.nextStepLabel"
-				@prev="onPrev"
-				@next="onNext"
+				@prev="emit('prev')"
+				@next="emit('next')"
 				class="w-full flex justify-between gap-x-4"
 			/>
 		</div>
