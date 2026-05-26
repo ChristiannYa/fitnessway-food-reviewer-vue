@@ -65,13 +65,13 @@ function handleRejection(reason: string) {
             <ActionButton
                 label="Approve"
                 :icon="Check"
-                bg-color="bg-accent-primary"
+                backgroundColor="bg-accent-primary"
                 @click="handleApproval"
             />
             <ActionButton
                 label="Reject"
                 :icon="X"
-                bg-color="bg-rose-600"
+                backgroundColor="bg-rose-600"
                 @click="isRejecting = true"
             />
         </div>

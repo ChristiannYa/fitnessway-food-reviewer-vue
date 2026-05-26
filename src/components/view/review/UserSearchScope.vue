@@ -25,7 +25,7 @@ const isSelected = (s: UserSearchScope) => s === searchScope
             v-for="scope in scopes"
             :key="scope"
             :label="scope"
-            :bg-color="isSelected(scope) ? 'bg-accent-primary' : 'bg-smoke'"
+            :backgroundColor="isSelected(scope) ? 'bg-accent-primary' : 'bg-smoke'"
             :is-active="isSelected(scope)"
             @click="emit('select', scope)"
         />

@@ -37,7 +37,7 @@ function handleRejection() {
 
                 <div class="flex w-full gap-2 pb-1">
                     <ActionButton label="No" @click="hasClickedRejected = false" />
-                    <ActionButton label="Yes" bg-color="bg-rose-600" @click="handleRejection" />
+                    <ActionButton label="Yes" backgroundColor="bg-rose-600" @click="handleRejection" />
                 </div>
             </div>
         </div>
@@ -52,8 +52,8 @@ function handleRejection() {
             />
             <ActionButton
                 label="Reject"
-                bg-color="bg-rose-600"
-                :disabled="isStringNullOrEmpty(rejectionReason)"
+                backgroundColor="bg-rose-600"
+                :isDisabled="isStringNullOrEmpty(rejectionReason)"
                 @click="hasClickedRejected = true"
             />
         </div>

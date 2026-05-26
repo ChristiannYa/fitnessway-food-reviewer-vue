@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import type { LucideIcon } from 'lucide-vue-next'
+import type { CSSProperties } from "vue";
 
-const {
-    label,
-    icon,
-    bgColor,
-    iconSize,
-    disabled,
-    isActive
-} = defineProps<{
+type Props = {
     label: string;
-    icon?: LucideIcon;
-    bgColor?: string
-    iconSize?: number
-    disabled?: boolean;
-    isActive?: boolean
-}>()
+	borderColor?: CSSProperties["borderColor"];
+	borderHoverColor?: CSSProperties["borderColor"];
+	backgroundColor?: CSSProperties["background-color"];    
+	icon?: LucideIcon;
+    iconSize?: number;
+	isInverted?: boolean;
+    isDisabled?: boolean;
+    isActive?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	borderColor: "transparent",
+	borderHoverColor: "transparent",
+	backgroundColor: "transparent"
+})
 
 const emit = defineEmits<{
     click: []
@@ -25,13 +28,21 @@ const emit = defineEmits<{
 <template>
     <button
         @click="emit('click')"
-        :disabled="disabled"
-        :class="['flex grow justify-center items-center gap-1 py-2 px-3 rounded-xl border-2',
-                 'border-transparent text-lg cursor-pointer transition-colors',
-                 bgColor,
-                 isActive !== undefined && !isActive ? 'hover:border-mist-300' : '']"
+        :disabled="isDisabled"
+		:style="{
+			borderWidth: '2px',
+			'--border-color': borderColor,
+			'--hover-border-color': borderHoverColor,
+			backgroundColor: backgroundColor,
+		}"
+        :class="[
+			'flex grow justify-center items-center gap-1 py-2 px-3 rounded-xl',
+			'text-lg cursor-pointer transition-colors',
+			isInverted ? 'flex-row-reverse' : '',
+			isActive !== undefined && !isActive ? 'inactive' : ''
+		]"
     >
-        <p class="font-medium">{{ label }}</p>
+        <p class="font-medium text-md leading-tight">{{ label }}</p>
         <component 
             v-if="icon" 
             :is="icon" 
@@ -40,3 +51,13 @@ const emit = defineEmits<{
         />
     </button>
 </template>
+
+<style scoped>
+button {
+    border-color: var(--border-color, transparent);
+}
+
+.inactive:hover {
+    border-color: var(--hover-border-color);
+}
+</style>
