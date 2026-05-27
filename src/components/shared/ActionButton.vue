@@ -35,11 +35,18 @@ const emit = defineEmits<{
 			'--hover-border-color': borderHoverColor,
 			backgroundColor: backgroundColor,
 		}"
+		class="flex grow justify-center items-center gap-1 py-2 px-3 rounded-xl
+			   text-lg transition-colors"
         :class="[
-			'flex grow justify-center items-center gap-1 py-2 px-3 rounded-xl',
-			'text-lg cursor-pointer transition-colors',
-			isInverted ? 'flex-row-reverse' : '',
-			isActive !== undefined && !isActive ? 'inactive' : ''
+			isInverted 
+				? 'flex-row-reverse' 
+				: '',
+			isActive !== undefined && !isActive 
+				? 'inactive' 
+				: '',
+			isDisabled === false 
+				? 'opacity-100 cursor-pointer' 
+				: 'opacity-50 cursor-default'
 		]"
     >
         <p class="font-medium text-md leading-tight">{{ label }}</p>

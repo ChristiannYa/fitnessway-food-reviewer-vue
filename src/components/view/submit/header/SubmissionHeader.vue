@@ -7,6 +7,7 @@ const {
 	currentStep
 } = defineProps<{
 	currentStep: number;
+	isNextDisabled: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -81,6 +82,7 @@ const stepData = computed((): StepData | null => {
 				:current="currentStep"
 				:prev-step-label="stepData.prevStepLabel"
 				:next-step-label="stepData.nextStepLabel"
+				:isNextDisabled="isNextDisabled"
 				@prev="emit('prev')"
 				@next="emit('next')"
 				class="w-full flex justify-between gap-x-4"

@@ -1,8 +1,8 @@
 import type { NutrientDataAmount, NutrientGroupable, NutrientsByType } from "@/types/nutrientTypes";
 import type { PaginationResult } from "@/types/appTypes";
 
-export const SERVING_UNITS = ["G", "MG", "MCG", "ML", "OZ", "KCAL"] as const;
-export type ServingUnit = typeof SERVING_UNITS[number];
+export const SERVING_UNIT = ["G", "MG", "MCG", "ML", "OZ", "KCAL"] as const;
+export type ServingUnit = typeof SERVING_UNIT[number];
 
 export const PENDING_FOOD_STATUS = ["APPROVED", "PENDING", "REJECTED"] as const
 export type PendingFoodStatus = typeof PENDING_FOOD_STATUS[number]

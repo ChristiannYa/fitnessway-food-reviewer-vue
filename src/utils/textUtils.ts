@@ -12,10 +12,11 @@ type SnakeToCamel<T extends string> = T extends `${infer Head}_${infer Tail}`
 	? `${Head}${Capitalize<SnakeToCamel<Tail>>}`
 	: T;
 
-type CamelCased<T> = T extends object
+export type CamelCased<T> = T extends object
 	? { [K in keyof T as SnakeToCamel<string & K>]: CamelCased<T[K]> }
 	: T;
 
+// @TODO: Move to object utils
 export function toSnakeCase<T extends object>(obj: T): SnakeCased<T> {
 	return Object.fromEntries(
 		Object.entries(obj).map(([key, value]) => [
@@ -23,23 +24,6 @@ export function toSnakeCase<T extends object>(obj: T): SnakeCased<T> {
 			value
 		])
 	) as SnakeCased<T>;
-}
-
-export function toCamelCase<T>(obj: T): CamelCased<T> {
-	if (Array.isArray(obj)) {
-		return obj.map(toCamelCase) as CamelCased<T>;
-	}
-
-	if (obj !== null && typeof obj === "object") {
-		return Object.fromEntries(
-			Object.entries(obj).map(([key, value]) => [
-				key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase()),
-				toCamelCase(value)
-			])
-		) as CamelCased<T>;
-	}
-
-	return obj as CamelCased<T>;
 }
 
 export const isStringNullOrEmpty = (

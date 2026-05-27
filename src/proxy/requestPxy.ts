@@ -1,6 +1,6 @@
 import { PxyRequestBaseError } from "@/errors/requestErrors";
 import type { ProxyResponse } from "@/types/serverTypes";
-import { toCamelCase } from "@/utils/textUtils";
+import { toCamelCase as objToCamelCase } from "@/utils/objectUtils";
 import { PROXY_BASE_URL } from "@/config/config";
 import {
 	clientError,
@@ -23,7 +23,7 @@ async function makePxyRequest<R>(
 		throw new PxyRequestBaseError(`Proxy request to ${path} failed`, res.status);
 	}
 
-	return toCamelCase(await res.json()) as ProxyResponse<R>;
+	return objToCamelCase(await res.json()) as ProxyResponse<R>;
 }
 
 async function handlePxyRequest<R>(

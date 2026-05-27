@@ -1,7 +1,8 @@
 import { ApiRequestBaseError } from "@/errors/requestErrors";
 import type { RefreshRes } from "@/types/authTypes";
 import { useAccessTokenStore } from "@/stores/accessTokenStore";
-import { toSnakeCase, toCamelCase } from "@/utils/textUtils";
+import { toSnakeCase } from "@/utils/textUtils";
+import { toCamelCase as objToCamelCase } from "@/utils/objectUtils";
 import { catchingErrorT } from "@/utils/errorUtils";
 import {
 	clientError,
@@ -62,7 +63,7 @@ const createApiClient = (
 			throw new ApiRequestBaseError(error.message, res.status);
 		}
 
-		return toCamelCase(await res.json()) as KtServerResponse<R>;
+		return objToCamelCase(await res.json()) as KtServerResponse<R>;
 	}
 
 	async function handleRequest<R, T = unknown>(

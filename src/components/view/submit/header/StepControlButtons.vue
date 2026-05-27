@@ -6,6 +6,7 @@ defineProps<{
 	current: number;
 	prevStepLabel?: string;
 	nextStepLabel: string;
+	isNextDisabled: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 			:icon="current < 5 ? ArrowRight : Check"
 			:icon-size="16"
 			background-color="var(--color-accent-primary)"
+			:is-disabled="isNextDisabled"
 			@click="emit('next')"
 			class="flex-1"
 		/>
