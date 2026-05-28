@@ -24,7 +24,15 @@ defineEmits<{
 			]"
 		>
 			<div class="flex items-center gap-1 text-lg leading-tight">
-				<p class="cursor-default">{{ inputData.label }}</p>
+				<p class="cursor-default">
+					{{ inputData.label }}
+					<span 
+						v-if="inputData.labelDetails"
+						class="opacity-40 text-sm"
+					>
+						{{ inputData.labelDetails }}
+					</span>
+				</p>
 				<input 
 					:type="inputData.type"
 					:placeholder="inputData.placeholder"

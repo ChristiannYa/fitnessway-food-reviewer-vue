@@ -7,3 +7,14 @@ export const buildNutrientListTyped = <T extends NutrientGroupable>(
 	{ type: "VITAMIN", nutrients: nutrientsByType.vitamin },
 	{ type: "MINERAL", nutrients: nutrientsByType.mineral }
 ]);
+
+export const buildNutrientListByType = <T extends NutrientGroupable>(
+	nutrients: NutrientsByType<T>,
+	type: NutrientType
+): T[] => {
+	switch(type) {
+		case "BASIC": return nutrients.basic;
+		case "VITAMIN": return nutrients.vitamin;
+		case "MINERAL": return nutrients.mineral;
+	}
+};

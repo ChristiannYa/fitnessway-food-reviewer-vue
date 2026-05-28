@@ -1,30 +1,33 @@
 import type { InputField } from "@/types/appTypes";
 import type { InputTypeHTMLAttribute } from "vue";
-import type { ZodObject, ZodRawShape } from "zod";
+import type { ZodObject, ZodRawShape, ZodType } from "zod";
 import { computed, reactive } from "vue";
 import type { ComputedRef } from "vue";
 
 type FormPartial<TValue> = Partial<Record<string, TValue>>;
 
-type FieldData = { 
+type AnyZodSchema = ZodObject<ZodRawShape> | ZodType<ZodObject<ZodRawShape>>;
+
+export type FieldData = { 
 	field: InputField, 
 	deleteError: () => void 
 };
 
-type FormValidation = {
+export type FormValidation = {
 	focusedFields: Readonly<FormPartial<boolean>>;
 	errorFields: Readonly<FormPartial<string>>;
 	touchedFields: Readonly<FormPartial<boolean>>;
 	isValid: ComputedRef<boolean>;
-	buildFieldData: (
+	buildFieldData(
 		label: string,
 		placeholder: string,
 		type: InputTypeHTMLAttribute,
-	) => FieldData;
+		labelDetails?: string,
+	): FieldData
 };
 
 export function useFormValidation<TForm>(
-	schema: ZodObject<ZodRawShape>, 
+	schema: AnyZodSchema, 
 	form: TForm
 ): FormValidation {
 	const focusedFields = reactive<FormPartial<boolean>>({});
@@ -36,12 +39,14 @@ export function useFormValidation<TForm>(
 	
 		if (!result.success) {
 			result.error.issues.forEach(issue => {
-				const key = issue.path[0] as string;
-				errorFields[key] = issue.message;
+				if (issue.path.length > 0) {
+					const key = issue.path[0] as string;
+					errorFields[key] = issue.message;
+				}
 			});
 			return false;
 		}
-	
+
 		return true;
 	});
 
@@ -49,6 +54,7 @@ export function useFormValidation<TForm>(
 		label: string,
 		placeholder: string,
 		type: InputTypeHTMLAttribute = "text",
+		labelDetails?: string
 	): FieldData {
 		const key = label.toLowerCase();
 
@@ -61,7 +67,8 @@ export function useFormValidation<TForm>(
 				onBlur: () => {
 					focusedFields[key] = false;
 					touchedFields[key] = true;
-				}
+				},
+				labelDetails
 			},
 			deleteError: () => delete errorFields[key]
 		}
