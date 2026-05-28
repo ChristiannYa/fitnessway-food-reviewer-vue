@@ -55,7 +55,7 @@ function onNext() {
 
 <template>
 	<View>
-		<div class="flex flex-col gap-4">
+		<div class="w-100 flex flex-col grow h-full gap-4">
 			<SubmissionHeader 
 				:current-step="currentStep"
 				:isNextDisabled="!isNextEnabled"
@@ -63,35 +63,48 @@ function onNext() {
 				@next="onNext"
 			/>
 
-			<EdibleBaseForm 
-				v-show="currentStep === 1"
-				@validation-change="isBaseFormValid = $event"
-				@set="baseForm = $event"
-			/>
-
-			<NutrientsForm
-				v-show="currentStep === 2"
-				nutrient-type="BASIC"
-				:should-require-any="true"
-				@validation-change="isNutrientsFormValid = $event"
-				@set="nutrientsForm = $event"
-			/>
-
-			<NutrientsForm
-				v-show="currentStep === 3"
-				nutrient-type="VITAMIN"
-				:should-require-any="false"
-				@validation-change="isVitaminsFormValid = $event"
-				@set="vitaminsForm = $event"
-			/>
-
-			<NutrientsForm
-				v-show="currentStep === 4"
-				nutrient-type="MINERAL"
-				:should-require-any="false"
-				@validation-change="isMineralsFormValid = $event"
-				@set="mineralsForm = $event"
-			/>
+			<div 
+				:class="[
+					currentStep >= 2 ? 'overflow-y-scroll no-scrollbar pb-4' : '']
+				"
+				@wheel="(e) => {
+					if (currentStep >= 2) {
+						// Allows proper usage of the scroll wheel when modifying
+						// the amount values with it
+						e.stopImmediatePropagation();
+					}
+				}"
+			>
+				<EdibleBaseForm 
+					v-show="currentStep === 1"
+					@validation-change="isBaseFormValid = $event"
+					@set="baseForm = $event"
+				/>
+	
+				<NutrientsForm
+					v-show="currentStep === 2"
+					nutrient-type="BASIC"
+					:should-require-any="true"
+					@validation-change="isNutrientsFormValid = $event"
+					@set="nutrientsForm = $event"
+				/>
+	
+				<NutrientsForm
+					v-show="currentStep === 3"
+					nutrient-type="VITAMIN"
+					:should-require-any="false"
+					@validation-change="isVitaminsFormValid = $event"
+					@set="vitaminsForm = $event"
+				/>
+	
+				<NutrientsForm
+					v-show="currentStep === 4"
+					nutrient-type="MINERAL"
+					:should-require-any="false"
+					@validation-change="isMineralsFormValid = $event"
+					@set="mineralsForm = $event"
+				/>
+			</div>
 		</div>
 	</View>
 </template>

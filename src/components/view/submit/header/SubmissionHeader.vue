@@ -60,13 +60,10 @@ const stepData = computed((): StepData | null => {
 </script>
 
 <template>
-	<div 
-		v-if="stepData !== null"
-		class="w-100"
-	>
+	<div v-if="stepData !== null">
 		<div class="flex flex-col items-center gap-4">
 			<!-- Step Title -->
-			<p class="font-bold text-2xl">
+			<p class="font-bold text-2xl leading-tight">
 				{{ stepData.title }}
 			</p>
 			

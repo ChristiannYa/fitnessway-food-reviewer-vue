@@ -74,7 +74,7 @@ watch(form, (f) => { emit('set', { ...f }) }, { deep: true });
 
 		<div 
 			v-if="nutrients !== null"
-			class="flex flex-col gap-y-4"
+			class="flex flex-col gap-y-4 w-full"
 		>
 			<EdibleFormField
 				v-for="entry in fieldEntries"

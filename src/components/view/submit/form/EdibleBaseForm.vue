@@ -33,7 +33,7 @@ watch(form, (f) => emit('set', { ...f }), { deep: true });
 </script>
 
 <template>
-	<div class="flex flex-col gap-y-4">
+	<div class="flex flex-col flex-1 gap-y-4">
 		<EdibleFormField
 			v-model="form.name"
 			:input-data="nameFieldData.field"

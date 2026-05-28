@@ -1,6 +1,6 @@
 import { refreshAccessToken } from "@/auth/authHandlers";
 import { getRefreshTokenPxy } from "@/proxy/refreshTokenPxy";
-import { useAccessTokenStore } from "@/stores/accessTokenStore";
+import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
 

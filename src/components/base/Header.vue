@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useUserQuery } from '@/hooks/queries/userQueries';
 import { Menu } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import SideBar from './SideBar.vue';
 import Spinner from '@/components/shared/Spinner.vue'
+import { useLayoutStore } from '@/hooks/composables/stores/layoutStore.ts';
+import { useResizeObserver } from "@vueuse/core";
 
 const isMenuOpen = ref(false)
 
@@ -13,10 +15,23 @@ const {
 } = useUserQuery()
 
 const user = computed(() => uResData?.value?.data?.user)
+
+const layoutStore = useLayoutStore();
+const headerRef = useTemplateRef('headerRef');
+
+useResizeObserver(headerRef, ([entry]) => {
+	const height = entry.borderBoxSize?.[0]?.blockSize;
+	console.log("[Header, useResizeObserver] height:", height);
+	layoutStore.setHeaderHeight(height);
+});
 </script>
 
 <template>
-    <header class="p-4 flex items-center justify-between w-full bg-dark-secondary shadow-lg">
+    <header 
+		ref="headerRef"
+		class="p-4 flex items-center justify-between w-full bg-dark-secondary 
+		       shadow-lg"
+	>
         <div class="flex items-center">
             <button
                 @click="isMenuOpen = true"

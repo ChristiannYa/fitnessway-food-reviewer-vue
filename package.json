@@ -12,6 +12,7 @@
 		"@tailwindcss/vite": "^4.2.2",
 		"@tanstack/vue-query": "^5.95.0",
 		"@tanstack/vue-query-devtools": "^6.1.8",
+		"@vueuse/core": "^14.3.0",
 		"concurrently": "^9.2.1",
 		"lucide-vue-next": "^0.577.0",
 		"pinia": "^3.0.4",

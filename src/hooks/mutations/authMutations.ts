@@ -1,5 +1,5 @@
 import { login, logout } from "@/auth/authHandlers";
-import { useAccessTokenStore } from "@/stores/accessTokenStore";
+import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
 import { useMutation } from "@tanstack/vue-query";
 import { useRouter } from "vue-router";
 

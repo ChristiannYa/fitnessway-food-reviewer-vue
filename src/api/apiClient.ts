@@ -1,6 +1,6 @@
 import { ApiRequestBaseError } from "@/errors/requestErrors";
 import type { RefreshRes } from "@/types/authTypes";
-import { useAccessTokenStore } from "@/stores/accessTokenStore";
+import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
 import { toSnakeCase } from "@/utils/textUtils";
 import { toCamelCase as objToCamelCase } from "@/utils/objectUtils";
 import { catchingErrorT } from "@/utils/errorUtils";
