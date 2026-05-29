@@ -21,7 +21,6 @@ const headerRef = useTemplateRef('headerRef');
 
 useResizeObserver(headerRef, ([entry]) => {
 	const height = entry.borderBoxSize?.[0]?.blockSize;
-	console.log("[Header, useResizeObserver] height:", height);
 	layoutStore.setHeaderHeight(height);
 });
 </script>

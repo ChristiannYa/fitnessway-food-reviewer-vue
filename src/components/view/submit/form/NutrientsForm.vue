@@ -7,6 +7,9 @@ import type { NutrientData, NutrientType } from '@/types/nutrientTypes';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import EdibleFormField from './EdibleFormField.vue';
 import Spinner from '@/components/shared/Spinner.vue';
+import NutrientDvButton from './NutrientDvButton.vue';
+import { getNutrientDv } from '@/utils/nutrientUtils.ts';
+import { nutrientDvArray } from '@/constants/nutrientConstants.ts';
 
 type FieldEntry = {
 	nutrient: NutrientData,
@@ -26,7 +29,23 @@ const emit = defineEmits<{
 	'set': [form: NutrientSchema];
 }>();
 
-const fieldEntries = shallowRef<FieldEntry[] | null>(null);
+const dvForm = reactive<NutrientSchema>({});
+const dvActive = reactive<Record<string, boolean>>({});
+
+function toggleActiveDv(id: number) {
+	const key = String(id);
+	console.log(`[NutrientsForm, toggleActiveDv] toggling #${id} ${dvActive[key]} -> ${!dvActive[key]}`)
+
+	dvActive[key] = !dvActive[key];
+
+	console.log(`[NutrientsForm, toggleActiveDv] dvActive after:`, JSON.stringify(dvActive, null, 2));
+};
+
+const shouldShowDvButton = (id: number) => 
+	(nutrientDvArray as readonly number[]).includes(id)
+
+const getDv = (id: number, amount: number) => 
+	parseFloat(getNutrientDv(id, amount, "DV_TO_UNIT").toFixed(4));
 
 const { 
 	data, 
@@ -43,27 +62,90 @@ const nutrients = computed((): NutrientData[] | null => {
 
 const form = reactive<NutrientSchema>({});
 const formValidation = ref<FormValidation | null>(null);
+const fieldEntries = computed((): FieldEntry[] | null => {
+	const validation = formValidation.value
+	if (nutrients.value === null || validation === null) return null;
+
+	return nutrients.value.map(n => ({
+		nutrient: n,
+		fieldData: validation.buildFieldData(
+			n.base.name, 
+			"0",
+			"number",
+			dvActive[String(n.base.id)]
+				? "DV%"
+				: n.base.unit
+		)
+	})) 
+})
 
 watch(nutrients, (ns) => {
 	if (ns === null) return;
 
-	ns.forEach(n => { form[n.base.id] = 0 });
+	// Populate form data and dv maps
+	ns.forEach(n => { 
+		const id = String(n.base.id);
+
+		form[id] = 0;
+		dvForm[id] = 0;
+		dvActive[id] = false;
+	});
 
 	const validation = useFormValidation(buildNutrientSchema(ns, shouldRequireAny), form);
 	formValidation.value =  validation;
-
-	fieldEntries.value = ns.map(n => ({
-		nutrient: n,
-		fieldData: validation.buildFieldData(n.base.name, "0", "number", n.base.unit)
-	}));
-
 }, { immediate: true });
 
 const isValid = computed(() => formValidation.value?.isValid ?? false);
 const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
-watch(form, (f) => { emit('set', { ...f }) }, { deep: true });
+
+watch(form, (f) => {
+	Object
+		.entries(f)
+		.forEach(([id, amount]) => {
+			const amountNum = Number(amount);
+
+			if (amountNum === 0 && dvActive[id]) {
+				dvActive[id] = false;
+				return;
+			}
+
+			const dv = dvActive[id] 
+				? getDv(Number(id), amountNum)
+				: amountNum;
+
+			console.log(`[NutrientsForm, watch(form)] dvForm[${id}] = ${dv}`)
+
+			dvForm[id] = dv
+		});
+
+	emit('set', { ...dvForm });
+}, { deep: true });
+
+watch(dvActive, (da, prev) => {
+	const log = (l: string) => console.log(`[NutrientsForm, watch(dvActive)] ${l}`)
+
+	log(`"${nutrientType}" fired`);
+	if (prev === undefined) return;
+
+	Object
+		.entries(da)
+		.forEach(([id, isActive]) => {
+			log(`checking id: ${id}, isActive: ${isActive}, prev: ${prev[id]}, form[id]: ${form[id]}`);
+
+			const amount = Number(form[id]);
+			const dv = isActive 
+				? getDv(Number(id), amount)
+				: amount;
+
+			log(`dvForm[${id}] = ${dv}`)
+
+			dvForm[id] = dv
+		});
+
+	emit('set', { ...dvForm });
+}, { deep: true, immediate: true });
 </script>
 
 <template>
@@ -74,17 +156,25 @@ watch(form, (f) => { emit('set', { ...f }) }, { deep: true });
 
 		<div 
 			v-if="nutrients !== null"
-			class="flex flex-col gap-y-4 w-full"
+			class="flex flex-col gap-y-5 w-full"
 		>
 			<EdibleFormField
 				v-for="entry in fieldEntries"
 				:key="entry.nutrient.base.id"
-				v-model="form[entry.nutrient.base.id]"
+				v-model="form[String(entry.nutrient.base.id)]"
 				:input-data="entry.fieldData.field"
 				:is-focused="focusedFields[entry.nutrient.base.name] === true"
 				:error-message="undefined"
 				@reset="entry.fieldData.deleteError"
-			/>
+			>
+				<NutrientDvButton 
+					v-if="shouldShowDvButton(entry.nutrient.base.id)"
+					:isActive="dvActive[String(entry.nutrient.base.id)]"
+					:is-clickable="form[String(entry.nutrient.base.id)] > 0"
+					:dv="dvForm[String(entry.nutrient.base.id)]"
+					@click="() => toggleActiveDv(entry.nutrient.base.id)"
+				/>
+			</EdibleFormField>
 		</div>
 	</div>
 </template>

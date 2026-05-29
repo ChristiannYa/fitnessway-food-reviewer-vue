@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import type { InputField } from "@/types/appTypes";
 
-defineProps<{
+const props = defineProps<{
 	inputData: InputField;
 	isFocused: boolean;
 	errorMessage: string | undefined;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	'update:modelValue': [value: string];
 	reset: [];
 }>();
+
+function onInput(e: InputEvent) {
+	if (props.errorMessage !== undefined) emit('reset');
+	const value = (e.target as HTMLInputElement).value;
+	console.log(`[EdibleFormField, onInput] setting value to: ${value}`);
+
+	emit('update:modelValue', value);
+}
 </script>
 
 <template>
@@ -24,7 +32,7 @@ defineEmits<{
 			]"
 		>
 			<div class="flex items-center gap-1 text-lg leading-tight">
-				<p class="cursor-default">
+				<p class="cursor-default shrink-0">
 					{{ inputData.label }}
 					<span 
 						v-if="inputData.labelDetails"
@@ -33,18 +41,18 @@ defineEmits<{
 						{{ inputData.labelDetails }}
 					</span>
 				</p>
-				<input 
-					:type="inputData.type"
-					:placeholder="inputData.placeholder"
-					class="focus:outline-none font-semibold text-cyan-500 placeholder:text-chalk 
-						   placeholder:opacity-30 placeholder:font-normal py-3 flex-1 text-end"
-					@input="(e: InputEvent) => {
-						if (errorMessage !== undefined) $emit('reset');
-						$emit('update:modelValue', (e.target as HTMLInputElement).value);
-					}"
-					@focus="inputData.onFocus"
-					@blur="inputData.onBlur"
-				>
+				<div class="flex flex-1 min-w-0">
+					<input 
+						:type="inputData.type"
+						:placeholder="inputData.placeholder"
+						class="focus:outline-none font-semibold text-cyan-500 placeholder:text-chalk 
+							   placeholder:opacity-30 placeholder:font-normal py-3 text-end flex-1 min-w-0"
+						@input="onInput"
+						@focus="inputData.onFocus"
+						@blur="inputData.onBlur"
+					>
+					<slot/>
+				</div>
 			</div>
 		</div>
 		<p

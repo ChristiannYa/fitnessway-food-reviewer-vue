@@ -27,12 +27,17 @@ const isNextEnabled = computed(() => {
 		case 2: return isNutrientsFormValid.value;
 		case 3: return isVitaminsFormValid.value;
 		case 4: return isMineralsFormValid.value;
-		default: return false;
+		default: return true;
 	};
 });
 
 async function onSubmit() {
 	console.log("Submitting form");
+
+	console.log("base:", JSON.stringify(baseForm.value, null, 2))
+	console.log("nutrients:", JSON.stringify(nutrientsForm.value, null, 2))
+	console.log("vitamins:", JSON.stringify(vitaminsForm.value, null, 2))
+	console.log("minerals:", JSON.stringify(mineralsForm.value, null, 2))
 };
 
 function onPrev() {
@@ -65,7 +70,7 @@ function onNext() {
 
 			<div 
 				:class="[
-					currentStep >= 2 ? 'overflow-y-scroll no-scrollbar pb-4' : '']
+					currentStep >= 2 ? 'overflow-y-scroll no-scrollbar pb-5' : '']
 				"
 				@wheel="(e) => {
 					if (currentStep >= 2) {
