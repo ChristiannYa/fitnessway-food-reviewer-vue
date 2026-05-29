@@ -7,7 +7,8 @@ import { APP_PORT } from "./src/config/config";
 export default defineConfig({
 	plugins: [vue(), tailwindcss()],
 	server: {
-		port: APP_PORT
+		port: APP_PORT,
+		host: true
 	},
 	resolve: {
 		alias: {

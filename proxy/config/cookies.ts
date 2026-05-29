@@ -10,7 +10,7 @@ const cookies = {
 		name: "refreshToken",
 		options: {
 			httpOnly: true,
-			secure: true,
+			secure: false, // @TODO: Change to true when deploying
 			path: "/",
 			maxAge: 60 * 60 * 24 * 30 // 30 days
 		}
