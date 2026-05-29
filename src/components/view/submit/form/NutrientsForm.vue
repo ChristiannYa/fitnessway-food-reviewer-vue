@@ -1,10 +1,12 @@
 <script setup lang="ts">
+// @TODO:fix input outline not highligtning when focused
+
 import { buildNutrientListByType } from '@/builders/nutrientBuilders';
 import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/formValidation';
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
 import { buildNutrientSchema, type NutrientSchema } from '@/schemas/NutrientSchema';
 import type { NutrientData, NutrientType } from '@/types/nutrientTypes';
-import { computed, reactive, ref, shallowRef, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import EdibleFormField from './EdibleFormField.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import NutrientDvButton from './NutrientDvButton.vue';
@@ -34,11 +36,7 @@ const dvActive = reactive<Record<string, boolean>>({});
 
 function toggleActiveDv(id: number) {
 	const key = String(id);
-	console.log(`[NutrientsForm, toggleActiveDv] toggling #${id} ${dvActive[key]} -> ${!dvActive[key]}`)
-
 	dvActive[key] = !dvActive[key];
-
-	console.log(`[NutrientsForm, toggleActiveDv] dvActive after:`, JSON.stringify(dvActive, null, 2));
 };
 
 const shouldShowDvButton = (id: number) => 
@@ -115,8 +113,6 @@ watch(form, (f) => {
 				? getDv(Number(id), amountNum)
 				: amountNum;
 
-			console.log(`[NutrientsForm, watch(form)] dvForm[${id}] = ${dv}`)
-
 			dvForm[id] = dv
 		});
 
@@ -124,22 +120,16 @@ watch(form, (f) => {
 }, { deep: true });
 
 watch(dvActive, (da, prev) => {
-	const log = (l: string) => console.log(`[NutrientsForm, watch(dvActive)] ${l}`)
-
-	log(`"${nutrientType}" fired`);
 	if (prev === undefined) return;
 
 	Object
 		.entries(da)
 		.forEach(([id, isActive]) => {
-			log(`checking id: ${id}, isActive: ${isActive}, prev: ${prev[id]}, form[id]: ${form[id]}`);
 
 			const amount = Number(form[id]);
 			const dv = isActive 
 				? getDv(Number(id), amount)
 				: amount;
-
-			log(`dvForm[${id}] = ${dv}`)
 
 			dvForm[id] = dv
 		});

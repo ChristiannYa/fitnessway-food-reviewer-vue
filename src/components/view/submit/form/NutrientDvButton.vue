@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch } from 'vue';
 import { Percent } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -11,16 +10,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	click: [];
 }>();
-
-watch(() => props.isActive, () => {
-	const log = (l: string) => console.log(`[NutrientDvButton, watch(isActive)] ${l}`)
-	log(`${props.isActive}`)
-}, { immediate: true });
-
-watch(() => props.dv, () => {
-	const log = (l: string) => console.log(`[NutrientDvButton, watch(dv)] ${l}`)
-	log(`${props.dv}`);
-}, { immediate: true });
 </script>
 
 <template>

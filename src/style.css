@@ -39,3 +39,8 @@
 		font-size: 16px;
 	}
 }
+
+.input-base {
+	@apply focus:outline-none font-semibold text-cyan-500 placeholder-chalk
+	       placeholder:opacity-30 placeholder:font-normal
+}

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	amount: number;
 	current: number;
 }>();
 
-const steps = Array.from({ length: 5 }, (_, i) => i + 1);
+const steps = Array.from({ length: props.amount }, (_, i) => i + 1);
 </script>
 
 <template>

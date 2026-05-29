@@ -40,4 +40,28 @@ export const formatIsoDate = (isoDate: string) => {
 	});
 };
 
-export const uuidFirst = (uuid: string) => uuid.split("-")[0];
+export function isBarcodeValid(barcode: string) {
+	// Must be 12 (UPC-A) or 13 (EAN-13) digits
+	if (!/^\d{12,13}$/.test(barcode)) return false;
+
+	const digitArray = barcode.split("").map(Number);	
+	const checkDigit = digitArray.pop(); // Last digit
+	if (checkDigit === undefined) return false;
+
+	const isUpc = digitArray.length === 11;
+	let sum = 0;
+
+	digitArray.forEach((digit, i) => {
+		// UPC-A: odd positions ×3, even ×1
+		// EAN-13: odd positions ×1, even ×3
+		const isTriplePosition = isUpc
+			? i % 2 === 0 
+			: i % 2 !== 0
+
+		const multiplier = isTriplePosition ? 3 : 1;
+
+		sum += digit * multiplier;
+	});
+
+	return ((10 - sum % 10) % 10) === checkDigit;
+};

@@ -15,8 +15,6 @@ const emit = defineEmits<{
 function onInput(e: InputEvent) {
 	if (props.errorMessage !== undefined) emit('reset');
 	const value = (e.target as HTMLInputElement).value;
-	console.log(`[EdibleFormField, onInput] setting value to: ${value}`);
-
 	emit('update:modelValue', value);
 }
 </script>
@@ -45,8 +43,7 @@ function onInput(e: InputEvent) {
 					<input 
 						:type="inputData.type"
 						:placeholder="inputData.placeholder"
-						class="focus:outline-none font-semibold text-cyan-500 placeholder:text-chalk 
-							   placeholder:opacity-30 placeholder:font-normal py-3 text-end flex-1 min-w-0"
+						class="input-base py-3 text-end flex-1 min-w-0"
 						@input="onInput"
 						@focus="inputData.onFocus"
 						@blur="inputData.onBlur"

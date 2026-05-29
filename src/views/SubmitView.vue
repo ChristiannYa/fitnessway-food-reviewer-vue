@@ -6,6 +6,8 @@ import EdibleBaseForm from "@/components/view/submit/form/EdibleBaseForm.vue";
 import type { EdibleBaseSchema } from "@/schemas/EdibleBaseSchema";
 import type { NutrientSchema } from "@/schemas/NutrientSchema";
 import NutrientsForm from "@/components/view/submit/form/NutrientsForm.vue";
+import EdibleBarcodeField from "@/components/view/submit/form/EdibleBarcodeField.vue";
+import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
 
 const currentStep = ref(1);
 
@@ -21,13 +23,17 @@ const isVitaminsFormValid = ref(false);
 const mineralsForm = ref<NutrientSchema | null>(null);
 const isMineralsFormValid = ref(false);
 
+const barcode = ref("");
+const isBarcodeValid = computed(() => uIsBarcodeValid(barcode.value));
+
 const isNextEnabled = computed(() => {
 	switch (currentStep.value) {
 		case 1: return isBaseFormValid.value;
 		case 2: return isNutrientsFormValid.value;
 		case 3: return isVitaminsFormValid.value;
 		case 4: return isMineralsFormValid.value;
-		default: return true;
+		case 5: return isBarcodeValid.value;
+		default: return false;
 	};
 });
 
@@ -38,6 +44,7 @@ async function onSubmit() {
 	console.log("nutrients:", JSON.stringify(nutrientsForm.value, null, 2))
 	console.log("vitamins:", JSON.stringify(vitaminsForm.value, null, 2))
 	console.log("minerals:", JSON.stringify(mineralsForm.value, null, 2))
+	console.log("barcode:", barcode.value)
 };
 
 function onPrev() {
@@ -70,7 +77,10 @@ function onNext() {
 
 			<div 
 				:class="[
-					currentStep >= 2 ? 'overflow-y-scroll no-scrollbar pb-5' : '']
+					currentStep >= 2 
+						? 'overflow-y-scroll no-scrollbar pb-5' 
+						: ''
+					]
 				"
 				@wheel="(e) => {
 					if (currentStep >= 2) {
@@ -108,6 +118,11 @@ function onNext() {
 					:should-require-any="false"
 					@validation-change="isMineralsFormValid = $event"
 					@set="mineralsForm = $event"
+				/>
+
+				<EdibleBarcodeField
+					v-show="currentStep === 5"
+					v-model="barcode"
 				/>
 			</div>
 		</div>
