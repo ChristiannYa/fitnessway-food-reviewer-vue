@@ -4,7 +4,7 @@ import { BrowserMultiFormatReader } from "@zxing/browser";
 export function useBarcodeScanner() {
 	const barcode = ref<string | null>(null);
 	const isScanning = ref(false);
-	const error = ref<string | null>(null);
+	const isScanError = ref<string | null>(null);
 
 	const reader = new BrowserMultiFormatReader();
 
@@ -19,15 +19,15 @@ export function useBarcodeScanner() {
 			videoElement.srcObject = stream;
 			await videoElement.play();
 
-
 			await reader.decodeFromVideoDevice(undefined, videoElement, (r, _) => {
 				if (r) {
 					barcode.value = r.getText();
+					stopScanning();
 				}
 			});
-		} catch (_) {
-			error.value = `Camera access error`;
-			isScanning.value = false;
+		} catch (e) {
+			isScanError.value = `Camera access error`;
+			stopScanning();
 		}
 	};
 
@@ -41,7 +41,7 @@ export function useBarcodeScanner() {
 	return {
 		barcode, 
 		isScanning,
-		error,
+		isScanError,
 		startScanning,
 		stopScanning 
 	}
