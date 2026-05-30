@@ -8,6 +8,7 @@ const emit = defineEmits<{
 }>();
 
 const videoElement = ref<HTMLVideoElement | null>(null);
+const inputValue = ref('');
 
 const { 
 	barcode, 
@@ -28,8 +29,11 @@ async function toggleScan() {
 	}
 }
 
-watch(barcode, (b) => {
-	if (b) emit('update:modelValue', b);
+watch(barcode, (v) => {
+	if (v) {
+		inputValue.value = v;
+		emit('update:modelValue', v);
+	};
 })
 </script>
 
@@ -61,11 +65,14 @@ watch(barcode, (b) => {
 
 			<input 
 				type="text"
-				:value="barcode ?? ''"
+				:value="inputValue"
 				placeholder="011110150974"
 				class="input-base bg-smoke/20 rounded-full border-2 border-smoke 
 					 focus:border-accent-primary text-center p-3 w-full"
-				@input="(e) => emit('update:modelValue', (e.target as HTMLInputElement).value)"
+				@input="(e) => {
+					inputValue = (e.target as HTMLInputElement).value;
+					emit('update:modelValue', inputValue);
+				}"
 			>
 		</div>
 	</div>
