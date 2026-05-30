@@ -67,7 +67,7 @@ function onNext() {
 
 <template>
 	<View>
-		<div class="w-100 flex flex-col grow h-full gap-4">
+		<div class="view-child-w flex flex-col grow h-full gap-4">
 			<SubmissionHeader 
 				:current-step="currentStep"
 				:isNextDisabled="!isNextEnabled"

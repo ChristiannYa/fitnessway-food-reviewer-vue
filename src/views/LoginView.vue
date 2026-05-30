@@ -27,8 +27,8 @@ function handleLogin(_: Event) {
 </script>
 
 <template>
-	<View :has-padding="false" class="justify-center">
-		<div class="flex flex-col gap-4 w-100 my-auto">
+	<View class="justify-center">
+		<div class="view-child-w flex flex-col gap-4 my-auto">
 			<h1 class="text-xl font-semibold">
 				Fitnessway Admin Panel
 			</h1>

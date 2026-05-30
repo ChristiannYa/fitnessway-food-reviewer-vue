@@ -44,3 +44,7 @@
 	@apply focus:outline-none font-semibold text-cyan-500 placeholder-chalk
 	       placeholder:opacity-30 placeholder:font-normal
 }
+
+.view-child-w {
+	@apply w-100 max-w-full
+}

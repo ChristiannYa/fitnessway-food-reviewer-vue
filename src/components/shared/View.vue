@@ -22,7 +22,11 @@ const headerHeightCss = computed(() => {
 <template>
 	<div 
 		class="w-full flex flex-col items-center"
-		:class="[hasPadding ? 'pt-10 px-4' : '']"
+		:class="[
+			hasPadding 
+				? 'pt-6 lg:pt-10 px-4' 
+				: ''
+			]"
 		:style="{
 			minHeight: headerHeightCss,
 			height: headerHeightCss
