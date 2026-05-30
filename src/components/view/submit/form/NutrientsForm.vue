@@ -153,7 +153,7 @@ watch(dvActive, (da, prev) => {
 				:key="entry.nutrient.base.id"
 				v-model="form[String(entry.nutrient.base.id)]"
 				:input-data="entry.fieldData.field"
-				:is-focused="focusedFields[entry.nutrient.base.name] === true"
+				:is-focused="focusedFields[entry.nutrient.base.name.toLowerCase()] === true"
 				:error-message="undefined"
 				@reset="entry.fieldData.deleteError"
 			>
