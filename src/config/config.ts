@@ -8,7 +8,11 @@ const currentHost = typeof window !== "undefined"
 	? window.location.hostname
 	: "localhost";
 
-export const APP_BASE_URL = `http://${currentHost}:${APP_PORT}`;
+const currentProtocol = typeof window !== "undefined"
+	? window.location.protocol
+	: "http:";
+
+export const APP_BASE_URL = `${currentProtocol}//${currentHost}:${APP_PORT}`;
 export const API_BASE_URL_KT = `http://${currentHost}:${API_PORT}/api/kt`;
 export const API_BASE_URL_GO = `http://${currentHost}:${API_PORT_GO}/api/go`
-export const PROXY_BASE_URL = `http://${currentHost}:${PROXY_PORT}`;
+export const PROXY_BASE_URL = `${currentProtocol}//${currentHost}:${APP_PORT}`;

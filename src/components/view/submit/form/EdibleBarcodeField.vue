@@ -19,35 +19,25 @@ const {
 	stopScanning 
 } = useBarcodeScanner();
 
-async function startScan() {
-	console.log("[EdibleBarcodeField, startScan] ()")
-	if (videoElement.value) await startScanning(videoElement.value)
-}
-
 async function toggleScan() {
-	const log = (l: string) => console.log(`[EdibleBarcodeField, toggleScan] ${l}`)
-
 	if (isVideoVisible.value) {
-		log("video is visible, toggling it off")
 		isVideoVisible.value = false;
 		stopScanning();
 	} else {
-		log("video is not visible, toggling it on")
 		isVideoVisible.value = true;
 		await nextTick();
-		startScan();
+		if (videoElement.value) await startScanning(videoElement.value)
 	}
 }
 
-/*
 // Will activate when scan works
 watch(barcode, (b) => {
 	if (b) {
 		emit('update:modelValue', b);
 		isVideoVisible.value = false;
+		stopScanning();
 	}	
 })
-*/
 </script>
 
 <template>
@@ -65,13 +55,6 @@ watch(barcode, (b) => {
 			</div>
 
 			<p 
-				v-if="barcode !== null"
-				class="text-center"
-			>
-				Scanned: {{ barcode }}
-			</p>
-
-			<p 
 				v-if="isScanError !== null" 
 				class="text-red-500 text-center">
 				{{ isScanError }}
@@ -80,7 +63,7 @@ watch(barcode, (b) => {
 			<ActionButton
 				@click="toggleScan"
 				:label="isVideoVisible
-					? 'StopScan'
+					? 'Stop Scan'
 					: 'Start Scan'"
 				background-color="#6a7282"
 				border-hover-color="#d1d5dc70"
@@ -88,6 +71,7 @@ watch(barcode, (b) => {
 
 			<input 
 				type="text"
+				:value="barcode ?? ''"
 				placeholder="011110150974"
 				class="input-base bg-smoke/20 rounded-full border-2 border-smoke 
 					 focus:border-accent-primary text-center p-3 w-full"

@@ -8,26 +8,7 @@ export function useBarcodeScanner() {
 
 	const reader = new BrowserMultiFormatReader();
 
-	async function waitForVideoReady(video: HTMLVideoElement): Promise<void> {
-		return new Promise((resolve) => {
-			const check = () => {
-				if (video.readyState >= 2 && video.videoWidth > 0) {
-					resolve();
-				} else {
-					requestAnimationFrame(check);
-				}
-			};
-			check();
-		});
-	}
-
 	async function startScanning(videoElement: HTMLVideoElement) {
-		const log = (l: string) => console.log(`[useBarcodeScanner, startScanning] ${l}`)
-
-		log(`videoElement: ${videoElement}`);
-		log(`videoElement dimensions: ${videoElement.videoWidth}x${videoElement.videoHeight}`);
-		log(`videoElement readyState: ${videoElement.readyState}`);
-
 		isScanning.value = true;
 
 		try {
@@ -38,22 +19,14 @@ export function useBarcodeScanner() {
 			videoElement.srcObject = stream;
 			await videoElement.play();
 
-			log(`video ready: ${videoElement.videoWidth}x${videoElement.videoHeight}`);
 
-			await reader.decodeFromVideoDevice(undefined, videoElement, (r, err) => {
-				log(`callback fired, result: ${r}, err: ${err}`);
-
+			await reader.decodeFromVideoDevice(undefined, videoElement, (r, _) => {
 				if (r) {
-					const b = r.getText();
-					log(`barcode found: ${b}`);
-
-					barcode.value = b;
-					stopScanning();
+					barcode.value = r.getText();
 				}
 			});
-		} catch (e) {
-			log(`caught error: ${e}`)
-			error.value = "Camera access error";
+		} catch (_) {
+			error.value = `Camera access error`;
 			isScanning.value = false;
 		}
 	};
