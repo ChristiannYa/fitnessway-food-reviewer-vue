@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InputField } from "@/types/appTypes";
+import { isMobile } from "@/utils/baseUtils";
 
 const props = defineProps<{
 	inputData: InputField;
@@ -39,7 +40,12 @@ function onInput(e: InputEvent) {
 						{{ inputData.labelDetails }}
 					</span>
 				</p>
-				<div class="flex flex-1 min-w-0">
+				<div 
+					class="flex flex-1 min-w-0"
+					:class="[
+						isMobile() ? 'gap-x-2' : ''
+					]"
+				>
 					<input 
 						:type="inputData.type"
 						:placeholder="inputData.placeholder"
