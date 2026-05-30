@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "concurrently \"vite\" \"npm run dev -s --prefix proxy\"",
+		"dev:shared": "concurrently \"VITE_SHARED=true vite\" \" npm run dev -s --prefix proxy\"",
 		"build": "vue-tsc -b && vite build",
 		"preview": "vite preview"
 	},
