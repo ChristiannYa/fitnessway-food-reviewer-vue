@@ -2,8 +2,9 @@
 import { reactive, watch } from 'vue';
 import { buildEdibleBaseSchema, type EdibleBaseSchema } from "@/schemas/EdibleBaseSchema";
 import { useFormValidation } from '@/hooks/composables/formValidation';
-import EdibleBaseServingUnitRadio from './EdibleBaseServingUnitRadio.vue';
 import EdibleFormField from './EdibleFormField.vue';
+import EdibleRadio from './EdibleRadio.vue';
+import { SERVING_UNIT } from '@/types/foodTypes.ts';
 
 const emit = defineEmits<{
 	'validation-change': [isValid: boolean];
@@ -29,7 +30,12 @@ const brandFieldData = buildFieldData("Brand", "Kirkland Signature", "text");
 const amountPerServingFieldData = buildFieldData("Amount per serving", "60", "number");
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true })
-watch(form, (f) => emit('set', { ...f }), { deep: true });
+
+watch(form, () => {
+  const result = buildEdibleBaseSchema().safeParse(form);
+  if (!result.success) return;
+  emit('set', result.data);
+}, { deep: true });
 </script>
 
 <template>
@@ -55,8 +61,9 @@ watch(form, (f) => emit('set', { ...f }), { deep: true });
 			:errorMessage="undefined"
 			@reset="amountPerServingFieldData.deleteError"
 		/>
-		<EdibleBaseServingUnitRadio 
+		<EdibleRadio
 			v-model="form.servingUnit"
+			:values="SERVING_UNIT"
 			:ref="errorFields.servingUnit"
 		/>
 	</div>

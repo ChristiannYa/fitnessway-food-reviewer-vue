@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { SERVING_UNIT } from '@/types/foodTypes';
 
 defineProps<{
 	modelValue: string;
+	values: readonly string[]
 }>();
 
 defineEmits<{
@@ -13,17 +13,17 @@ defineEmits<{
 <template>
 	<div class="flex justify-center gap-3">
 		<label 
-			v-for="unit in SERVING_UNIT"
-			:key="unit"
+			v-for="value in values"
+			:key="value"
 			class="text-cyan-440 text-lg font-semibold cursor-pointer"
 		>
 			<input 
 				type="radio"
-				:value="unit"
-				:checked="modelValue === unit"
-				@change="$emit('update:modelValue', unit)"
+				:value="value"
+				:checked="modelValue === value"
+				@change="$emit('update:modelValue', value)"
 			>
-			{{ unit.toLowerCase() }}
+			{{ value.toLowerCase() }}
 		</label>
 	</div>
 </template>

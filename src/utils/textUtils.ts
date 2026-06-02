@@ -18,12 +18,16 @@ export type CamelCased<T> = T extends object
 
 // @TODO: Move to object utils
 export function toSnakeCase<T extends object>(obj: T): SnakeCased<T> {
-	return Object.fromEntries(
-		Object.entries(obj).map(([key, value]) => [
-			key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`),
-			value
-		])
-	) as SnakeCased<T>;
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`),
+      value !== null && typeof value === 'object' && !Array.isArray(value)
+        ? toSnakeCase(value as object)
+        : Array.isArray(value)
+          ? value.map(item => typeof item === 'object' && item !== null ? toSnakeCase(item) : item)
+          : value
+    ])
+  ) as SnakeCased<T>;
 }
 
 export const isStringNullOrEmpty = (

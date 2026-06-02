@@ -8,8 +8,24 @@ import type { NutrientSchema } from "@/schemas/NutrientSchema";
 import NutrientsForm from "@/components/view/submit/form/NutrientsForm.vue";
 import EdibleBarcodeField from "@/components/view/submit/form/EdibleBarcodeField.vue";
 import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
+import { useSubmitMutation } from "@/hooks/mutations/foodMutations";
+import Spinner from "@/components/shared/Spinner.vue";
+import type { NutrientIdWithAmount } from "@/types/nutrientTypes";
+import { EDIBLE_TYPE, type AppEdibleSubmitReq, type EdibleType } from "@/types/foodTypes";
+import EdibleRadio from "@/components/view/submit/form/EdibleRadio.vue";
+
+const { 
+	mutate: submitMutation, 
+	isPending: isSubmitPending,
+	isSuccess: isSubmitSucces,
+	isError: isSubmitError,
+	isIdle: isSubmitIdle,
+	data: submissionData,
+} = useSubmitMutation()
 
 const currentStep = ref(1);
+
+const edibleType = ref<EdibleType>("FOOD");
 
 const baseForm = ref<EdibleBaseSchema | null>(null);
 const isBaseFormValid = ref(false);
@@ -38,13 +54,35 @@ const isNextEnabled = computed(() => {
 });
 
 async function onSubmit() {
-	console.log("Submitting form");
+	if (baseForm.value === null ||
+		nutrientsForm.value === null ||
+		vitaminsForm.value === null ||
+		mineralsForm.value === null
+	) return;
 
-	console.log("base:", JSON.stringify(baseForm.value, null, 2))
-	console.log("nutrients:", JSON.stringify(nutrientsForm.value, null, 2))
-	console.log("vitamins:", JSON.stringify(vitaminsForm.value, null, 2))
-	console.log("minerals:", JSON.stringify(mineralsForm.value, null, 2))
-	console.log("barcode:", barcode.value)
+	const nutrients: NutrientIdWithAmount[] = [
+		nutrientsForm.value,
+		vitaminsForm.value,
+		mineralsForm.value
+	].flatMap(nutrientSchema =>
+		Object
+			.entries(nutrientSchema)
+			.map(([id, amount]) => ({
+				id: Number(id),
+				amount
+			}))
+	)
+
+	const request: AppEdibleSubmitReq = {
+		edibleRequest: {
+			base: baseForm.value,
+			nutrients: nutrients,
+			edibleType: edibleType.value
+		},
+		barcode: barcode.value
+	} 
+
+	submitMutation(request)
 };
 
 function onPrev() {
@@ -68,6 +106,11 @@ function onNext() {
 <template>
 	<View>
 		<div class="view-child-w flex flex-col grow h-full gap-4">
+			<EdibleRadio
+				v-model="edibleType"
+				:values="EDIBLE_TYPE"
+			/>
+
 			<SubmissionHeader 
 				:current-step="currentStep"
 				:isNextDisabled="!isNextEnabled"
@@ -121,10 +164,23 @@ function onNext() {
 				/>
 
 				<EdibleBarcodeField
-					v-show="currentStep === 5"
+					v-show="currentStep === 5 && isSubmitIdle"
 					v-model="barcode"
 				/>
 			</div>
+
+			<Spinner v-if="isSubmitPending" class="mx-auto"/>
+
+			<p 
+				v-if="isSubmitError || (isSubmitSucces && !submissionData?.success)" 
+				class="text-red-500 text-center"
+			>
+				Failed to submit edible
+			</p>
+
+			<p v-if="submissionData?.success" class="text-center">
+				Submission Successfull
+			</p>
 		</div>
 	</View>
 </template>

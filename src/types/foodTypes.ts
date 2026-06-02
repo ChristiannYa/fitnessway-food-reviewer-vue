@@ -1,5 +1,8 @@
-import type { NutrientDataAmount, NutrientGroupable, NutrientsByType } from "@/types/nutrientTypes";
+import type { NutrientDataAmount, NutrientGroupable, NutrientIdWithAmount, NutrientsByType } from "@/types/nutrientTypes";
 import type { PaginationResult } from "@/types/appTypes";
+
+export const EDIBLE_TYPE = ["FOOD", "SUPPLEMENT"] as const;
+export type EdibleType = typeof EDIBLE_TYPE[number];
 
 export const SERVING_UNIT = ["G", "MG", "MCG", "ML", "OZ", "KCAL"] as const;
 export type ServingUnit = typeof SERVING_UNIT[number];
@@ -67,3 +70,16 @@ export type PendingFoodReviewReq = {
 export type PendingFoodReviewRes = {
 	pendingFoodReviewed: PendingFood;
 };
+
+export type AppEdibleSubmitReq = {
+	edibleRequest: {
+		base: FoodBase,
+		nutrients: NutrientIdWithAmount[],
+		edibleType: string
+	};
+	barcode: string;
+}
+
+export type ApPedibleSubmitRes = {
+	appEdible: AppFood
+}
