@@ -1,7 +1,8 @@
 import type { ServingUnit } from "@/types/foodTypes";
 
 export interface NutrientGroupable {
-	readonly typeDerived: NutrientType;
+	readonly byId: number;
+	readonly byType: NutrientType;
 }
 
 export const NUTRIENT_TYPE = ["BASIC", "VITAMIN", "MINERAL"] as const;
@@ -43,5 +44,5 @@ export type NutrientIdWithAmount = {
 };
 
 export type NutrientsRes = {
-	nutrients: NutrientsByType<NutrientData>;
+	nutrientsByType: NutrientsByType<NutrientData>;
 }

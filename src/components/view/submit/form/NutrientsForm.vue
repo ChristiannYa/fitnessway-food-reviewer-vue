@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // @TODO:fix input outline not highligtning when focused
 
-import { buildNutrientListByType } from '@/builders/nutrientBuilders';
+import { buildNutrientListsByType } from '@/builders/nutrientBuilders';
 import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/formValidation';
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
 import { buildNutrientSchema, type NutrientSchema } from '@/schemas/NutrientSchema';
@@ -52,10 +52,10 @@ const {
 } = useNutrientsByTypeQuery();
 
 const nutrients = computed((): NutrientData[] | null => {
-	const list = data?.value?.data?.nutrients;
+	const list = data?.value?.data?.nutrientsByType;
 	if (list === undefined) return null;
 
-	return buildNutrientListByType(list, nutrientType);
+	return buildNutrientListsByType(list, nutrientType);
 });
 
 const form = reactive<NutrientSchema>({});

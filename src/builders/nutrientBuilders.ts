@@ -8,7 +8,7 @@ export const buildNutrientListTyped = <T extends NutrientGroupable>(
 	{ type: "MINERAL", nutrients: nutrientsByType.mineral }
 ]);
 
-export const buildNutrientListByType = <T extends NutrientGroupable>(
+export const buildNutrientListsByType = <T extends NutrientGroupable>(
 	nutrients: NutrientsByType<T>,
 	type: NutrientType
 ): T[] => {
