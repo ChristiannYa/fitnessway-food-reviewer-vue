@@ -10,9 +10,14 @@ import EdibleBarcodeField from "@/components/view/submit/form/EdibleBarcodeField
 import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
 import { useSubmitMutation } from "@/hooks/mutations/foodMutations";
 import Spinner from "@/components/shared/Spinner.vue";
-import type { NutrientIdWithAmount } from "@/types/nutrientTypes";
-import { EDIBLE_TYPE, type AppEdibleSubmitReq, type EdibleType } from "@/types/foodTypes";
+import type { NutrientDataAmount, NutrientIdWithAmount, NutrientsByType } from "@/types/nutrientTypes";
+import { EDIBLE_TYPE, type EdibleType } from "@/types/foodTypes";
 import EdibleRadio from "@/components/view/submit/form/EdibleRadio.vue";
+import EdibleSubmitConfirmationPopup from "@/components/view/submit/form/EdibleSubmitConfirmationPopup.vue";
+import { buildNutrientListFromType, buildNutrientsByTypeFromList } from "@/builders/nutrientBuilders";
+import { useNutrientsByTypeQuery } from "@/hooks/queries/nutrientQueries";
+
+const { data: nbtRes } = useNutrientsByTypeQuery();
 
 const { 
 	mutate: submitMutation, 
@@ -24,6 +29,7 @@ const {
 } = useSubmitMutation()
 
 const currentStep = ref(1);
+const wantsToSubmit = ref(false);
 
 const edibleType = ref<EdibleType>("FOOD");
 
@@ -53,12 +59,48 @@ const isNextEnabled = computed(() => {
 	};
 });
 
-async function onSubmit() {
-	if (baseForm.value === null ||
-		nutrientsForm.value === null ||
+const finalNutrientsByType = computed((): NutrientsByType<NutrientDataAmount> | null => {
+	const finalBareNutrientList = getFinalNutrientListOrNull();
+	if (finalBareNutrientList === null) return null;
+	
+	const appNutrientsByType = nbtRes.value?.data?.nutrientsByType;
+	if (appNutrientsByType === undefined) return null;
+	const appNutrientList = buildNutrientListFromType(appNutrientsByType);
+	
+	const finalNutrientList = finalBareNutrientList.flatMap((bareNutrient): NutrientDataAmount[] => {
+		const nutrientData = appNutrientList.find((appNutrient) => 
+			appNutrient.base.id === bareNutrient.id
+		)
+
+		return nutrientData
+			? bareNutrient.amount > 0 
+				? [{
+					data: nutrientData,
+					amount: bareNutrient.amount
+				}]
+				: []
+			: []
+	})
+	
+	const nutrientsByType = buildNutrientsByTypeFromList(
+		finalNutrientList, 
+		(n) => n.data.base.type
+	)
+	
+	return nutrientsByType;
+})
+
+const isConfirmationPopupVisible = computed((): boolean => {
+	return wantsToSubmit.value &&
+		   baseForm !== null &&
+		   finalNutrientsByType !== null
+})
+
+function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
+	if (nutrientsForm.value === null ||
 		vitaminsForm.value === null ||
 		mineralsForm.value === null
-	) return;
+	) return null;
 
 	const nutrients: NutrientIdWithAmount[] = [
 		nutrientsForm.value,
@@ -71,18 +113,26 @@ async function onSubmit() {
 				id: Number(id),
 				amount
 			}))
-	)
+	);
 
-	const request: AppEdibleSubmitReq = {
+	return nutrients;
+}
+
+async function onSubmit() {
+	const nutrients = getFinalNutrientListOrNull();
+
+	if (baseForm.value === null || nutrients === null) return;
+
+	submitMutation({
 		edibleRequest: {
 			base: baseForm.value,
 			nutrients: nutrients,
 			edibleType: edibleType.value
 		},
 		barcode: barcode.value
-	} 
+	});
 
-	submitMutation(request)
+	wantsToSubmit.value = false;
 };
 
 function onPrev() {
@@ -90,22 +140,17 @@ function onPrev() {
 };
 
 function onNext() {
-	switch (currentStep.value) {
-		case 5: {
-			onSubmit();
-			return;
-		};
-		default: {
-			currentStep.value++
-			return;
-		};
-	};
+	if (currentStep.value === 5) {
+		wantsToSubmit.value = true;
+	} else {
+		currentStep.value++;
+	}
 };
 </script>
 
 <template>
-	<View>
-		<div class="view-child-w flex flex-col grow h-full gap-4">
+	<View class="relative">
+		<div class="view-child-w flex flex-col grow h-full gap-4 z-1">
 			<EdibleRadio
 				v-model="edibleType"
 				:values="EDIBLE_TYPE"
@@ -113,6 +158,7 @@ function onNext() {
 
 			<SubmissionHeader 
 				:current-step="currentStep"
+				:is-submitting="isSubmitPending"
 				:isNextDisabled="!isNextEnabled"
 				@prev="onPrev" 
 				@next="onNext"
@@ -182,5 +228,31 @@ function onNext() {
 				Submission Successfull
 			</p>
 		</div>
+
+		<EdibleSubmitConfirmationPopup
+			v-if="isConfirmationPopupVisible"
+			:edible-type="edibleType"
+			:edible-base="baseForm!"
+			:nutrients-by-type="finalNutrientsByType!"
+			class="bg-dark-secondary border border-accent-primary/60 rounded-lg 
+			         transition-opacity overflow-y-hidden w-96 max-w-5/6 max-h-3/5 
+					 absolute top-1/10"
+			:class="[
+				isConfirmationPopupVisible 
+					? 'z-3'
+					: 'z-0'
+			]"
+			@cancel="() => wantsToSubmit = false"
+			@confirm="onSubmit"
+		/>
+
+		<div 
+			class="w-full h-full absolute top-0 left-0"
+			:class="[
+				isConfirmationPopupVisible 
+					? 'bg-dark-tertiary/60 backdrop-blur-xs z-2'
+					: 'z-0'
+			]"
+		/>
 	</View>
 </template>

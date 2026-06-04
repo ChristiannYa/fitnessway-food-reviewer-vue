@@ -1,9 +1,6 @@
 import type { ServingUnit } from "@/types/foodTypes";
 
-export interface NutrientGroupable {
-	readonly byId: number;
-	readonly byType: NutrientType;
-}
+export interface NutrientGroupable {};
 
 export const NUTRIENT_TYPE = ["BASIC", "VITAMIN", "MINERAL"] as const;
 export type NutrientType = (typeof NUTRIENT_TYPE)[number];
@@ -14,7 +11,7 @@ export type NutrientsByType<T extends NutrientGroupable> = {
     mineral: T[];
 };
 
-export type NutrientBase = {
+export type NutrientBase = NutrientGroupable & {
 	id: number;
 	name: string;
 	unit: ServingUnit;

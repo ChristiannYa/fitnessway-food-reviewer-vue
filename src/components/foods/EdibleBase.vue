@@ -18,31 +18,28 @@ function handleNameClick() {
     isFullNameVisible.value = !isFullNameVisible.value
 }
 
-watch(
-    [foodBase],
-    async () => {
-        await nextTick()
+watch([foodBase], async () => {
+	await nextTick()
 
-        const el = nameRef.value
-        if (el) isNameTruncated.value = el.scrollWidth > el.clientWidth
-    },
-    { immediate: true }
-)
+	const el = nameRef.value
+	if (el) isNameTruncated.value = el.scrollWidth > el.clientWidth
+},{ immediate: true })
 </script>
 
 <template>
-    <div class="text-lg leading-tight pb-2">
+    <div>
         <p
             ref="nameRef"
             @click="handleNameClick"
-            :class="['font-semibold',
+            :class="[
+				'text-lg leading-none font-semibold',
                 isNameTruncated ? 'cursor-pointer' : '',
                 isFullNameVisible ? '' : 'truncate'
             ]"
         >
             {{ foodBase.name }}
         </p>
-        <p class="opacity-80 truncate">{{ foodBase.brand }}</p>
-        <p class="opacity-80">{{ getAmountPerServingText(foodBase) }}</p>
+        <p class="opacity-60 leading-tight truncate">{{ foodBase.brand }}</p>
+        <p class="opacity-60 leading-tight">{{ getAmountPerServingText(foodBase) }}</p>
     </div>
 </template>

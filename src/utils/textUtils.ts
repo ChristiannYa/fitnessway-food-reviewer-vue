@@ -30,6 +30,19 @@ export function toSnakeCase<T extends object>(obj: T): SnakeCased<T> {
   ) as SnakeCased<T>;
 }
 
+export const stringToTitleCase = (str: string): string => {
+	const first = str
+		.toLowerCase()
+		.charAt(0)
+		.toUpperCase()
+
+	const remainder = str
+		.slice(1)
+		.toLowerCase()
+
+	return first + remainder
+}
+
 export const isStringNullOrEmpty = (
 	str: string | null | undefined
 ): str is null | undefined => str == null || str.trim().length === 0;

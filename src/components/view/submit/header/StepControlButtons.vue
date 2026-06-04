@@ -7,6 +7,7 @@ defineProps<{
 	prevStepLabel?: string;
 	nextStepLabel: string;
 	isNextDisabled: boolean;
+	isSubmitting: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -19,6 +20,7 @@ const emit = defineEmits<{
 	<div>
 		<ActionButton
 			v-if="prevStepLabel"
+			:is-disabled="isSubmitting"
 			:label="prevStepLabel"
 			:icon="ArrowLeft"
 			:icon-size="16"
@@ -29,11 +31,11 @@ const emit = defineEmits<{
 		/>
 	
 		<ActionButton
+			:is-disabled="isSubmitting || isNextDisabled"
 			:label="nextStepLabel"
 			:icon="current < 5 ? ArrowRight : Check"
 			:icon-size="16"
 			background-color="var(--color-accent-primary)"
-			:is-disabled="isNextDisabled"
 			@click="emit('next')"
 			class="flex-1"
 		/>

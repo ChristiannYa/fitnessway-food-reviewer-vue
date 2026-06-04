@@ -8,6 +8,7 @@ const {
 } = defineProps<{
 	currentStep: number;
 	isNextDisabled: boolean;
+	isSubmitting: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -62,24 +63,23 @@ const stepData = computed((): StepData | null => {
 <template>
 	<div v-if="stepData !== null">
 		<div class="flex flex-col items-center gap-4">
-			<!-- Step Title -->
+
 			<p class="font-bold text-2xl leading-tight">
 				{{ stepData.title }}
 			</p>
 			
-			<!-- Current step indicator -->
 			<StepIndicator 
 				:amount="5" 
 				:current="currentStep" 
 				class="w-full flex gap-2"
 			/>
 
-			<!-- Step Control Buttons -->
 			<StepControlButtons
 				:current="currentStep"
 				:prev-step-label="stepData.prevStepLabel"
 				:next-step-label="stepData.nextStepLabel"
 				:isNextDisabled="isNextDisabled"
+				:is-submitting="isSubmitting"
 				@prev="emit('prev')"
 				@next="emit('next')"
 				class="w-full flex justify-between gap-x-4"

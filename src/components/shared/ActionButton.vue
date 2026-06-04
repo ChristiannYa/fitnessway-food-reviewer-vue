@@ -49,7 +49,7 @@ const emit = defineEmits<{
 				: 'opacity-50 cursor-default'
 		]"
     >
-        <p class="font-medium text-md leading-tight">{{ label }}</p>
+        <p class="font-medium text-md leading-none">{{ label }}</p>
         <component 
             v-if="icon" 
             :is="icon" 

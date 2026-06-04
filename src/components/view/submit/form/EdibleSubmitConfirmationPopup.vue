@@ -1,0 +1,45 @@
+<script setup lang="ts">
+import EdibleOverview from '@/components/foods/EdibleOverview.vue';
+import ActionButton from '@/components/shared/ActionButton.vue';
+import type { EdibleType, FoodBase } from '@/types/foodTypes';
+import type { NutrientDataAmount, NutrientsByType } from '@/types/nutrientTypes';
+import { stringToTitleCase } from '@/utils/textUtils';
+
+defineProps<{
+	edibleType: EdibleType,
+	edibleBase: FoodBase,
+	nutrientsByType: NutrientsByType<NutrientDataAmount>
+}>();
+
+const emit = defineEmits<{
+	cancel: [],
+	confirm: [],
+}>();
+</script>
+
+<template>
+	<aside class="flex flex-col gap-y-4 p-4">
+		<p class="text-center text-sm leading-none opacity-60">
+			<b>{{ stringToTitleCase(edibleType) }}</b> Overview
+		</p>
+
+		<EdibleOverview 
+			:edible-base="edibleBase" 
+			:nutrients-by-type="nutrientsByType" 
+			class="overflow-y-scroll no-scrollbar"
+		/>
+
+		<div class="flex gap-x-2">
+			<ActionButton
+				label="Cancel"
+				background-color="#6a7282"
+				@click="emit('cancel')"
+			/>
+			<ActionButton
+				label="Confirm"
+				background-color="#088f8f"
+				@click="emit('confirm')"
+			/>
+		</div>
+	</aside>
+</template>

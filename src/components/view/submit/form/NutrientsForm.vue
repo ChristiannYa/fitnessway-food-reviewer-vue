@@ -72,7 +72,7 @@ const fieldEntries = computed((): FieldEntry[] | null => {
 			"number",
 			dvActive[String(n.base.id)]
 				? "DV%"
-				: n.base.unit
+				: n.base.unit.toLowerCase()
 		)
 	})) 
 })

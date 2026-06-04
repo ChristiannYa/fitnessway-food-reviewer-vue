@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import Header from '@/components/foods/pending/information/Header.vue';
 import type { PendingFood, PendingFoodReviewReq } from '@/types/foodTypes';
 import type { UserSearchScope } from '@/types/userTypes';
 import { ref } from 'vue';
-import Base from './Base.vue';
-import Section from '@/components/nutrients/Section.vue';
 import { isReviewed } from '@/utils/foodUtils';
 import ActionButton from '@/components/shared/ActionButton.vue';
 import { Check, X } from 'lucide-vue-next';
 import ReviewData from './ReviewData.vue';
 import { buildPendingFoodReview } from '@/builders/foodBuilders';
 import RejectionWriting from '@/components/view/review/RejectionWriting.vue';
+import EdibleOverview from '../../EdibleOverview.vue';
+import PendingEdibleOverviewHeader from './PendingEdibleOverviewHeader.vue';
 
 const {
     pendingFood,
@@ -46,17 +45,15 @@ function handleRejection(reason: string) {
 
 <template>
     <div class="flex flex-col bg-smoke/40 rounded-xl relative overflow-hidden">
-        <Header 
+        <PendingEdibleOverviewHeader
             :pending-food="pendingFood"
             @view-review="isReviewInfoVisible = true"
         />
 
-        <div class="px-4 pt-3 pb-4 gap-2 flex flex-col">
-            <Base :food-base="pendingFood.information.base" />
-            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.basic"/>
-            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.vitamin"/>
-            <Section :nutrient-data-amount-list="pendingFood.information.nutrients.mineral"/>
-        </div>
+		<EdibleOverview 
+			:edible-base="pendingFood.information.base" 
+			:nutrients-by-type="pendingFood.information.nutrients"
+		/>
 
         <div
             v-if="!isRejecting && !isReviewed(pendingFood.status)"
