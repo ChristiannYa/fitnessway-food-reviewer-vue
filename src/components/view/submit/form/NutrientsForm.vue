@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// @TODO:fix input outline not highligtning when focused
-
 import { buildNutrientListsByType } from '@/builders/nutrientBuilders';
 import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/formValidation';
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
@@ -23,7 +21,7 @@ const {
 	shouldRequireAny,
 } = defineProps<{
 	nutrientType: NutrientType,
-	shouldRequireAny: boolean
+	shouldRequireAny: boolean,
 }>();
 
 const emit = defineEmits<{
@@ -77,26 +75,30 @@ const fieldEntries = computed((): FieldEntry[] | null => {
 	})) 
 })
 
-watch(nutrients, (ns) => {
-	if (ns === null) return;
+const isValid = computed(() => formValidation.value?.isValid ?? false);
+const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
 
-	// Populate form data and dv maps
-	ns.forEach(n => { 
-		const id = String(n.base.id);
+function initForms(nutrients: NutrientData[]) {
+	nutrients.forEach(nutrient => {
+		const id = String(nutrient.base.id);
 
 		form[id] = 0;
 		dvForm[id] = 0;
 		dvActive[id] = false;
 	});
+};
 
-	const validation = useFormValidation(buildNutrientSchema(ns, shouldRequireAny), form);
-	formValidation.value =  validation;
+// Handle initial form seedings upon component mount
+watch(nutrients, (ns) => {
+	if (ns === null) return;
+
+	initForms(ns)
+	
+	formValidation.value =  useFormValidation(
+		buildNutrientSchema(ns, shouldRequireAny),
+		form
+	);
 }, { immediate: true });
-
-const isValid = computed(() => formValidation.value?.isValid ?? false);
-const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
-
-watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
 
 watch(form, (f) => {
 	Object
@@ -136,6 +138,8 @@ watch(dvActive, (da, prev) => {
 
 	emit('set', { ...dvForm });
 }, { deep: true, immediate: true });
+
+watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
 </script>
 
 <template>

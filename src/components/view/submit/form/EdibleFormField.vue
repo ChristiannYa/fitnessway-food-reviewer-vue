@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { InputField } from "@/types/appTypes";
-import { isMobile } from "@/utils/baseUtils";
+import { isMobile } from "@/utils/appUtils";
 
 const props = defineProps<{
 	inputData: InputField;

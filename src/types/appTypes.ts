@@ -1,5 +1,12 @@
 import type { InputTypeHTMLAttribute } from "vue";
 
+export type RequestState = {
+	isIdle: boolean;
+	isLoading: boolean;
+	isSuccess: boolean;
+	isError: boolean
+};
+
 export type PaginationResult<T> = {
 	data: T[];
 	totalCount: number;

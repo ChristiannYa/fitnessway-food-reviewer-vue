@@ -75,7 +75,7 @@ export type AppEdibleSubmitReq = {
 	edibleRequest: {
 		base: FoodBase,
 		nutrients: NutrientIdWithAmount[],
-		edibleType: string
+		edibleType: EdibleType
 	};
 	barcode: string;
 }
