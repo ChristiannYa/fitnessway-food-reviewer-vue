@@ -17,10 +17,11 @@ import TemporaryError from '@/components/shared/TemporaryError.vue';
 
 const {
 	currentStep,
-	reqState
+	reqState,
 } = defineProps<{
 	currentStep: number;
-	reqState: RequestState
+	reqState: RequestState;
+	visibleSubmissionError: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -120,13 +121,13 @@ watch(() => reqState, (wReqState) => {
 <template>
 	<div class="flex flex-col gap-y-0">
 		<div
-		v-show="isContentVisible"
-		class="flex flex-col gap-y-4"
-		:class="[
-			currentStep >= 2
-			? 'overflow-scroll no-scrollbar pb-5'
-			: ''
-		]"
+			v-show="isContentVisible"
+			class="flex flex-col gap-y-4"
+			:class="[
+				currentStep >= 2
+				? 'overflow-scroll no-scrollbar pb-5'
+				: ''
+			]"
 			@wheel="(e) => {
 				if (currentStep >= 2) {
 					// Allows proper usage of the scroll wheel when modifying
@@ -135,61 +136,61 @@ watch(() => reqState, (wReqState) => {
 				}
 			}"
 		>
-		<EdibleRadio
-		v-if="currentStep === 1"
-		v-model="edibleType"
-		:values="EDIBLE_TYPE"
+			<EdibleRadio
+				v-if="currentStep === 1"
+				v-model="edibleType"
+				:values="EDIBLE_TYPE"
+			/>
+			
+			<EdibleBaseForm
+				v-show="currentStep === 1"
+				@validation-change="isBaseFormValid = $event"
+				@set="baseForm = $event"
+			/>
+			
+			<NutrientsForm
+				v-show="currentStep === 2"
+				nutrient-type="BASIC"
+				:should-require-any="true"
+				@validation-change="isNutrientsFormValid = $event"
+				@set="nutrientsForm = $event"
+			/>
+			
+			<NutrientsForm
+				v-show="currentStep === 3"
+				nutrient-type="VITAMIN"
+				:should-require-any="false"
+				@validation-change="isVitaminsFormValid = $event"
+				@set="vitaminsForm = $event"
+			/>
+			
+			<NutrientsForm
+				v-show="currentStep === 4"
+				nutrient-type="MINERAL"
+				:should-require-any="false"
+				@validation-change="isMineralsFormValid = $event"
+				@set="mineralsForm = $event"
+			/>
+			
+			<EdibleBarcodeField
+				v-show="currentStep === 5 && isContentVisible"
+				v-model="barcode"
+			/>
+		</div>
+	
+		<Spinner v-if="reqState.isLoading" class="mx-auto"/>
+		
+		<TemporaryError
+			v-if="isSubmitErrorTimed && visibleSubmissionError !== null"
+			:error-message="visibleSubmissionError"
+			class="w-4/5 mx-auto"
 		/>
 		
-		<EdibleBaseForm
-		v-show="currentStep === 1"
-		@validation-change="isBaseFormValid = $event"
-		@set="baseForm = $event"
-		/>
-		
-		<NutrientsForm
-		v-show="currentStep === 2"
-		nutrient-type="BASIC"
-		:should-require-any="true"
-		@validation-change="isNutrientsFormValid = $event"
-		@set="nutrientsForm = $event"
-		/>
-		
-		<NutrientsForm
-		v-show="currentStep === 3"
-		nutrient-type="VITAMIN"
-		:should-require-any="false"
-		@validation-change="isVitaminsFormValid = $event"
-		@set="vitaminsForm = $event"
-		/>
-		
-		<NutrientsForm
-		v-show="currentStep === 4"
-		nutrient-type="MINERAL"
-		:should-require-any="false"
-		@validation-change="isMineralsFormValid = $event"
-		@set="mineralsForm = $event"
-		/>
-		
-		<EdibleBarcodeField
-		v-show="currentStep === 5 && isContentVisible"
-		v-model="barcode"
+		<ActionButton
+			v-if="reqState.isSuccess"
+			:label="`Submit another ${edibleType.toLowerCase()}`"
+			@click="emit('start-over')"
+			background-color="#088f8f"
 		/>
 	</div>
-	
-	<Spinner v-if="reqState.isLoading" class="mx-auto"/>
-	
-	<TemporaryError
-		v-if="isSubmitErrorTimed"
-		:error-message="`Error submitting ${edibleType.toLowerCase()}`"
-		class="w-4/5 mx-auto"
-	/>
-	
-	<ActionButton
-	v-if="reqState.isSuccess"
-	:label="`Submit another ${edibleType.toLowerCase()}`"
-	@click="emit('start-over')"
-	background-color="#088f8f"
-	/>
-</div>
 </template>

@@ -10,6 +10,7 @@ import { buildNutrientListFromType, buildNutrientsByTypeFromList } from "@/build
 import { useNutrientsByTypeQuery } from "@/hooks/queries/nutrientQueries";
 import EdibleForms from "@/components/view/submit/form/EdibleForms.vue";
 import type { RequestState } from "@/types/appTypes";
+import { stringToTitleCase } from "@/utils/textUtils";
 
 const { data: nbtRes } = useNutrientsByTypeQuery();
 
@@ -70,6 +71,20 @@ const reqState = computed((): RequestState => {
 	})
 });
 
+const visibleSubmissionError = computed((): string | null => {
+	if (!reqState.value.isError) return null;
+
+	const res = submissionData?.value;
+	if (res === undefined) return null;
+
+	if (res.status === 409) return stringToTitleCase(res.message);
+
+	const req = request.value;
+	if (req === undefined) return null;
+
+	return `Failed to submit ${req?.edibleRequest.edibleType.toLowerCase()}`
+});
+
 async function onSubmit() {
 	if (request.value === null) return;
 	wantsToSubmit.value = false;
@@ -108,6 +123,7 @@ function onStartOver() {
 			<EdibleForms
 				:current-step="currentStep"
 				:req-state="reqState"
+				:visible-submission-error="visibleSubmissionError"
 				@req-change="request = $event"
 				@validation-change="isNextEnabled = $event"
 				@start-over="onStartOver"
