@@ -12,6 +12,8 @@ import Spinner from '@/components/shared/Spinner.vue';
 import ActionButton from '@/components/shared/ActionButton.vue';
 import EdibleRadio from './EdibleRadio.vue';
 import EdibleBarcodeField from './EdibleBarcodeField.vue';
+import { useErrorTimeout } from '@/hooks/composables/useErrorTimeout.ts';
+import TemporaryError from '@/components/shared/TemporaryError.vue';
 
 const {
 	currentStep,
@@ -26,6 +28,11 @@ const emit = defineEmits<{
 	'req-change': [req: AppEdibleSubmitReq | null];
 	'start-over': []
 }>();
+
+const {
+	isError: isSubmitErrorTimed,
+	triggerError: triggerSubmitErrorTimed
+} = useErrorTimeout();
 
 const edibleType = ref<EdibleType>("FOOD");
 
@@ -104,18 +111,22 @@ watch(isNextEnabled, (wIsNextEnabled) => {
 watch(requestForm, (wRequestForm) => {
 	emit('req-change', wRequestForm);
 }, { immediate: true });
+
+watch(() => reqState, (wReqState) => {
+	if (wReqState.isError) triggerSubmitErrorTimed();
+})
 </script>
 
 <template>
 	<div class="flex flex-col gap-y-0">
 		<div
-			v-show="isContentVisible"
-			class="flex flex-col gap-y-4"
-			:class="[
-				currentStep >= 2
-					? 'overflow-scroll no-scrollbar pb-5'
-					: ''
-			]"
+		v-show="isContentVisible"
+		class="flex flex-col gap-y-4"
+		:class="[
+			currentStep >= 2
+			? 'overflow-scroll no-scrollbar pb-5'
+			: ''
+		]"
 			@wheel="(e) => {
 				if (currentStep >= 2) {
 					// Allows proper usage of the scroll wheel when modifying
@@ -124,62 +135,61 @@ watch(requestForm, (wRequestForm) => {
 				}
 			}"
 		>
-			<EdibleRadio
-				v-if="currentStep === 1"
-				v-model="edibleType"
-				:values="EDIBLE_TYPE"
-			/>
-
-			<EdibleBaseForm
-				v-show="currentStep === 1"
-				@validation-change="isBaseFormValid = $event"
-				@set="baseForm = $event"
-			/>
-	
-			<NutrientsForm
-				v-show="currentStep === 2"
-				nutrient-type="BASIC"
-				:should-require-any="true"
-				@validation-change="isNutrientsFormValid = $event"
-				@set="nutrientsForm = $event"
-			/>
-	
-			<NutrientsForm
-				v-show="currentStep === 3"
-				nutrient-type="VITAMIN"
-				:should-require-any="false"
-				@validation-change="isVitaminsFormValid = $event"
-				@set="vitaminsForm = $event"
-			/>
-	
-			<NutrientsForm
-				v-show="currentStep === 4"
-				nutrient-type="MINERAL"
-				:should-require-any="false"
-				@validation-change="isMineralsFormValid = $event"
-				@set="mineralsForm = $event"
-			/>
-	
-			<EdibleBarcodeField
-				v-show="currentStep === 5 && isContentVisible"
-				v-model="barcode"
-			/>
-		</div>
-	
-		<Spinner v-if="reqState.isLoading" class="mx-auto"/>
-	
-		<p 
-			v-if="reqState.isError" 
-			class="text-red-500 text-center"
-		>
-			Failed to submit edible
-		</p>
-	
-		<ActionButton
-			v-if="reqState.isSuccess"
-			:label="`Submit another ${edibleType.toLowerCase()}`"
-			@click="emit('start-over')"
-			background-color="#088f8f"
+		<EdibleRadio
+		v-if="currentStep === 1"
+		v-model="edibleType"
+		:values="EDIBLE_TYPE"
+		/>
+		
+		<EdibleBaseForm
+		v-show="currentStep === 1"
+		@validation-change="isBaseFormValid = $event"
+		@set="baseForm = $event"
+		/>
+		
+		<NutrientsForm
+		v-show="currentStep === 2"
+		nutrient-type="BASIC"
+		:should-require-any="true"
+		@validation-change="isNutrientsFormValid = $event"
+		@set="nutrientsForm = $event"
+		/>
+		
+		<NutrientsForm
+		v-show="currentStep === 3"
+		nutrient-type="VITAMIN"
+		:should-require-any="false"
+		@validation-change="isVitaminsFormValid = $event"
+		@set="vitaminsForm = $event"
+		/>
+		
+		<NutrientsForm
+		v-show="currentStep === 4"
+		nutrient-type="MINERAL"
+		:should-require-any="false"
+		@validation-change="isMineralsFormValid = $event"
+		@set="mineralsForm = $event"
+		/>
+		
+		<EdibleBarcodeField
+		v-show="currentStep === 5 && isContentVisible"
+		v-model="barcode"
 		/>
 	</div>
+	
+	<Spinner v-if="reqState.isLoading" class="mx-auto"/>
+	
+	<TemporaryError
+		v-if="isSubmitErrorTimed"
+		:error-message="`Error submitting ${edibleType.toLowerCase()}`"
+		class="w-4/5 mx-auto"
+	/>
+	
+	<ActionButton
+	v-if="reqState.isSuccess"
+	:label="`Submit another ${edibleType.toLowerCase()}`"
+	@click="emit('start-over')"
+	background-color="#088f8f"
+	/>
+</div>
 </template>

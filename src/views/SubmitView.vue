@@ -61,7 +61,7 @@ const finalNutrientsByType = computed((): NutrientsByType<NutrientDataAmount> | 
 	return nutrientsByType;
 })
 
-const requestState = computed((): RequestState => {
+const reqState = computed((): RequestState => {
 	return ({
 		isIdle: isSubmitIdle.value,
 		isLoading: isSubmitPending.value,
@@ -97,7 +97,7 @@ function onStartOver() {
 	<View class="relative">
 		<div class="view-child-w flex flex-col grow h-full gap-4 z-1">
 			<SubmissionHeader 
-				v-if="!requestState.isSuccess"
+				v-if="!reqState.isSuccess"
 				:current-step="currentStep"
 				:is-submitting="isSubmitPending"
 				:isNextDisabled="!isNextEnabled"
@@ -107,7 +107,7 @@ function onStartOver() {
 
 			<EdibleForms
 				:current-step="currentStep"
-				:req-state="requestState"
+				:req-state="reqState"
 				@req-change="request = $event"
 				@validation-change="isNextEnabled = $event"
 				@start-over="onStartOver"

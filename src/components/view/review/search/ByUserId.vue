@@ -6,13 +6,13 @@ import { useGetByUserId } from '@/hooks/queries/edibleQueries';
 import type { PendingFood, PendingFoodsReqParams, PendingFoodStatus } from '@/types/foodTypes';
 import { isStringNullOrEmpty } from '@/utils/textUtils';
 import { computed, reactive, ref, watch } from 'vue';
-import Grid from '@/components/foods/pending/Grid.vue';
-import Full from '@/components/foods/pending/information/Full.vue';
 import { useReviewMutation } from '@/hooks/mutations/foodMutations';
-import ProgressLine from '@/components/shared/ProgressLine.vue';
-import ui from '@/constants/ui';
 import { useQueryClient } from '@tanstack/vue-query';
 import { queryKeys } from '@/constants/queryKeys';
+import Grid from '@/components/foods/pending/Grid.vue';
+import PendingEdibleOverview from '@/components/foods/pending/information/PendingEdibleOverview.vue';
+import { useErrorTimeout } from '@/hooks/composables/useErrorTimeout';
+import TemporaryError from '@/components/shared/TemporaryError.vue';
 
 const {
     pendingFoodStatus
@@ -22,9 +22,13 @@ const {
 
 const queryClient = useQueryClient()
 
+const {
+	isError: isSearchError,
+	triggerError: triggerSearchError
+} = useErrorTimeout();
+
 const userIdInput = ref("")
 const foodToReview = ref<PendingFood | null>(null)
-const searchFailed = ref(false)
 
 const params: PendingFoodsReqParams = reactive({
     userId: "",
@@ -41,22 +45,14 @@ const {
     refetch: pfResRefetch
 } = useGetByUserId(params, { 
     enabled: false, 
-})
+});
 
-// TODO: make temporary error a reusable feature
-let errorTimeout: ReturnType<typeof setTimeout> | null = null
+watch([pfResIsError, pfResData], () => {
+	const isApiError = pfResData.value?.success === false;
+	const isError = pfResIsError.value || isApiError;
 
-watch([pfResIsError, pfResData, pfResIsFetching], () => {
-    const isApiError = pfResData.value && !pfResData.value.success
-    searchFailed.value = !pfResIsFetching.value && (pfResIsError.value || !!isApiError)
-
-    if (searchFailed.value) {
-        if (errorTimeout) clearTimeout(errorTimeout)
-        errorTimeout = setTimeout(() => 
-            searchFailed.value = false, ui.errorDurationMs
-        )
-    }
-})
+	if (isError) triggerSearchError();
+});
 
 function handleSearch() {
     queryClient.removeQueries({
@@ -102,16 +98,11 @@ const queryData = computed(() => pfResData.value?.data?.pendingFoodsPagination)
             </button>
         </div>
 
-        <div v-if="searchFailed" class="flex flex-col gap-1 w-fit mx-auto">
-            <p class="text-red-400 text-center leading-tight">
-                Error fetching foods by User ID
-            </p>
-            <ProgressLine 
-                :duration="ui.errorDurationMs" 
-                :bg-color="'f87171'" 
-            />
-        </div>
-
+		<TemporaryError 
+			v-if="isSearchError"
+			error-message="Error fetching foods by User ID"
+			class="w-fit mx-auto"
+		/>
 
         <Spinner v-if="pfResIsFetching" :size="16" class="mx-auto"/>
 
@@ -136,7 +127,7 @@ const queryData = computed(() => pfResData.value?.data?.pendingFoodsPagination)
                    backdrop-blur-md z-20"
         >
             <div @click.stop class="flex justify-center w-full mx-4 sm:w-90">
-                <Full
+                <PendingEdibleOverview
                     :pending-food="foodToReview"
                     :user-search-scope="'ID'"
                     @review="(req) => reviewMutation.mutate(req)"
