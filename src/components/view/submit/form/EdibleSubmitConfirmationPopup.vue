@@ -8,7 +8,8 @@ import { stringToTitleCase } from '@/utils/textUtils';
 defineProps<{
 	edibleType: EdibleType,
 	edibleBase: FoodBase,
-	nutrientsByType: NutrientsByType<NutrientDataAmount>
+	nutrientsByType: NutrientsByType<NutrientDataAmount>,
+	barcode: string;
 }>();
 
 const emit = defineEmits<{
@@ -28,6 +29,8 @@ const emit = defineEmits<{
 			:nutrients-by-type="nutrientsByType" 
 			class="overflow-y-scroll no-scrollbar"
 		/>
+
+		<p class="text-xs text-center opacity-60">{{ barcode }}</p>
 
 		<div class="flex gap-x-2">
 			<ActionButton

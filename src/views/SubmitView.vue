@@ -135,6 +135,7 @@ function onStartOver() {
 			:edible-type="request.edibleRequest.edibleType"
 			:edible-base="request.edibleRequest.base"
 			:nutrients-by-type="finalNutrientsByType!"
+			:barcode="request.barcode"
 			class="bg-dark-secondary border border-accent-primary/60 rounded-lg 
 			         transition-opacity overflow-y-hidden w-96 max-w-5/6 max-h-3/5 
 					 absolute top-1/10"
