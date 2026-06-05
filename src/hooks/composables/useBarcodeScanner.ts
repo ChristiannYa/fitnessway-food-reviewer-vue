@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted, readonly } from "vue";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
 export function useBarcodeScanner() {
@@ -36,13 +36,18 @@ export function useBarcodeScanner() {
 		isScanning.value = false;
 	};
 
+	function clearBarcode() {
+		barcode.value = null;
+	};
+
 	onUnmounted(stopScanning);
 
 	return {
-		barcode, 
+		barcode: readonly(barcode), 
 		isScanning,
 		isScanError,
 		startScanning,
-		stopScanning 
-	}
-}
+		stopScanning,
+		clearBarcode
+	};
+};

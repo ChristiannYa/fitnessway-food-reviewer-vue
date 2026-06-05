@@ -87,8 +87,6 @@ const isContentVisible = computed(() => {
 	return reqState.isIdle || reqState.isError
 })
 
-const stopScanning = () => barcodeRef.value?.stopScanning();
-
 function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 	if (nutrientsForm.value === null ||
 		vitaminsForm.value === null ||
@@ -111,11 +109,16 @@ function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 	return nutrients;
 };
 
+function stopScanning() {
+	barcodeRef.value?.stopScanning();
+}
+
 function resetAllForms() {
 	baseFormRef.value?.reset();
 	nutrientsFormRef.value?.initForms();
 	vitaminsFormRef.value?.initForms();
 	mineralsFormRef.value?.initForms();
+	barcodeRef.value?.clearBarcode();
 	barcode.value = "";
 };
 
@@ -129,7 +132,7 @@ watch(requestForm, (wRequestForm) => {
 
 watch(() => reqState, (wReqState) => {
 	if (wReqState.isError) triggerSubmitErrorTimed();
-})
+});
 
 defineExpose({ resetAllForms, stopScanning });
 </script>
