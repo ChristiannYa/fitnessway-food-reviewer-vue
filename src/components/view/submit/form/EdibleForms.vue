@@ -2,7 +2,7 @@
 import type { EdibleBaseSchema } from '@/schemas/EdibleBaseSchema';
 import type { NutrientSchema } from '@/schemas/NutrientSchema';
 import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import EdibleBaseForm from './EdibleBaseForm.vue';
 import NutrientsForm from './NutrientsForm.vue';
 import { EDIBLE_TYPE, type AppEdibleSubmitReq, type EdibleType } from '@/types/foodTypes';
@@ -38,15 +38,19 @@ const {
 const edibleType = ref<EdibleType>("FOOD");
 
 const baseForm = ref<EdibleBaseSchema | null>(null);
+const baseFormRef = useTemplateRef("baseFormRef");
 const isBaseFormValid = ref(false);
 
 const nutrientsForm = ref<NutrientSchema | null>(null);
+const nutrientsFormRef = useTemplateRef('nutrientsFormRef');
 const isNutrientsFormValid = ref(false);
 
 const vitaminsForm = ref<NutrientSchema | null>(null);
+const vitaminsFormRef = useTemplateRef('vitaminsFormRef');
 const isVitaminsFormValid = ref(false);
 
 const mineralsForm = ref<NutrientSchema | null>(null);
+const mineralsFormRef = useTemplateRef('mineralsFormRef');
 const isMineralsFormValid = ref(false);
 
 const barcode = ref("");
@@ -102,8 +106,15 @@ function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 	);
 
 	return nutrients;
-}
+};
 
+function resetAllForms() {
+	baseFormRef.value?.reset();
+	nutrientsFormRef.value?.initForms();
+	vitaminsFormRef.value?.initForms();
+	mineralsFormRef.value?.initForms();
+	barcode.value = "";
+};
 
 watch(isNextEnabled, (wIsNextEnabled) => {
 	emit('validation-change', wIsNextEnabled);
@@ -116,6 +127,8 @@ watch(requestForm, (wRequestForm) => {
 watch(() => reqState, (wReqState) => {
 	if (wReqState.isError) triggerSubmitErrorTimed();
 })
+
+defineExpose({ resetAllForms });
 </script>
 
 <template>
@@ -143,12 +156,14 @@ watch(() => reqState, (wReqState) => {
 			/>
 			
 			<EdibleBaseForm
+				ref="baseFormRef"
 				v-show="currentStep === 1"
 				@validation-change="isBaseFormValid = $event"
 				@set="baseForm = $event"
 			/>
 			
 			<NutrientsForm
+				ref="nutrientsFormRef"
 				v-show="currentStep === 2"
 				nutrient-type="BASIC"
 				:should-require-any="true"
@@ -157,6 +172,7 @@ watch(() => reqState, (wReqState) => {
 			/>
 			
 			<NutrientsForm
+				ref="vitaminsFormRef"
 				v-show="currentStep === 3"
 				nutrient-type="VITAMIN"
 				:should-require-any="false"
@@ -165,6 +181,7 @@ watch(() => reqState, (wReqState) => {
 			/>
 			
 			<NutrientsForm
+				ref="mineralsFormRef"
 				v-show="currentStep === 4"
 				nutrient-type="MINERAL"
 				:should-require-any="false"

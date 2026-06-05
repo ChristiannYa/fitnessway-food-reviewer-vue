@@ -3,6 +3,7 @@ import type { InputField } from "@/types/appTypes";
 import { isMobile } from "@/utils/appUtils";
 
 const props = defineProps<{
+	modelValue: string | number | undefined;
 	inputData: InputField;
 	isFocused: boolean;
 	errorMessage: string | undefined;
@@ -17,7 +18,7 @@ function onInput(e: InputEvent) {
 	if (props.errorMessage !== undefined) emit('reset');
 	const value = (e.target as HTMLInputElement).value;
 	emit('update:modelValue', value);
-}
+};
 </script>
 
 <template>
@@ -47,6 +48,7 @@ function onInput(e: InputEvent) {
 					]"
 				>
 					<input 
+						:value="props.modelValue === 0 ? '' : props.modelValue"
 						:type="inputData.type"
 						:placeholder="inputData.placeholder"
 						class="input-base py-3 text-end flex-1 min-w-0"

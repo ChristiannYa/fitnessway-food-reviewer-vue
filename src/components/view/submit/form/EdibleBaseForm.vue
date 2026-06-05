@@ -29,13 +29,22 @@ const nameFieldData = buildFieldData("Name", "Organic Hemp Seeds", "text");
 const brandFieldData = buildFieldData("Brand", "Kirkland Signature", "text");
 const amountPerServingFieldData = buildFieldData("Amount per serving", "60", "number");
 
-watch(isValid, (iv) => emit('validation-change', iv), { immediate: true })
+function reset() {
+	form.name = "";
+	form.brand = "";
+	form.servingUnit = "G";
+	form.amountPerServing = 0;
+};
+
+watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
 
 watch(form, () => {
   const result = buildEdibleBaseSchema().safeParse(form);
   if (!result.success) return;
   emit('set', result.data);
 }, { deep: true });
+
+defineExpose({ reset });
 </script>
 
 <template>

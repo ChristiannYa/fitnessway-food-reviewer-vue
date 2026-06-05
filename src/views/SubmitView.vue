@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import View from "@/components/shared/View.vue";
 import SubmissionHeader from "@/components/view/submit/header/SubmissionHeader.vue";
-import { computed, ref } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { useSubmitMutation } from "@/hooks/mutations/foodMutations";
 import type { NutrientDataAmount, NutrientsByType } from "@/types/nutrientTypes";
 import { type AppEdibleSubmitReq } from "@/types/foodTypes";
@@ -15,10 +15,11 @@ import { stringToTitleCase } from "@/utils/textUtils";
 const { data: nbtRes } = useNutrientsByTypeQuery();
 
 const { 
-	mutate: submitMutate, 
+	mutate: mutateSubmit, 
 	isPending: isSubmitPending,
 	isError: isSubmitError,
 	isIdle: isSubmitIdle,
+	reset: resetSubmitMutation,
 	data: submissionData,
 } = useSubmitMutation()
 
@@ -27,6 +28,7 @@ const currentStep = ref(1);
 const wantsToSubmit = ref(false);
 const isNextEnabled = ref(false);
 
+const edibleFormsRef = useTemplateRef('edibleFormsRef');
 const request = ref<AppEdibleSubmitReq | null>(null);
 
 const finalNutrientsByType = computed((): NutrientsByType<NutrientDataAmount> | null => {
@@ -88,7 +90,7 @@ const visibleSubmissionError = computed((): string | null => {
 async function onSubmit() {
 	if (request.value === null) return;
 	wantsToSubmit.value = false;
-	submitMutate(request.value);
+	mutateSubmit(request.value);
 };
 
 function onPrev() {
@@ -105,6 +107,8 @@ function onNext() {
 
 function onStartOver() {
 	currentStep.value = 1;
+	resetSubmitMutation();
+	edibleFormsRef.value?.resetAllForms();
 }
 </script>
 
@@ -121,6 +125,7 @@ function onStartOver() {
 			/>
 
 			<EdibleForms
+				ref="edibleFormsRef"
 				:current-step="currentStep"
 				:req-state="reqState"
 				:visible-submission-error="visibleSubmissionError"

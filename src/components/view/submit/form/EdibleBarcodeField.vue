@@ -3,12 +3,15 @@ import ActionButton from '@/components/shared/ActionButton.vue';
 import { useBarcodeScanner } from '@/hooks/composables/useBarcodeScanner';
 import { nextTick, ref, watch } from 'vue';
 
+defineProps<{
+	modelValue: string;
+}>();
+
 const emit = defineEmits<{
 	'update:modelValue': [value: string];
 }>();
 
 const videoElement = ref<HTMLVideoElement | null>(null);
-const inputValue = ref('');
 
 const { 
 	barcode, 
@@ -30,10 +33,7 @@ async function toggleScan() {
 }
 
 watch(barcode, (v) => {
-	if (v) {
-		inputValue.value = v;
-		emit('update:modelValue', v);
-	};
+	if (v) emit('update:modelValue', v);
 })
 </script>
 
@@ -65,13 +65,12 @@ watch(barcode, (v) => {
 
 			<input 
 				type="text"
-				:value="inputValue"
+				:value="modelValue"
 				placeholder="011110150974"
 				class="input-base bg-smoke/20 rounded-full border-2 border-smoke 
 					 focus:border-accent-primary text-center p-3 w-full"
 				@input="(e) => {
-					inputValue = (e.target as HTMLInputElement).value;
-					emit('update:modelValue', inputValue);
+					emit('update:modelValue', (e.target as HTMLInputElement).value);
 				}"
 			>
 		</div>

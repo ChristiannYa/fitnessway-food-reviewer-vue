@@ -78,8 +78,11 @@ const fieldEntries = computed((): FieldEntry[] | null => {
 const isValid = computed(() => formValidation.value?.isValid ?? false);
 const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
 
-function initForms(nutrients: NutrientData[]) {
-	nutrients.forEach(nutrient => {
+function initForms() {
+	const nutrientsCopy = nutrients.value;
+	if (nutrientsCopy === null) return;
+
+	nutrientsCopy.forEach(nutrient => {
 		const id = String(nutrient.base.id);
 
 		form[id] = 0;
@@ -89,13 +92,13 @@ function initForms(nutrients: NutrientData[]) {
 };
 
 // Handle initial form seedings upon component mount
-watch(nutrients, (ns) => {
-	if (ns === null) return;
+watch(nutrients, (wNutrients) => {
+	if (wNutrients === null) return;
 
-	initForms(ns)
+	initForms()
 	
 	formValidation.value =  useFormValidation(
-		buildNutrientSchema(ns, shouldRequireAny),
+		buildNutrientSchema(wNutrients, shouldRequireAny),
 		form
 	);
 }, { immediate: true });
@@ -140,6 +143,8 @@ watch(dvActive, (da, prev) => {
 }, { deep: true, immediate: true });
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
+
+defineExpose({ initForms })
 </script>
 
 <template>
