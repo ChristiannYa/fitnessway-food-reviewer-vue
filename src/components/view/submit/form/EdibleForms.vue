@@ -54,6 +54,7 @@ const mineralsFormRef = useTemplateRef('mineralsFormRef');
 const isMineralsFormValid = ref(false);
 
 const barcode = ref("");
+const barcodeRef = useTemplateRef('barcodeRef');
 const isBarcodeValid = computed(() => uIsBarcodeValid(barcode.value));
 
 const isNextEnabled = computed(() => {
@@ -85,6 +86,8 @@ const requestForm = computed((): AppEdibleSubmitReq | null => {
 const isContentVisible = computed(() => {
 	return reqState.isIdle || reqState.isError
 })
+
+const stopScanning = () => barcodeRef.value?.stopScanning();
 
 function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 	if (nutrientsForm.value === null ||
@@ -128,7 +131,7 @@ watch(() => reqState, (wReqState) => {
 	if (wReqState.isError) triggerSubmitErrorTimed();
 })
 
-defineExpose({ resetAllForms });
+defineExpose({ resetAllForms, stopScanning });
 </script>
 
 <template>
@@ -190,6 +193,7 @@ defineExpose({ resetAllForms });
 			/>
 			
 			<EdibleBarcodeField
+				ref="barcodeRef"
 				v-show="currentStep === 5 && isContentVisible"
 				v-model="barcode"
 			/>

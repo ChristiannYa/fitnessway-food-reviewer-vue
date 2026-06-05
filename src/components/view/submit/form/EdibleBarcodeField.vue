@@ -35,6 +35,8 @@ async function toggleScan() {
 watch(barcode, (v) => {
 	if (v) emit('update:modelValue', v);
 })
+
+defineExpose({ stopScanning });
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import View from "@/components/shared/View.vue";
 import SubmissionHeader from "@/components/view/submit/header/SubmissionHeader.vue";
-import { computed, ref, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import { useSubmitMutation } from "@/hooks/mutations/foodMutations";
 import type { NutrientDataAmount, NutrientsByType } from "@/types/nutrientTypes";
 import { type AppEdibleSubmitReq } from "@/types/foodTypes";
@@ -109,7 +109,12 @@ function onStartOver() {
 	currentStep.value = 1;
 	resetSubmitMutation();
 	edibleFormsRef.value?.resetAllForms();
-}
+};
+
+watch(wantsToSubmit, (wWantsToSubmit) => {
+	if (!wWantsToSubmit) return;
+	edibleFormsRef.value?.stopScanning();
+}, { immediate: true });
 </script>
 
 <template>
