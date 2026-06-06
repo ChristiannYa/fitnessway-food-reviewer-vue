@@ -11,7 +11,7 @@ import {
 } from "@/builders/clientResponseBuilders";
 import type { KtServerResponse } from "@/types/serverTypes";
 import { refreshAccessToken } from "@/auth/authHandlers";
-import { API_BASE_URL_GO, API_BASE_URL_KT, PROXY_BASE_URL } from "@/config/apiConfig";
+import { API_BASE_URL_KT, PROXY_BASE_URL } from "@/config/apiConfig";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -110,4 +110,3 @@ const createApiClient = (
 export const apiClientPxy = createApiClient(PROXY_BASE_URL);
 export const apiClientPub = createApiClient(API_BASE_URL_KT);
 export const apiClientAppKt = createApiClient(API_BASE_URL_KT, refreshAccessToken);
-export const apiClientAppGo = createApiClient(API_BASE_URL_GO, refreshAccessToken);
