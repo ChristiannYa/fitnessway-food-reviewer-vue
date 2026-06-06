@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { appCors } from "./config/cors";
+import { appCors } from "./config/cors.ts";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
-import cookies from "./config/cookies";
+import cookies from "./config/cookies.ts";
 import { serve } from "@hono/node-server";
 
 const app = new Hono();
