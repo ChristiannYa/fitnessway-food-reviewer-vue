@@ -2,7 +2,12 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import { API_PORT_KT, API_PORT_GO, APP_PORT, PROXY_PORT } from "./src/config/config";
+import { 
+	API_PORT_KT, 
+	API_PORT_GO, 
+	APP_PORT, 
+	PROXY_PORT 
+} from "./src/config/portsConfig";
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
 const isShared = process.env.VITE_SHARED === "true";

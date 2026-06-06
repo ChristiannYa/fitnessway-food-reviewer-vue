@@ -1,13 +1,13 @@
 import { PxyRequestBaseError } from "@/errors/requestErrors";
 import type { ProxyResponse } from "@/types/serverTypes";
 import { toCamelCase as objToCamelCase } from "@/utils/objectUtils";
-import { PROXY_BASE_URL } from "@/config/config";
 import {
 	clientError,
 	clientSuccess,
 	type ClientResponse
 } from "@/builders/clientResponseBuilders";
 import { catchingErrorT } from "@/utils/errorUtils";
+import { PROXY_BASE_URL } from "@/config/apiConfig";
 
 async function makePxyRequest<R>(
 	path: string,

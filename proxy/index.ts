@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { appCors } from "./config/cors";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import cookies from "./config/cookies";
-import { PROXY_PORT } from "../src/config/config";
 import { serve } from "@hono/node-server";
 
 const app = new Hono();
@@ -25,4 +24,8 @@ app.delete("/pxy/token", (c) => {
 	return c.json({ success: true, data: null });
 });
 
-serve({ fetch: app.fetch, port: PROXY_PORT });
+const port = process.env.PORT 
+	? parseInt(process.env.PORT)
+	: 3001;
+
+serve({ fetch: app.fetch, port: port });

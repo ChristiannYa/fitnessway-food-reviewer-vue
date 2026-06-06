@@ -10,8 +10,8 @@ import {
 	type ClientResponse
 } from "@/builders/clientResponseBuilders";
 import type { KtServerResponse } from "@/types/serverTypes";
-import { API_BASE_URL_KT, API_BASE_URL_GO, PROXY_BASE_URL } from "@/config/config";
 import { refreshAccessToken } from "@/auth/authHandlers";
+import { API_BASE_URL_GO, API_BASE_URL_KT, PROXY_BASE_URL } from "@/config/apiConfig";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
