@@ -20,8 +20,11 @@ app.post("/pxy/token", async (c) => {
 });
 
 app.delete("/pxy/token", (c) => {
-	deleteCookie(c, cookies.refresh.name);
-	return c.json({ success: true, data: null });
+    deleteCookie(c, cookies.refresh.name, {
+        path: cookies.refresh.options.path,
+        secure: cookies.refresh.options.secure,
+    });
+    return c.json({ success: true, data: null });
 });
 
 const port = process.env.PORT 
