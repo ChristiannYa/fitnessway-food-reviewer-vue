@@ -23,6 +23,7 @@ app.delete("/pxy/token", (c) => {
     deleteCookie(c, cookies.refresh.name, {
         path: cookies.refresh.options.path,
         secure: cookies.refresh.options.secure,
+		sameSite: cookies.refresh.options.sameSite,
     });
     return c.json({ success: true, data: null });
 });
