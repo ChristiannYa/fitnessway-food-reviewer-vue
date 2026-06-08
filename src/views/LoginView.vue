@@ -4,7 +4,9 @@ import type { LoginReq } from "@/schemas/authSchema";
 import { computed, ref } from "vue";
 import { Eye, EyeClosed } from "lucide-vue-next";
 import View from "@/components/shared/View.vue";
+import { useDeviceInfo } from "@/hooks/composables/useDeviceInfo";
 
+const { deviceName } = useDeviceInfo();
 const { mutate, data, isPending, isError } = useLoginMutation();
 
 const email = ref("");
@@ -19,11 +21,11 @@ function handleLogin(_: Event) {
 	const loginData: LoginReq = {
 		email: email.value,
 		password: password.value,
-		deviceName: "HP Envy x360 (Web)"
+		deviceName: deviceName
 	};
 
 	mutate({ loginData });
-}
+};
 </script>
 
 <template>

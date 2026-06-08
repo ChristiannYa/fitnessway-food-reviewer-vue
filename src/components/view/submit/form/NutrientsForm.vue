@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { buildNutrientListsByType } from '@/builders/nutrientBuilders';
-import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/formValidation';
+import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/useFormValidation.ts';
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
 import { buildNutrientSchema, type NutrientSchema } from '@/schemas/NutrientSchema';
 import type { NutrientData, NutrientType } from '@/types/nutrientTypes';

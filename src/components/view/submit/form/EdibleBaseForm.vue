@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
 import { buildEdibleBaseSchema, type EdibleBaseSchema } from "@/schemas/EdibleBaseSchema";
-import { useFormValidation } from '@/hooks/composables/formValidation';
+import { useFormValidation } from '@/hooks/composables/useFormValidation.ts';
 import EdibleFormField from './EdibleFormField.vue';
 import EdibleRadio from './EdibleRadio.vue';
 import { SERVING_UNIT } from '@/types/foodTypes.ts';
