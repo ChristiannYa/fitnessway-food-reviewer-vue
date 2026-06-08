@@ -5,12 +5,15 @@ type cookieConfig = {
 	options: CookieOptions;
 };
 
+const isProd = process.env.NODE_ENV === "production";
+
 const cookies = {
 	refresh: {
 		name: "refreshToken",
 		options: {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
+			secure: isProd,
+			sameSite: isProd ? "None" : "Lax",
 			path: "/",
 			maxAge: 60 * 60 * 24 * 30 // 30 days
 		}
