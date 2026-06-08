@@ -41,16 +41,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async () => {
-	function log(l: string) {
-		console.log(`[router.beforeEach] ${l}`);
-	}
-
 	const store = useAccessTokenStore();
 	if (store.accessToken) return;
 
 	const refreshTokenPxyRes = await getRefreshTokenPxy();
 	const refreshToken = refreshTokenPxyRes.data?.refreshToken;
-	log(`refresh token: ${refreshToken?.slice(-8)}`);
 	if (!refreshToken) return;
 
 	const res = await refreshAccessToken(refreshToken);
