@@ -13,7 +13,9 @@ const props = defineProps<{
 				v-for="link in props.navConfig.links"
 				:key="link.to"
 				:to="link.to"
-				class="bg-smoke/20 rounded-lg text-chalk px-1.5 py-3 flex flex-1 items-center justify-center gap-x-2"
+				active-class="bg-smoke/20"
+				class="rounded-lg text-chalk px-1.5 py-3 flex flex-1 items-center 
+                       justify-center gap-x-2"
 			>
 				<component 
 					:is="link.icon" 
