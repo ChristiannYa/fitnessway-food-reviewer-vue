@@ -133,6 +133,7 @@ function onStartOver() {
 				@req-change="request = $event"
 				@validation-change="isNextEnabled = $event"
 				@start-over="onStartOver"
+				class="min-h-0"
 			/>
 		</div>
 
