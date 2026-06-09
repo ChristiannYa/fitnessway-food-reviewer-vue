@@ -13,8 +13,10 @@ const navConfig: NavConfig = {
 
 <template>
 	<RouterView/>
-	<ViewBottomNavbar
-		:nav-config="navConfig"
-		class="mx-auto view-child-w pb-2 px-2"
-	/>
+	<div class="w-full bg-dark-secondary pb-2 pt-2 px-2">
+		<ViewBottomNavbar
+			:nav-config="navConfig"
+			class="mx-auto view-child-w"
+		/>
+	</div>
 </template>
