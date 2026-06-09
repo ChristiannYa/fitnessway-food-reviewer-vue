@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, readonly, ref } from "vue";
 
 export const useLayoutStore = defineStore("layout", () => {
 	const headerHeight = ref(0);
@@ -14,8 +14,8 @@ export const useLayoutStore = defineStore("layout", () => {
 	};
 
 	return { 
-		headerHeight, 
+		headerHeight: readonly(headerHeight), 
 		screenHeightCssPxString,
-		setHeaderHeight 
+		setHeaderHeight,
 	};
 });

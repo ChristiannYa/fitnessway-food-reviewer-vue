@@ -3,6 +3,7 @@ import { useLogoutMutation } from "@/hooks/mutations/authMutations";
 import type { User } from "@/types/userTypes";
 import { ArrowLeft, FileSearchCorner, CirclePlus } from "lucide-vue-next";
 import Spinner from "@/components/shared/Spinner.vue";
+import type { NavConfig } from "@/types/appTypes";
 
 const props = defineProps<{
 	isVisible: boolean;
@@ -12,22 +13,22 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     closeMenu: []
-}>()
+}>();
 
-const navConfig = {
-    items: [
-		{ to: "/submit", label: "Submit", icon: CirclePlus },
+const navConfig: NavConfig = {
+    links: [
+		{ to: "/submission/submit", label: "Submit", icon: CirclePlus },
 		{ to: "/review", label: "Review", icon: FileSearchCorner },
 	],
-    itemBaseClass: "flex items-center gap-3 p-3 mb-2 font-medium rounded-lg transition-colors"
-}
+    linkBaseTwClass: "flex items-center gap-3 p-3 mb-2 font-medium rounded-lg transition-colors"
+};
 
-const { mutate } = useLogoutMutation()
+const { mutate } = useLogoutMutation();
 
 function handleLogout() {
     emit('closeMenu')
     mutate(undefined)
-}
+};
 </script>
 
 <template>
@@ -67,14 +68,14 @@ function handleLogout() {
                     <!-- Navigation -->
                     <nav class="grow">
                         <RouterLink
-                            v-for="item in navConfig.items"
-                            :key="item.to"
-                            :to="item.to"
-                            :class="[navConfig.itemBaseClass, 'hover:bg-gray-600']"
+                            v-for="link in navConfig.links"
+                            :key="link.to"
+                            :to="link.to"
+                            :class="[navConfig.linkBaseTwClass, 'hover:bg-gray-600']"
                             active-class="bg-dry-green hover:dry-green"
                         >
-                            <component :is="item.icon" :size="20"/>
-                            {{ item.label }}
+                            <component :is="link.icon" :size="20"/>
+                            {{ link.label }}
                         </RouterLink>
                     </nav>
 
@@ -88,7 +89,7 @@ function handleLogout() {
             <button
                 @click="handleLogout"
                 :class="[
-					navConfig.itemBaseClass, 
+					navConfig.linkBaseTwClass, 
 					'justify-center bg-red-600 hover:bg-red-500 w-full mt-4',
 					'hover:cursor-pointer'
 				]"

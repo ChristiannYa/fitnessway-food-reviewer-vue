@@ -14,7 +14,7 @@ export const useLoginMutation = () => {
 			if (!ctx.success) throw new Error(ctx.message);
 
 			store.set(ctx.data.accessToken);
-			await router.push("/submit");
+			await router.push("/submission/submit");
 		},
 		onError: (error) => {
 			console.log("error logging in: ", error.message);

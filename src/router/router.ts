@@ -4,31 +4,28 @@ import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
 
+function handleProtectedOutletBeforeEnter() {
+	const store = useAccessTokenStore();
+	if (!store.accessToken) return "/login"
+}
+
 const routes: RouteRecordRaw[] = [
-	{ 
-		path: "/login", 
-		component: () => import("@/views/LoginView.vue") 
-	},
-	{ 
-		path: "/", 
-		redirect: "submit" 
-	},
+	{ path: "/login", component: () => import("@/views/LoginView.vue") },
+	{ path: "/", redirect: "/submission/submit" },
 	{
 		path: "/",
 		component: () => import("@/layouts/ProtectedOutlet.vue"),
-		beforeEnter: () => {
-			const store = useAccessTokenStore();
-			if (!store.accessToken) return "/login";
-		},
+		beforeEnter: handleProtectedOutletBeforeEnter,
 		children: [
-			{ 	
-				path: "submit", 
-				component: () => import("@/views/SubmitView.vue") 
+			{ 
+				path: "/submission", 
+				component: () => import("@/layouts/SubmissionOutlet.vue"), 
+				children: [
+					{ path: "submit", component: () => import("@/views/SubmitView.vue") },
+					{ path: "submissions", component: () => import("@/views/SubmissionsView.vue") },
+				]
 			},
-			{
-				path: "review",
-				component: () => import("@/views/ReviewView.vue")
-			}
+			{ path: "review", component: () => import("@/views/ReviewView.vue") }
 		]
 	}
 ];
