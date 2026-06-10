@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 				path: "/submission", 
 				component: () => import("@/layouts/SubmissionOutlet.vue"), 
 				children: [
-					{ path: "submit", component: () => import("@/views/SubmitView.vue") },
+					{ path: "submit", component: () => import("@/views/SubmitFormView.vue") },
 					{ path: "submissions", component: () => import("@/views/SubmissionsView.vue") },
 				]
 			},

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import View from "@/components/shared/View.vue";
-import SubmissionHeader from "@/components/view/submit/header/SubmissionHeader.vue";
+import SubmissionHeader from "@/components/view/submit-form/header/SubmissionHeader.vue";
 import { computed, ref, useTemplateRef } from "vue";
 import { useSubmitMutation } from "@/hooks/mutations/foodMutations";
 import type { NutrientDataAmount, NutrientsByType } from "@/types/nutrientTypes";
 import { type AppEdibleSubmitReq } from "@/types/foodTypes";
-import EdibleSubmitConfirmationPopup from "@/components/view/submit/form/EdibleSubmitConfirmationPopup.vue";
+import EdibleSubmitConfirmationPopup from "@/components/view/submit-form/form/EdibleSubmitConfirmationPopup.vue";
 import { buildNutrientListFromType, buildNutrientsByTypeFromList } from "@/builders/nutrientBuilders";
 import { useNutrientsByTypeQuery } from "@/hooks/queries/nutrientQueries";
-import EdibleForms from "@/components/view/submit/form/EdibleForms.vue";
+import EdibleForms from "@/components/view/submit-form/form/EdibleForms.vue";
 import type { RequestState } from "@/types/appTypes";
 import { stringToTitleCase } from "@/utils/textUtils";
 
