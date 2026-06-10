@@ -2,7 +2,7 @@
 import PagesCount from '@/components/shared/PagesCount.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import { pagination } from '@/constants/pagination';
-import { useGetByUserId } from '@/hooks/queries/edibleQueries';
+import { getPendingEdiblesByUserIdQuery } from '@/hooks/queries/edibleQueries';
 import type { PendingFood, PendingFoodsReqParams, PendingFoodStatus } from '@/types/foodTypes';
 import { isStringNullOrEmpty } from '@/utils/textUtils';
 import { computed, reactive, ref, watch } from 'vue';
@@ -38,14 +38,17 @@ const params: PendingFoodsReqParams = reactive({
 
 const reviewMutation = useReviewMutation()
 
+const { useQuery: useFetchByUserIdQuery } = getPendingEdiblesByUserIdQuery();
+
 const {
     isError: pfResIsError,
     isFetching: pfResIsFetching,
     data: pfResData,
     refetch: pfResRefetch
-} = useGetByUserId(params, { 
+} = useFetchByUserIdQuery(params, { 
     enabled: false, 
 });
+
 
 watch([pfResIsError, pfResData], () => {
 	const isApiError = pfResData.value?.success === false;
