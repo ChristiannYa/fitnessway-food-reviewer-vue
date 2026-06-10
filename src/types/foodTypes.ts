@@ -30,6 +30,11 @@ export type AppFood = {
 	updatedAt?: string;
 };
 
+export type AppEdibleData = {
+	edible: AppFood;
+	barcode: string;
+};
+
 export type PendingFood = {
 	id: number;
 	information: FoodInformation<NutrientDataAmount>;
@@ -45,6 +50,15 @@ export type PendingFoodReview = Pick<
 	PendingFood,
 	"status" | "createdBy" | "reviewedBy" | "reviewedAt" | "rejectionReason"
 >;
+
+export type AdminEdibleSubmissionsReqParams = {
+	offset: number;
+	date?: string;
+};
+
+export type AdminEdibleSubmissionsRes = {
+	submittedAppEdibles: PaginationResult<AppEdibleData>;
+};
 
 export type PendingFoodsReqParams = (
     | { userId: string, userType?: never } 

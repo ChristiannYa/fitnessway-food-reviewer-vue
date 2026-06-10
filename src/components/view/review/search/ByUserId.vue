@@ -59,7 +59,7 @@ watch([pfResIsError, pfResData], () => {
 
 function handleSearch() {
     queryClient.removeQueries({
-        queryKey: queryKeys.food.pending.byUserIdAll()
+        queryKey: queryKeys.edible.pending.byUserIdAll()
     })
 
     params.userId = userIdInput.value
@@ -72,7 +72,7 @@ function handleSearch() {
 function handlePageChange(p: number) {
     params.offset = (p - 1) * pagination.limit
 
-    const cache = queryClient.getQueryData(queryKeys.food.pending.byUserId(params))
+    const cache = queryClient.getQueryData(queryKeys.edible.pending.byUserId(params))
     if (!cache) pfResRefetch()
 }
 

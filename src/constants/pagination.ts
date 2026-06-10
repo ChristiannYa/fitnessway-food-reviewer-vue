@@ -1,3 +1,3 @@
 export const pagination = {
-    limit: 9
+    limit: 8
 }

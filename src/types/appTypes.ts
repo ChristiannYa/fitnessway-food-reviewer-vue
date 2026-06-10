@@ -1,10 +1,10 @@
 import type { Component, InputTypeHTMLAttribute } from "vue";
 
 export type RequestState = {
-	isIdle: boolean;
 	isLoading: boolean;
 	isSuccess: boolean;
 	isError: boolean
+	isIdle?: boolean;
 };
 
 export type PaginationResult<T> = {

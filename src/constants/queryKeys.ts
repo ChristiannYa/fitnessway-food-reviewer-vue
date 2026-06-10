@@ -1,24 +1,26 @@
-import type { PendingFoodsReqParams } from "@/types/foodTypes";
+import type { AdminEdibleSubmissionsReqParams, PendingFoodsReqParams } from "@/types/foodTypes";
 
 export const queryKeys = {
     user: {
         all: () => ["user"] as const,
-
-        me: () => ["user", "me"] as const
+		
+        me: () =>  ["user", "me"] as const
     },
-    food: {
+    edible: {
+		app: {
+			all: () =>                                                 ["edible", "app"] as const,
+
+			adminSubmissionsAll: () =>                                 ["edible", "app", "adminSubmissions"] as const,
+			adminsSubmissions: (p: AdminEdibleSubmissionsReqParams) => [...queryKeys.edible.app.adminSubmissionsAll(), p] as const,
+		},
         pending: {
-            all: () => ["food", "pending"] as const,
+            all: () => 									   ["edible", "pending"] as const,
 
-            byUserIdAll: () => ["food", "pending", "byUserId"],
+            byUserIdAll: () => 							   ["edible", "pending", "byUserId"] as const,
+            byUserId: (params: PendingFoodsReqParams) =>   [...queryKeys.edible.pending.byUserIdAll(), params] as const,
 
-            byUserId: (params: PendingFoodsReqParams) => 
-                [...queryKeys.food.pending.byUserIdAll(), params] as const,
-
-            byUserTypeAll: () => ["food", "pending", "byUserType"],
-            
-            byUserType: (params: PendingFoodsReqParams) => 
-                [...queryKeys.food.pending.byUserTypeAll(), params] as const
+            byUserTypeAll: () =>                           ["edible", "pending", "byUserType"] as const,
+            byUserType: (params: PendingFoodsReqParams) => [...queryKeys.edible.pending.byUserTypeAll(), params] as const
         }
     }
-}
+};
