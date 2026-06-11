@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PendingFoodReview } from '@/types/foodTypes';
 import { getPendingFoodStatusUi } from '@/utils/foodUtils';
-import { formatIsoDate } from '@/utils/textUtils';
+import { stringToIsoDate } from '@/utils/textUtils';
 import { Minus } from 'lucide-vue-next';
 import { computed } from 'vue';
 
@@ -36,7 +36,7 @@ const statusUi = computed(() => getPendingFoodStatusUi(props.review.status))
             <div class="text-center shrink-0">
                 <h2 class="text-lg font-bold">Review Date</h2>
                 <p v-if="review.reviewedAt">
-                    {{ formatIsoDate(review.reviewedAt) }}
+                    {{ stringToIsoDate(review.reviewedAt) }}
                 </p>
             </div>
 

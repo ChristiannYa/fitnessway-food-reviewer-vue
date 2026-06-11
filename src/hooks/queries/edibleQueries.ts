@@ -5,7 +5,7 @@ import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, Pendin
 import { queryOptions, useQuery as useTanstackQuery  } from "@tanstack/vue-query"
 
 async function withQueryDelay<T>(fn: () => Promise<T>): Promise<T> {
-	await new Promise(resolve => setTimeout(resolve, 2000));
+	await new Promise(resolve => setTimeout(resolve, 300));
 	return fn();
 };
 

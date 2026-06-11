@@ -2,7 +2,7 @@
 import type { PendingFood } from '@/types/foodTypes';
 import type { UserSearchScope } from '@/types/userTypes';
 import { getAmountPerServingText, getPendingFoodStatusUi } from '@/utils/foodUtils';
-import { formatIsoDate } from '@/utils/textUtils';
+import { stringToIsoDate } from '@/utils/textUtils';
 
 const {
     pendingFood,
@@ -27,7 +27,7 @@ const { hex } = getPendingFoodStatusUi(pendingFood.status)
         class="flex flex-col w-full pb-3 pt-1 border-2 border-smoke hover:border-chalk
                cursor-pointer rounded-md text-lg text-chalk hover:text-white"
     >
-        <p class="text-center text-sm">{{ formatIsoDate(pendingFood.createdAt) }}</p>
+        <p class="text-center text-sm">{{ stringToIsoDate(pendingFood.createdAt) }}</p>
 
         <p v-if="userSearchScope === 'Type'" class="text-center text-xs opacity-70">
             {{ pendingFood.createdBy }}

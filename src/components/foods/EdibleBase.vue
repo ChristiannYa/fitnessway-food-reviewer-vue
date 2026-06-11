@@ -3,22 +3,23 @@ import type { FoodBase } from '@/types/foodTypes';
 import { getAmountPerServingText } from '@/utils/foodUtils';
 import { ref, watch, nextTick } from 'vue';
 
-const {
-    foodBase
-} = defineProps<{
-    foodBase: FoodBase
-}>()
+const props = withDefaults(defineProps<{
+	foodBase: FoodBase,
+	isNameClickable?: boolean
+}>(), {
+	isNameClickable: true
+})
 
 const nameRef = ref<HTMLParagraphElement | null>(null)
 const isNameTruncated = ref(false)
 const isFullNameVisible = ref(false)
 
 function handleNameClick() {
-    if (!isNameTruncated.value) return
+    if (!isNameTruncated.value || !props.isNameClickable) return
     isFullNameVisible.value = !isFullNameVisible.value
 }
 
-watch([foodBase], async () => {
+watch([props.foodBase], async () => {
 	await nextTick()
 
 	const el = nameRef.value
@@ -33,7 +34,7 @@ watch([foodBase], async () => {
             @click="handleNameClick"
             :class="[
 				'text-lg leading-none font-semibold',
-                isNameTruncated ? 'cursor-pointer' : '',
+                isNameTruncated && props.isNameClickable ? 'cursor-pointer' : '',
                 isFullNameVisible ? '' : 'truncate'
             ]"
         >

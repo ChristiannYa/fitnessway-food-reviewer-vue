@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PendingFood } from '@/types/foodTypes';
 import { getPendingFoodStatusUi, isReviewed } from '@/utils/foodUtils';
-import { formatIsoDate } from '@/utils/textUtils';
+import { stringToIsoDate } from '@/utils/textUtils';
 import { computed } from 'vue';
 
 const { pendingFood } = defineProps<{
@@ -20,7 +20,7 @@ const statusUi = computed(() => getPendingFoodStatusUi(pendingFood.status))
         class="flex items-center justify-between px-4 py-3 border-b border-smoke
                border-dotted text-lg"
     >
-        <p>{{ formatIsoDate(pendingFood.createdAt) }}</p>
+        <p>{{ stringToIsoDate(pendingFood.createdAt) }}</p>
 
         <div class="flex flex-col items-center">
             <p
