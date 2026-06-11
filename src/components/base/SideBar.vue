@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 const navConfig: NavConfig = {
     links: [
-		{ to: "/submission/submit", label: "Submit", icon: CirclePlus },
+		{ to: "/submission/write-form", label: "Write Form", icon: CirclePlus },
 		{ to: "/review", label: "Review", icon: FileSearchCorner },
 	],
     linkBaseTwClass: "flex items-center gap-3 p-3 mb-2 font-medium rounded-lg transition-colors"

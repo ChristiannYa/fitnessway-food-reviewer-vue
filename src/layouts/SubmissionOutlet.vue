@@ -8,7 +8,7 @@ import { useTemplateRef } from 'vue';
 
 const navConfig: NavConfig = {
 	links: [
-		{ to: "/submission/submit", label: "Submit", icon: CirclePlus },
+		{ to: "/submission/write-form", label: "Write Form", icon: CirclePlus },
 		{ to: "/submission/submissions", label: "Submissions", icon: List },
 	]
 };

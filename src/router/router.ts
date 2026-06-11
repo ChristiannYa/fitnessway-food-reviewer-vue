@@ -11,7 +11,7 @@ function handleProtectedOutletBeforeEnter() {
 
 const routes: RouteRecordRaw[] = [
 	{ path: "/login", component: () => import("@/views/LoginView.vue") },
-	{ path: "/", redirect: "/submission/submit" },
+	{ path: "/", redirect: "/submission/write-form" },
 	{
 		path: "/",
 		component: () => import("@/layouts/ProtectedOutlet.vue"),
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 				path: "/submission", 
 				component: () => import("@/layouts/SubmissionOutlet.vue"), 
 				children: [
-					{ path: "submit", component: () => import("@/views/SubmitFormView.vue") },
+					{ path: "write-form", component: () => import("@/views/EdibleWritingFormView.vue") },
 					{ path: "submissions", component: () => import("@/views/SubmissionsView.vue") },
 				]
 			},

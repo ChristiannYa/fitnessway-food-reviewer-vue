@@ -12,7 +12,7 @@ export type PendingFoodStatus = typeof PENDING_FOOD_STATUS[number]
 
 export type FoodBase = {
 	name: string;
-	brand?: string;
+	brand: string | undefined;
 	amountPerServing: number;
 	servingUnit: ServingUnit;
 };
@@ -85,7 +85,7 @@ export type PendingFoodReviewRes = {
 	pendingFoodReviewed: PendingFood;
 };
 
-export type AppEdibleSubmitReq = {
+export type AppEdibleWriteReq = {
 	edibleRequest: {
 		base: FoodBase,
 		nutrients: NutrientIdWithAmount[],
