@@ -5,7 +5,7 @@ import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
 import { computed, ref, useTemplateRef, watch } from 'vue';
 import EdibleBaseForm from './EdibleBaseForm.vue';
 import NutrientsForm from './NutrientsForm.vue';
-import { EDIBLE_TYPE, type AppEdibleSubmitReq, type EdibleType } from '@/types/foodTypes';
+import { EDIBLE_TYPE, type AppEdibleData, type AppEdibleWriteReq, type EdibleType } from '@/types/foodTypes';
 import type { NutrientIdWithAmount } from '@/types/nutrientTypes.ts';
 import type { RequestState } from '@/types/appTypes.ts';
 import Spinner from '@/components/shared/Spinner.vue';
@@ -14,19 +14,22 @@ import EdibleRadio from './EdibleRadio.vue';
 import EdibleBarcodeField from './EdibleBarcodeField.vue';
 import { useErrorTimeout } from '@/hooks/composables/useErrorTimeout.ts';
 import TemporaryError from '@/components/shared/TemporaryError.vue';
+import { useNutrientSchemaFromList } from '@/hooks/composables/useNutrientsSchemaFromList.ts';
 
 const {
 	currentStep,
 	reqState,
+	initialEdible
 } = defineProps<{
 	currentStep: number;
 	reqState: RequestState;
 	visibleSubmissionError: string | null;
+	initialEdible?: AppEdibleData;
 }>();
 
 const emit = defineEmits<{
 	'validation-change': [isValid: boolean];
-	'req-change': [req: AppEdibleSubmitReq | null];
+	'req-change': [req: AppEdibleWriteReq | null];
 	'start-over': []
 }>();
 
@@ -43,14 +46,17 @@ const isBaseFormValid = ref(false);
 
 const nutrientsForm = ref<NutrientSchema | null>(null);
 const nutrientsFormRef = useTemplateRef('nutrientsFormRef');
+const initialNutrients = useNutrientSchemaFromList(() => initialEdible?.edible.information.nutrients.basic);
 const isNutrientsFormValid = ref(false);
 
 const vitaminsForm = ref<NutrientSchema | null>(null);
 const vitaminsFormRef = useTemplateRef('vitaminsFormRef');
+const initialVitamins = useNutrientSchemaFromList(() => initialEdible?.edible.information.nutrients.vitamin);
 const isVitaminsFormValid = ref(false);
 
 const mineralsForm = ref<NutrientSchema | null>(null);
 const mineralsFormRef = useTemplateRef('mineralsFormRef');
+const initialMinerals = useNutrientSchemaFromList(() => initialEdible?.edible.information.nutrients.mineral);
 const isMineralsFormValid = ref(false);
 
 const barcode = ref("");
@@ -68,7 +74,7 @@ const isNextEnabled = computed(() => {
 	};
 });
 
-const requestForm = computed((): AppEdibleSubmitReq | null => {
+const requestForm = computed((): AppEdibleWriteReq | null => {
 	const finalNutrientList = getFinalNutrientListOrNull();
 
 	if (baseForm.value === null || finalNutrientList === null) return null;
@@ -164,6 +170,7 @@ defineExpose({ resetAllForms, stopScanning });
 			<EdibleBaseForm
 				ref="baseFormRef"
 				v-show="currentStep === 1"
+				:initial-values="initialEdible?.edible.information.base"
 				@validation-change="isBaseFormValid = $event"
 				@set="baseForm = $event"
 			/>
@@ -172,6 +179,7 @@ defineExpose({ resetAllForms, stopScanning });
 				ref="nutrientsFormRef"
 				v-show="currentStep === 2"
 				nutrient-type="BASIC"
+				:initial-values="initialNutrients"
 				:should-require-any="true"
 				@validation-change="isNutrientsFormValid = $event"
 				@set="nutrientsForm = $event"
@@ -181,6 +189,7 @@ defineExpose({ resetAllForms, stopScanning });
 				ref="vitaminsFormRef"
 				v-show="currentStep === 3"
 				nutrient-type="VITAMIN"
+				:initial-values="initialVitamins"
 				:should-require-any="false"
 				@validation-change="isVitaminsFormValid = $event"
 				@set="vitaminsForm = $event"
@@ -190,6 +199,7 @@ defineExpose({ resetAllForms, stopScanning });
 				ref="mineralsFormRef"
 				v-show="currentStep === 4"
 				nutrient-type="MINERAL"
+				:initial-values="initialMinerals"
 				:should-require-any="false"
 				@validation-change="isMineralsFormValid = $event"
 				@set="mineralsForm = $event"

@@ -1,6 +1,6 @@
 import { apiClientAppKt } from "@/api/apiClient"
 import type { 
-	AppEdibleSubmitReq, 
+	AppEdibleWriteReq, 
 	ApPedibleSubmitRes, 
 	PendingFoodReviewReq, 
 	PendingFoodReviewRes 
@@ -14,13 +14,22 @@ export const useReviewMutation = () => useMutation({
 			path: "/edible/pending/review",
 			body: req
 		})
-})
+});
 
 export const useSubmitMutation = () => useMutation({
-	mutationFn: (req: AppEdibleSubmitReq) =>
+	mutationFn: (req: AppEdibleWriteReq) =>
 		apiClientAppKt.req<ApPedibleSubmitRes>({
 			method: "POST",
 			path: "/edible/app",
 			body: req
 		})
-})
+});
+
+export const useUpdateMutation = () => useMutation({
+	mutationFn: (req: AppEdibleWriteReq) =>
+		apiClientAppKt.req<never>({
+			method: "PUT",
+			path: "edible/app",
+			body: req
+		})
+});

@@ -6,17 +6,25 @@ import EdibleFormField from './EdibleFormField.vue';
 import EdibleRadio from './EdibleRadio.vue';
 import { SERVING_UNIT } from '@/types/foodTypes.ts';
 
+const { initialValues } = defineProps<{
+	initialValues?: EdibleBaseSchema;
+}>();
+
 const emit = defineEmits<{
 	'validation-change': [isValid: boolean];
 	'set': [form: EdibleBaseSchema];
 }>();
 
-const form = reactive<EdibleBaseSchema>({
-	name: "",
-	brand: "",
-	servingUnit: "G",
-	amountPerServing: 0
-});
+const form = reactive<EdibleBaseSchema>(
+	initialValues
+		? { ...initialValues }
+		: {
+			name: "",
+			brand: "",
+			servingUnit: "G",
+			amountPerServing: 0
+		}
+)
 
 const { 
 	focusedFields,
@@ -30,10 +38,10 @@ const brandFieldData = buildFieldData("Brand", "Kirkland Signature", "text");
 const amountPerServingFieldData = buildFieldData("Amount per serving", "60", "number");
 
 function reset() {
-	form.name = "";
-	form.brand = "";
-	form.servingUnit = "G";
-	form.amountPerServing = 0;
+    form.name = initialValues?.name ?? "";
+    form.brand = initialValues?.brand ?? "";
+    form.servingUnit = initialValues?.servingUnit ?? "G";
+    form.amountPerServing = initialValues?.amountPerServing ?? 0;
 };
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });

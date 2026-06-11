@@ -19,9 +19,11 @@ type FieldEntry = {
 const {
 	nutrientType,
 	shouldRequireAny,
+	initialValues
 } = defineProps<{
 	nutrientType: NutrientType,
 	shouldRequireAny: boolean,
+	initialValues?: NutrientSchema
 }>();
 
 const emit = defineEmits<{
@@ -79,16 +81,16 @@ const isValid = computed(() => formValidation.value?.isValid ?? false);
 const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
 
 function initForms() {
-	const nutrientsCopy = nutrients.value;
-	if (nutrientsCopy === null) return;
+    const nutrientsCopy = nutrients.value;
+    if (nutrientsCopy === null) return;
 
-	nutrientsCopy.forEach(nutrient => {
-		const id = String(nutrient.base.id);
-
-		form[id] = 0;
-		dvForm[id] = 0;
-		dvActive[id] = false;
-	});
+    nutrientsCopy.forEach(nutrient => {
+        const id = String(nutrient.base.id);
+		
+        form[id] = initialValues?.[id] ?? 0;
+        dvForm[id] = initialValues?.[id] ?? 0;
+        dvActive[id] = false;
+    });
 };
 
 // Handle initial form seedings upon component mount
