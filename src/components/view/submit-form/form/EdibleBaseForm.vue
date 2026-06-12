@@ -38,10 +38,10 @@ const brandFieldData = buildFieldData("Brand", "Kirkland Signature", "text");
 const amountPerServingFieldData = buildFieldData("Amount per serving", "60", "number");
 
 function reset() {
-    form.name = initialValues?.name ?? "";
-    form.brand = initialValues?.brand ?? "";
-    form.servingUnit = initialValues?.servingUnit ?? "G";
-    form.amountPerServing = initialValues?.amountPerServing ?? 0;
+    form.name = "";
+    form.brand = "";
+    form.servingUnit = "G";
+    form.amountPerServing = 0;
 };
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });

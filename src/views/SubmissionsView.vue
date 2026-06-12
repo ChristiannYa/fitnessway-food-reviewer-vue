@@ -101,6 +101,13 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 <template>
 	<View>	
 		<div class="view-child-w h-full relative">
+			<p class="text-center text-smoke">
+				Total:
+				<span class="font-bold font-mono">
+					{{ adminSubmissionsRes?.data?.submittedAppEdibles?.totalCount }} 
+				</span>
+			</p>
+
 			<div 
 				ref="scrollRef"
 				class="h-full overflow-y-scroll no-scrollbar pt-3.5 pb-2 flex flex-col gap-y-4"

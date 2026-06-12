@@ -5,7 +5,7 @@ import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
 import { computed, ref, useTemplateRef, watch } from 'vue';
 import EdibleBaseForm from './EdibleBaseForm.vue';
 import NutrientsForm from './NutrientsForm.vue';
-import { EDIBLE_TYPE, type AppEdibleData, type AppEdibleWriteReq, type EdibleType } from '@/types/foodTypes';
+import { EDIBLE_TYPE, type AppEdibleData, type AppEdibleWriteReq, type EdibleType, type WriteType } from '@/types/foodTypes';
 import type { NutrientIdWithAmount } from '@/types/nutrientTypes.ts';
 import type { RequestState } from '@/types/appTypes.ts';
 import Spinner from '@/components/shared/Spinner.vue';
@@ -19,12 +19,14 @@ import { useNutrientSchemaFromList } from '@/hooks/composables/useNutrientsSchem
 const {
 	currentStep,
 	reqState,
-	initialEdible
+	initialEdible,
+	writeType
 } = defineProps<{
 	currentStep: number;
 	reqState: RequestState;
 	visibleSubmissionError: string | null;
 	initialEdible?: AppEdibleData;
+	writeType: WriteType
 }>();
 
 const emit = defineEmits<{
@@ -38,7 +40,7 @@ const {
 	triggerError: triggerSubmitErrorTimed
 } = useErrorTimeout();
 
-const edibleType = ref<EdibleType>("FOOD");
+const edibleType = ref<EdibleType>(initialEdible?.edible.information.type ?? 'FOOD');
 
 const baseForm = ref<EdibleBaseSchema | null>(null);
 const baseFormRef = useTemplateRef("baseFormRef");
@@ -91,6 +93,13 @@ const requestForm = computed((): AppEdibleWriteReq | null => {
 
 const isContentVisible = computed(() => {
 	return reqState.isIdle || reqState.isError
+});
+
+const startOverLabel = computed((): string => {
+	switch (writeType) {
+		case 'UPDATE': return `Submit a ${edibleType.value.toLowerCase()}`
+		case 'SUBMIT': return `Submit another ${edibleType.value.toLowerCase()}`
+	}
 });
 
 function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
@@ -223,7 +232,7 @@ defineExpose({ resetAllForms, stopScanning });
 		
 		<ActionButton
 			v-if="reqState.isSuccess"
-			:label="`Submit another ${edibleType.toLowerCase()}`"
+			:label="startOverLabel"
 			@click="emit('start-over')"
 			background-color="#088f8f"
 		/>

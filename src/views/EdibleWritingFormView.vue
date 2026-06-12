@@ -8,7 +8,7 @@ import EdibleForms from "@/components/view/submit-form/form/EdibleForms.vue";
 import type { RequestState } from "@/types/appTypes";
 import { stringToTitleCase } from "@/utils/textUtils";
 import { useEdibleWriteForm } from "@/hooks/composables/useEdibleWriteForm";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useAdminSubmissionsState } from "@/hooks/composables/useAdminSubmissionsState";
 import type { AppEdibleData, WriteType } from "@/types/foodTypes";
 import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
@@ -19,6 +19,7 @@ import Spinner from "@/components/shared/Spinner.vue";
 const edibleFormsRef = useTemplateRef('edibleFormsRef');
 
 const route = useRoute();
+const router = useRouter();
 const edibleIdPathParam = computed(() => route.params.edibleId as string | undefined);
 
 const { accumulatedSubmissions } = useAdminSubmissionsState();
@@ -75,7 +76,7 @@ const {
 	isIdle: isUpdateIdle,
 	reset: resetUpdateMutation,
 	data: updateData
-} = useUpdateMutation();
+} = useUpdateMutation(edibleIdPathParam.value ?? "0");
 
 const reqState = computed((): RequestState => {
     const isSubmit = writeType.value === "SUBMIT";
@@ -118,21 +119,23 @@ async function onWriteLocal() {
 		const req = request.value;
 		if (req === null) return;
 
-		if (writeType.value === "SUBMIT") {
-			mutateSubmit(req);
-		} else {
-			mutateUpdate(req);
-		};
+		switch (writeType.value) {
+			case "UPDATE": mutateUpdate(req); return;
+			case "SUBMIT": mutateSubmit(req); return;
+		}
 	});
 };
 
 function onStartOverLocal() {
 	onStartOver(() => {
-		if (writeType.value === "SUBMIT") {
-			resetSubmitMutation();
-		} else {
-			resetUpdateMutation();
-		};
+		switch(writeType.value) {
+			case "UPDATE": {
+				resetUpdateMutation();
+				router.push("/submission/write-form")
+				return;
+			};
+			case "SUBMIT": resetSubmitMutation(); return;
+		}
 	});
 };
 </script>
@@ -158,6 +161,7 @@ function onStartOverLocal() {
 				:current-step="currentStep"
 				:req-state="reqState"
 				:visible-submission-error="visibleSubmissionError"
+				:write-type="writeType"
 				:initial-edible="initialEdible"
 				@req-change="request = $event"
 				@validation-change="isNextEnabled = $event"
