@@ -25,11 +25,12 @@ export const useSubmitMutation = () => useMutation({
 		})
 });
 
-export const useUpdateMutation = () => useMutation({
+export const useUpdateMutation = (id: string) => useMutation({
 	mutationFn: (req: AppEdibleWriteReq) =>
 		apiClientAppKt.req<never>({
 			method: "PUT",
-			path: "edible/app",
-			body: req
+			path: "/edible/app",
+			body: req,
+			params: { edibleId: id }
 		})
 });
