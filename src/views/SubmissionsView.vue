@@ -150,7 +150,12 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 				]"
 			/>
 
-			<p v-if="adminSubissionsReqState.isError">Failed to load submissions</p>
+			<p 
+				v-if="adminSubissionsReqState.isError"
+				class="text-center text-red-500 w-full absolute top-0 left-1/2 -translate-x-1/2"
+			>
+				Failed to load submissions
+			</p>
 
 			<BackgrundBlur
 				:is-visible="wantsToUpdate && clickedEdible !== null"
