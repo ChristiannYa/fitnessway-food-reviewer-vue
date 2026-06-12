@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ActionButton from '@/components/shared/ActionButton.vue';
 import { useBarcodeScanner } from '@/hooks/composables/useBarcodeScanner';
-import { nextTick, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const {
 	modelValue
@@ -19,21 +19,10 @@ const {
 	barcode, 
 	isScanning, 
 	isScanError, 
-	startScanning, 
 	stopScanning,
+	toggleScan,
 	clearBarcode
 } = useBarcodeScanner();
-
-async function toggleScan() {
-	if (isScanning.value) {
-		stopScanning();
-	} else {
-		await nextTick();
-
-		const videoEl = videoElement.value;
-		if (videoEl) await startScanning(videoEl);
-	}
-};
 
 watch(barcode, (v) => {
 	if (v) emit('update:modelValue', v);
@@ -60,7 +49,7 @@ defineExpose({ stopScanning, clearBarcode });
 			</p>
 
 			<ActionButton
-				@click="toggleScan"
+				@click="toggleScan(videoElement)"
 				:label="isScanning
 					? 'Stop Scan'
 					: 'Start Scan'"

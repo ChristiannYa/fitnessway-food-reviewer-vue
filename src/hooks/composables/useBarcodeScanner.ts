@@ -1,4 +1,4 @@
-import { ref, onUnmounted, readonly } from "vue";
+import { ref, onUnmounted, readonly, nextTick } from "vue";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
 export function useBarcodeScanner() {
@@ -36,6 +36,17 @@ export function useBarcodeScanner() {
 		isScanning.value = false;
 	};
 
+	async function toggleScan(videoElement: HTMLVideoElement | null) {
+		if (videoElement === null) return;
+
+		if (isScanning.value) {
+			stopScanning();
+		} else {
+			await nextTick();
+			await startScanning(videoElement);
+		}
+	};
+
 	function clearBarcode() {
 		barcode.value = null;
 	};
@@ -48,6 +59,7 @@ export function useBarcodeScanner() {
 		isScanError,
 		startScanning,
 		stopScanning,
+		toggleScan,
 		clearBarcode
 	};
 };
