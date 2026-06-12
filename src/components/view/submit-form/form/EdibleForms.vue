@@ -110,6 +110,7 @@ function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 				id: Number(id),
 				amount
 			}))
+			.filter(n => n.amount > 0)
 	);
 
 	return nutrients;

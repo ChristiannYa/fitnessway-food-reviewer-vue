@@ -33,12 +33,7 @@ export const useEdibleWriteForm = (edibleFormsRef: FormsRef) => {
 			)
 
 			return nutrientData
-				? bareNutrient.amount > 0 
-					? [{
-						data: nutrientData,
-						amount: bareNutrient.amount
-					}]
-					: []
+				? [{ data: nutrientData, amount: bareNutrient.amount }]
 				: []
 		})
 		

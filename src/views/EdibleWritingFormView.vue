@@ -110,7 +110,7 @@ const visibleSubmissionError = computed((): string | null => {
 	const req = request.value;
 	if (req === undefined) return null;
 
-	return `Failed to ${writeType.value} ${req?.edibleRequest.edibleType.toLowerCase()}`
+	return `Failed to ${writeType.value.toLowerCase()} ${req?.edibleRequest.edibleType.toLowerCase()}`
 });
 
 async function onWriteLocal() {
@@ -146,7 +146,8 @@ function onStartOverLocal() {
 			<SubmissionHeader 
 				v-if="!reqState.isSuccess"
 				:current-step="currentStep"
-				:is-submitting="isSubmitPending"
+				:write-type="writeType"
+				:isWriting="reqState.isLoading"
 				:isNextDisabled="!isNextEnabled"
 				@prev="onPrev" 
 				@next="onNext"

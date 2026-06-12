@@ -2,13 +2,17 @@
 import { computed } from "vue";
 import StepIndicator from "./StepIndicator.vue";
 import StepControlButtons from "./StepControlButtons.vue";
+import type { WriteType } from "@/types/foodTypes.ts";
+import { stringToTitleCase } from "@/utils/textUtils.ts";
 
 const {
-	currentStep
+	currentStep,
+	writeType
 } = defineProps<{
 	currentStep: number;
 	isNextDisabled: boolean;
-	isSubmitting: boolean;
+	isWriting: boolean;
+	writeType: WriteType
 }>();
 
 const emit = defineEmits<{
@@ -53,7 +57,7 @@ const stepData = computed((): StepData | null => {
 		case 5: return {
 			title: stepTitle5,
 			prevStepLabel: stepTitle4,
-			nextStepLabel: "Submit",
+			nextStepLabel: stringToTitleCase(writeType),
 		}
 		default: return null;
 	}
@@ -79,7 +83,7 @@ const stepData = computed((): StepData | null => {
 				:prev-step-label="stepData.prevStepLabel"
 				:next-step-label="stepData.nextStepLabel"
 				:isNextDisabled="isNextDisabled"
-				:is-submitting="isSubmitting"
+				:is-submitting="isWriting"
 				@prev="emit('prev')"
 				@next="emit('next')"
 				class="w-full flex justify-between gap-x-4"
