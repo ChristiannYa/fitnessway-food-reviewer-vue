@@ -23,7 +23,7 @@ useResizeObserver(viewBottomNavbarRef, ([entry]) => {
 </script>
 
 <template>
-	<RouterView/>
+	<RouterView :key="$route.fullPath"/>
 	<div 
 		ref="viewBottomNavbarRef"
 		class="w-full bg-dark-secondary pb-2 pt-2 px-2"

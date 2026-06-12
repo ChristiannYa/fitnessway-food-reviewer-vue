@@ -4,6 +4,7 @@ import type { NavConfig } from '@/types/appTypes';
 const props = defineProps<{
 	navConfig: NavConfig
 }>();
+
 </script>
 
 <template>
@@ -13,7 +14,11 @@ const props = defineProps<{
 				v-for="link in props.navConfig.links"
 				:key="link.to"
 				:to="link.to"
-				active-class="bg-smoke/20"
+				:class="[
+					$route.path.startsWith(link.to)
+						? 'bg-smoke/20'
+						: ''
+				]"
 				class="rounded-lg text-chalk px-1.5 py-3 flex flex-1 items-center 
                        justify-center gap-x-2"
 			>
