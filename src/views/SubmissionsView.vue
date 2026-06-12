@@ -9,6 +9,16 @@ import Spinner from '@/components/shared/Spinner.vue';
 import EdibleBase from '@/components/foods/EdibleBase.vue';
 import { stringToIsoDate } from '@/utils/textUtils';
 import { useAdminSubmissionsState } from '@/hooks/composables/useAdminSubmissionsState';
+import EdibleWritePopup from '@/components/view/submit-form/form/EdibleWritePopup.vue';
+import type { AppEdibleData } from '@/types/foodTypes';
+import BackgrundBlur from '@/components/shared/BackgrundBlur.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const wantsToUpdate = ref(false);
+const clickedEdible = ref<AppEdibleData | null>(null);
+const scrollRef = ref<HTMLElement | null>(null);
 
 const { 
 	accumulatedSubmissions,
@@ -16,8 +26,6 @@ const {
 	hasMore,
 	scrollTop
  } = useAdminSubmissionsState();
-
-const scrollRef = ref<HTMLElement | null>(null);
 
 const { getOptions: getAdminSubmissionsQueryOptions } = getAdminSubmissionsQuery();
 const adminSubmmissionsQueryOptions = computed(() => getAdminSubmissionsQueryOptions({ offset: offset.value }));
@@ -51,7 +59,17 @@ function handleScroll() {
 
 	const isNearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
 	if (isNearBottom) loadMore();
-}
+};
+
+function onEdibleClick(edible: AppEdibleData) {
+	wantsToUpdate.value = true;
+	clickedEdible.value = edible;
+};
+
+function onWrite() {
+	if (clickedEdible.value === null) return;
+	router.push(`/submission/write-form/${clickedEdible.value.edible.id}`);
+};
 
 onMounted(() => { 
 	scrollRef.value?.addEventListener("scroll", handleScroll);
@@ -90,6 +108,7 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 				<div 
 					v-for="submission in accumulatedSubmissions"
 					:key="submission.edible.id"
+					@click="onEdibleClick(submission)"
 					class="bg-dark-tertiary border border-smoke/40 text-chalk rounded-md 
 							 cursor-pointer hover:border-accent-primary transition-colors
 							 p-3 relative"
@@ -108,7 +127,7 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 				>
 					You've reached the end
 				</p>
-			</div>
+			</div>		
 
 			<Spinner 
 				v-show="adminSubissionsReqState.isLoading" 
@@ -122,6 +141,22 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 			/>
 
 			<p v-if="adminSubissionsReqState.isError">Failed to load submissions</p>
+
+			<BackgrundBlur
+				:is-visible="wantsToUpdate && clickedEdible !== null"
+				@click="wantsToUpdate = false"
+			/>
+
+			<EdibleWritePopup
+				v-if="wantsToUpdate && clickedEdible !== null"
+				:edible-type="clickedEdible.edible.information.type"
+				:edible-base="clickedEdible.edible.information.base"
+				:nutrients-by-type="clickedEdible.edible.information.nutrients"
+				:barcode="clickedEdible.barcode"
+				:write-type="'UPDATE'"
+				@cancel="wantsToUpdate = false"
+				@write="onWrite"
+			/>	
 		</div>
 	</View>
 </template>

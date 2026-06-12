@@ -59,7 +59,7 @@ const mineralsFormRef = useTemplateRef('mineralsFormRef');
 const initialMinerals = useNutrientSchemaFromList(() => initialEdible?.edible.information.nutrients.mineral);
 const isMineralsFormValid = ref(false);
 
-const barcode = ref("");
+const barcode = ref(`${initialEdible?.barcode ?? ''}`);
 const barcodeRef = useTemplateRef('barcodeRef');
 const isBarcodeValid = computed(() => uIsBarcodeValid(barcode.value));
 
@@ -91,7 +91,7 @@ const requestForm = computed((): AppEdibleWriteReq | null => {
 
 const isContentVisible = computed(() => {
 	return reqState.isIdle || reqState.isError
-})
+});
 
 function getFinalNutrientListOrNull(): NutrientIdWithAmount[] | null {
 	if (nutrientsForm.value === null ||

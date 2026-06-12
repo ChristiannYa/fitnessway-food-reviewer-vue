@@ -50,7 +50,7 @@ watch(form, () => {
   const result = buildEdibleBaseSchema().safeParse(form);
   if (!result.success) return;
   emit('set', result.data);
-}, { deep: true });
+}, { deep: true, immediate: true });
 
 defineExpose({ reset });
 </script>

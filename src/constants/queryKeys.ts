@@ -10,6 +10,8 @@ export const queryKeys = {
 		app: {
 			all: () =>                                                 ["edible", "app"] as const,
 
+			byId: (id: number) =>                                      ["edible", "app", "byId", id] as const,
+
 			adminSubmissionsAll: () =>                                 ["edible", "app", "adminSubmissions"] as const,
 			adminsSubmissions: (p: AdminEdibleSubmissionsReqParams) => [...queryKeys.edible.app.adminSubmissionsAll(), p] as const,
 		},

@@ -10,6 +10,8 @@ export type ServingUnit = typeof SERVING_UNIT[number];
 export const PENDING_FOOD_STATUS = ["APPROVED", "PENDING", "REJECTED"] as const
 export type PendingFoodStatus = typeof PENDING_FOOD_STATUS[number]
 
+export type WriteType = "UPDATE" | "SUBMIT";
+
 export type FoodBase = {
 	name: string;
 	brand: string | undefined;
@@ -20,6 +22,7 @@ export type FoodBase = {
 export type FoodInformation<T extends NutrientGroupable> = {
 	base: FoodBase;
 	nutrients: NutrientsByType<T>;
+	type: EdibleType
 };
 
 export type AppFood = {
@@ -50,6 +53,10 @@ export type PendingFoodReview = Pick<
 	PendingFood,
 	"status" | "createdBy" | "reviewedBy" | "reviewedAt" | "rejectionReason"
 >;
+
+export type AppEdibleByIdRes = {
+	appEdible?: AppEdibleData;
+};
 
 export type AdminEdibleSubmissionsReqParams = {
 	offset: number;

@@ -1,11 +1,11 @@
 import { apiClientAppKt } from "@/api/apiClient"
 import { pagination } from "@/constants/pagination"
 import { queryKeys } from "@/constants/queryKeys"
-import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
+import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, AppEdibleByIdRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
 import { queryOptions, useQuery as useTanstackQuery  } from "@tanstack/vue-query"
 
-async function withQueryDelay<T>(fn: () => Promise<T>): Promise<T> {
-	await new Promise(resolve => setTimeout(resolve, 1000));
+async function withQueryDelay<T>(fn: () => Promise<T>, delay: number = 300): Promise<T> {
+	await new Promise(resolve => setTimeout(resolve, delay));
 	return fn();
 };
 
@@ -36,6 +36,30 @@ export function getPendingEdiblesByUserIdQuery() {
 	});
 
 	return { getOptions, useQuery };
+};
+
+export function getAppEdibleByIdQuery() {
+
+	const getOptions = (id: number) =>
+		queryOptions({
+			queryKey: queryKeys.edible.app.byId(id),
+			queryFn: () => withQueryDelay(() => 
+				apiClientAppKt.req<AppEdibleByIdRes>({
+					method: "GET",
+					path: `/edible/app/${id}`
+				})
+			)
+		});
+
+		const useQuery = (
+			id: number,
+			extraOptions?: Partial<NonNullable<ReturnType<typeof getOptions>>>
+		) => useTanstackQuery({
+			...getOptions(id),
+			...extraOptions
+		});
+
+		return { getOptions, useQuery };
 };
 
 export function getAdminSubmissionsQuery() {

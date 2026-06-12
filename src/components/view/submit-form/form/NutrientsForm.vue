@@ -4,7 +4,7 @@ import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
 import { buildNutrientSchema, type NutrientSchema } from '@/schemas/NutrientSchema';
 import type { NutrientData, NutrientType } from '@/types/nutrientTypes';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, toRef, watch } from 'vue';
 import EdibleFormField from './EdibleFormField.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import NutrientDvButton from './NutrientDvButton.vue';
@@ -58,6 +58,8 @@ const nutrients = computed((): NutrientData[] | null => {
 	return buildNutrientListsByType(list, nutrientType);
 });
 
+const initialValuesRef = toRef(() => initialValues);
+
 const form = reactive<NutrientSchema>({});
 const formValidation = ref<FormValidation | null>(null);
 const fieldEntries = computed((): FieldEntry[] | null => {
@@ -94,13 +96,14 @@ function initForms() {
 };
 
 // Handle initial form seedings upon component mount
-watch(nutrients, (wNutrients) => {
-	if (wNutrients === null) return;
+watch([nutrients, initialValuesRef], () => {
+	const wnutrients = nutrients.value;
+	if (wnutrients === null) return;
 
 	initForms()
 	
 	formValidation.value =  useFormValidation(
-		buildNutrientSchema(wNutrients, shouldRequireAny),
+		buildNutrientSchema(wnutrients, shouldRequireAny),
 		form
 	);
 }, { immediate: true });
@@ -124,7 +127,7 @@ watch(form, (f) => {
 		});
 
 	emit('set', { ...dvForm });
-}, { deep: true });
+}, { deep: true, immediate: true });
 
 watch(dvActive, (da, prev) => {
 	if (prev === undefined) return;

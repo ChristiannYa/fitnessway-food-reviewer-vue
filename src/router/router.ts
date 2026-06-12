@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 				path: "/submission", 
 				component: () => import("@/layouts/SubmissionOutlet.vue"), 
 				children: [
-					{ path: "write-form", component: () => import("@/views/EdibleWritingFormView.vue") },
+					{ path: "write-form/:edibleId?", component: () => import("@/views/EdibleWritingFormView.vue") },
 					{ path: "submissions", component: () => import("@/views/SubmissionsView.vue") },
 				]
 			},
