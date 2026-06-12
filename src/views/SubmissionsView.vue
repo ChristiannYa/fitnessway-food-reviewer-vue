@@ -101,7 +101,10 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 <template>
 	<View>	
 		<div class="view-child-w h-full relative">
-			<p class="text-center text-smoke">
+			<p 
+				v-if="adminSubissionsReqState.isSuccess" 
+				class="text-center text-smoke"
+			>
 				Total:
 				<span class="font-bold font-mono">
 					{{ adminSubmissionsRes?.data?.submittedAppEdibles?.totalCount }} 
