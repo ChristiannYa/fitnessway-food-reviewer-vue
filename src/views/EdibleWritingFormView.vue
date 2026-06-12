@@ -149,6 +149,14 @@ function onStartOverLocal() {
 <template>
 	<View class="relative">
 		<div 
+			v-if="writeType === 'UPDATE' && currentStep === 1"
+			class="border-2 border-dotted border-smoke rounded-md text-sm 
+				 text-chalk leading-none p-1.5 absolute top-2 right-2"
+		>
+			{{ writeType }} MODE
+		</div>
+
+		<div 
 			v-if="!isEdibleByIdLoading"
 			class="view-child-w flex flex-col grow h-full gap-4"
 		>
