@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import View from "@/components/shared/View.vue";
 import SubmissionHeader from "@/components/view/submit-form/header/SubmissionHeader.vue";
-import { computed, useTemplateRef } from "vue";
+import { computed, useTemplateRef, watch } from "vue";
 import { useSubmitMutation, useUpdateMutation } from "@/hooks/mutations/foodMutations";
 import EdibleWritePopup from "@/components/view/submit-form/form/EdibleWritePopup.vue";
 import EdibleForms from "@/components/view/submit-form/form/EdibleForms.vue";
@@ -112,6 +112,12 @@ const visibleSubmissionError = computed((): string | null => {
 	if (req === undefined) return null;
 
 	return `Failed to ${writeType.value.toLowerCase()} ${req?.edibleRequest.edibleType.toLowerCase()}`
+});
+
+watch(edibleByIdRes, (wedibleByIdRes) => {
+	if (!wedibleByIdRes?.data?.appEdible) {
+		router.push("/submission/write-form");
+	};
 });
 
 async function onWriteLocal() {
