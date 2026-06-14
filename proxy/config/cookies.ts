@@ -6,6 +6,7 @@ type cookieConfig = {
 };
 
 const isProd = process.env.NODE_ENV === "production";
+const domain = process.env.DOMAIN;
 
 const cookies = {
 	refresh: {
@@ -13,7 +14,7 @@ const cookies = {
 		options: {
 			httpOnly: true,
 			secure: isProd,
-			sameSite: isProd ? "None" : "Lax",
+			sameSite: isProd ? domain : undefined,
 			path: "/",
 			maxAge: 60 * 60 * 24 * 30 // 30 days
 		}
