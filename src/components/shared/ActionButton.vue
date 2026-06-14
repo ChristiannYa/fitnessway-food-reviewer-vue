@@ -35,7 +35,7 @@ const emit = defineEmits<{
 			'--hover-border-color': borderHoverColor,
 			backgroundColor: backgroundColor,
 		}"
-		class="flex grow justify-center items-center gap-1 py-2 px-3 rounded-xl
+		class="flex justify-center items-center gap-1 py-2 px-3 rounded-xl
 			   text-lg transition-colors"
         :class="[
 			isInverted 

@@ -58,6 +58,10 @@ export type AppEdibleByIdRes = {
 	appEdible?: AppEdibleData;
 };
 
+export type AppEdibleByBarcodeRes = {
+	appEdible: AppEdibleData | null;
+}
+
 export type AdminEdibleSubmissionsReqParams = {
 	offset: number;
 	date?: string;

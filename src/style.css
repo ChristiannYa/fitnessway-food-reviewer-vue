@@ -48,3 +48,8 @@
 .view-child-w {
 	@apply w-100 max-w-full
 }
+
+.barcode-scan-text-indicator {
+	@apply opacity-90 text-chalk text-sm absolute bottom-2 left-1/2 
+		   -translate-x-1/2
+}

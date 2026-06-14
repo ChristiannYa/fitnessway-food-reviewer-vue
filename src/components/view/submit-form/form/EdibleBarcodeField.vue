@@ -36,10 +36,7 @@ defineExpose({ stopScanning, clearBarcode });
 		<div class="flex flex-col gap-y-4">
 			<div v-show="isScanning" class="relative">
 				<video ref="videoElement"/>
-				<p class="opacity-90 text-chalk text-sm absolute bottom-2 
-						  left-1/2 -translate-x-1/2">
-					Scanning
-				</p>
+				<p class="barcode-scan-text-indicator">Scanning</p>
 			</div>
 
 			<p 

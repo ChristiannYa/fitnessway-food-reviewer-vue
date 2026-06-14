@@ -1,7 +1,7 @@
 import { apiClientAppKt } from "@/api/apiClient"
 import { pagination } from "@/constants/pagination"
 import { queryKeys } from "@/constants/queryKeys"
-import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, AppEdibleByIdRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
+import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, AppEdibleByBarcodeRes, AppEdibleByIdRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
 import { queryOptions, useQuery as useTanstackQuery  } from "@tanstack/vue-query"
 
 async function withQueryDelay<T>(fn: () => Promise<T>, delay: number = 300): Promise<T> {
@@ -56,6 +56,31 @@ export function getAppEdibleByIdQuery() {
 			extraOptions?: Partial<NonNullable<ReturnType<typeof getOptions>>>
 		) => useTanstackQuery({
 			...getOptions(id),
+			...extraOptions
+		});
+
+		return { getOptions, useQuery };
+};
+
+export function getAppEdibleByBarcodeQuery() {
+
+	const getOptions = (barcode: string) =>
+		queryOptions({
+			queryKey: queryKeys.edible.app.byBarcode(barcode),
+			queryFn: () => withQueryDelay(() => 
+				apiClientAppKt.req<AppEdibleByBarcodeRes>({
+					method: "GET",
+					path: `/edible/app/barcode/${barcode}`
+				}),
+				1000
+			)
+		});
+
+		const useQuery = (
+			barcode: string,
+			extraOptions?: Partial<NonNullable<ReturnType<typeof getOptions>>>
+		) => useTanstackQuery({
+			...getOptions(barcode),
 			...extraOptions
 		});
 

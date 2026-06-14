@@ -40,12 +40,14 @@ const emit = defineEmits<{
 				v-if="writeType === 'SUBMIT'"
 				label="Cancel"
 				background-color="#6a7282"
+				class="grow"
 				@click="emit('cancel')"
 			/>
 			<ActionButton
 				:label="`${stringToTitleCase(writeType)}`"
 				background-color="#088f8f"
 				@click="emit('write')"
+				class="grow"
 			/>
 		</div>
 	</aside>

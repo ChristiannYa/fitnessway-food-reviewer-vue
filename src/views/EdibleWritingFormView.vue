@@ -11,29 +11,34 @@ import { useEdibleWriteForm } from "@/hooks/composables/useEdibleWriteForm";
 import { useRoute, useRouter } from "vue-router";
 import { useAdminSubmissionsState } from "@/hooks/composables/useAdminSubmissionsState";
 import type { AppEdibleData, WriteType } from "@/types/foodTypes";
-import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
 import { getAppEdibleByIdQuery } from "@/hooks/queries/edibleQueries";
 import { useQuery } from "@tanstack/vue-query";
+import WriteFormTopbar from "@/components/view/submit-form/WriteFormTopbar.vue";
+import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
 import Spinner from "@/components/shared/Spinner.vue";
+import FindByBarcodePopup from "@/components/view/submit-form/FindByBarcodePopup.vue";
 
-const edibleFormsRef = useTemplateRef('edibleFormsRef');
+const edibleFormsRef = useTemplateRef("edibleFormsRef");
+const findByBarcodePopupRef = useTemplateRef("findByBarcodePopupRef");
 
 const route = useRoute();
 const router = useRouter();
+
 const edibleIdPathParam = computed(() => route.params.edibleId as string | undefined);
 
 const { accumulatedSubmissions } = useAdminSubmissionsState();
 const edibleFromMemory = computed(() => accumulatedSubmissions.value.find(s => s.edible.id === Number(edibleIdPathParam.value)));
 
-const { getOptions: getAppEdibleByIdQueryOpts } = getAppEdibleByIdQuery();
-const getAppEdibleByIdQueryOptsCmpt = computed(() => ({
-	...getAppEdibleByIdQueryOpts(Number(edibleIdPathParam.value)),
-	enabled: !!edibleIdPathParam.value && !edibleFromMemory.value
-}));
 const { 
 	data: edibleByIdRes,
 	isLoading: isEdibleByIdLoading
- } = useQuery(getAppEdibleByIdQueryOptsCmpt);
+ } = useQuery(computed(() => {
+	const { getOptions } = getAppEdibleByIdQuery();
+	return ({
+		...getOptions(Number(edibleIdPathParam.value)),
+		enabled: !!edibleIdPathParam.value && !edibleFromMemory.value
+	});
+}));
 
 const initialEdible = computed((): AppEdibleData | undefined => {
     if (!edibleIdPathParam.value) return undefined;
@@ -58,7 +63,7 @@ const {
 	onPrev,
 	onNext,
 	onStartOver,
- } = useEdibleWriteForm(edibleFormsRef);
+} = useEdibleWriteForm(edibleFormsRef);
 
 const { 
 	mutate: mutateSubmit, 
@@ -114,6 +119,7 @@ const visibleSubmissionError = computed((): string | null => {
 	return `Failed to ${writeType.value.toLowerCase()} ${req?.edibleRequest.edibleType.toLowerCase()}`
 });
 
+
 watch(edibleByIdRes, (wedibleByIdRes) => {
 	if (!wedibleByIdRes?.data?.appEdible) {
 		router.push("/submission/write-form");
@@ -149,17 +155,16 @@ function onStartOverLocal() {
 <template>
 	<View class="relative">
 		<div 
-			v-if="writeType === 'UPDATE' && currentStep === 1"
-			class="border-2 border-dotted border-smoke rounded-md text-sm 
-				 text-chalk leading-none p-1.5 absolute top-2 right-2"
-		>
-			{{ writeType }} MODE
-		</div>
-
-		<div 
 			v-if="!isEdibleByIdLoading"
-			class="view-child-w flex flex-col grow h-full gap-4"
+			class="view-child-w flex flex-col grow h-full gap-4 relative"
 		>
+			<WriteFormTopbar 
+				v-if="currentStep === 1"
+				:write-type="writeType" 
+				@scan="findByBarcodePopupRef?.onWantsToScan"
+				class="mb-4"
+			/>
+
 			<SubmissionHeader 
 				v-if="!reqState.isSuccess"
 				:current-step="currentStep"
@@ -183,6 +188,8 @@ function onStartOverLocal() {
 				class="min-h-0"
 			/>
 		</div>
+		
+		<FindByBarcodePopup ref="findByBarcodePopupRef" />
 
 		<Spinner 
 			v-if="isEdibleByIdLoading"

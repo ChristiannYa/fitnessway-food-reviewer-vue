@@ -6,21 +6,27 @@ export function useBarcodeScanner() {
 	const isScanning = ref(false);
 	const isScanError = ref<string | null>(null);
 
-	const reader = new BrowserMultiFormatReader();
+	const isVideoReady = ref(false);
+	let lastVideoElement: HTMLVideoElement | null = null;
+
+	let reader = new BrowserMultiFormatReader();
+	let activeReaderId = 0;
 
 	async function startScanning(videoElement: HTMLVideoElement) {
+		lastVideoElement = videoElement;
 		isScanning.value = true;
+		isVideoReady.value = false;
+
+		videoElement.addEventListener('playing', () => {
+			isVideoReady.value = true;
+		}, { once: true });
+
+		reader = new BrowserMultiFormatReader();
+		const currentReaderId = ++activeReaderId;
 
 		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
-				video: { facingMode: 'environment' }
-			});
-
-			videoElement.srcObject = stream;
-			await videoElement.play();
-
 			await reader.decodeFromVideoDevice(undefined, videoElement, (r, _) => {
-				if (r) {
+				if (r && isScanning.value && activeReaderId === currentReaderId) {
 					barcode.value = r.getText();
 					stopScanning();
 				}
@@ -32,17 +38,29 @@ export function useBarcodeScanner() {
 	};
 
 	function stopScanning() {
-		BrowserMultiFormatReader.releaseAllStreams();
 		isScanning.value = false;
+		isVideoReady.value = false;
+
+		const target = lastVideoElement;
+		lastVideoElement = null;
+
+		// Release the camera stream
+		BrowserMultiFormatReader.releaseAllStreams();
+		if (target?.srcObject) {
+			const stream = target.srcObject as MediaStream;
+			stream.getTracks().forEach(t => t.stop());
+			target.srcObject = null;
+		};
 	};
 
 	async function toggleScan(videoElement: HTMLVideoElement | null) {
-		if (videoElement === null) return;
-
 		if (isScanning.value) {
+			if (videoElement === null) return;
 			stopScanning();
 		} else {
 			await nextTick();
+			
+			if (videoElement === null) return;
 			await startScanning(videoElement);
 		}
 	};
@@ -55,8 +73,9 @@ export function useBarcodeScanner() {
 
 	return {
 		barcode: readonly(barcode), 
-		isScanning,
-		isScanError,
+		isScanning: readonly(isScanning),
+		isScanError : readonly(isScanError),
+		isVideoReady: readonly(isVideoReady),
 		startScanning,
 		stopScanning,
 		toggleScan,
