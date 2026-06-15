@@ -9,7 +9,7 @@ import EdibleFormField from './EdibleFormField.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import NutrientDvButton from './NutrientDvButton.vue';
 import { getNutrientDv, getNutrientLabelInfo } from '@/utils/nutrientUtils.ts';
-import { nutrientDvArray } from '@/constants/nutrientConstants.ts';
+import { nutrientDvArray, nutrientMains } from '@/constants/nutrientConstants.ts';
 
 type FieldEntry = {
 	nutrient: NutrientData,
@@ -170,6 +170,11 @@ defineExpose({ initForms })
 				:is-focused="focusedFields[entry.nutrient.base.name.toLowerCase()] === true"
 				:error-message="undefined"
 				@reset="entry.fieldData.deleteError"
+				:class="[
+					(nutrientMains as readonly number[]).includes(entry.nutrient.base.id)
+						? 'text-white font-semibold'
+						: ''	
+				]"
 			>
 				<NutrientDvButton 
 					v-if="shouldShowDvButton(entry.nutrient.base.id)"

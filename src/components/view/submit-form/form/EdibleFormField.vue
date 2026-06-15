@@ -32,7 +32,7 @@ function onInput(e: InputEvent) {
 			]"
 		>
 			<div class="flex items-center gap-1 text-lg leading-tight">
-				<p class="cursor-default shrink-0">
+				<p class="cursor-default shrink-0 text-chalk">
 					{{ inputData.label }}
 					<span 
 						v-if="inputData.labelDetails"

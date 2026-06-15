@@ -77,3 +77,12 @@ export const nutrientDvArray = [
     nutrientIds.minerals.iodine,
     nutrientIds.minerals.copper,
 ] as const;
+
+export const nutrientMains = [
+	nutrientIds.base.cals,
+	nutrientIds.base.carbs,
+	nutrientIds.base.chol,
+	nutrientIds.base.fats,
+	nutrientIds.base.protein,
+	nutrientIds.base.sodium,
+];
