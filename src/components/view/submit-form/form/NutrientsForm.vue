@@ -8,7 +8,7 @@ import { computed, reactive, ref, toRef, watch } from 'vue';
 import EdibleFormField from './EdibleFormField.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import NutrientDvButton from './NutrientDvButton.vue';
-import { getNutrientDv } from '@/utils/nutrientUtils.ts';
+import { getNutrientDv, getNutrientLabelInfo } from '@/utils/nutrientUtils.ts';
 import { nutrientDvArray } from '@/constants/nutrientConstants.ts';
 
 type FieldEntry = {
@@ -74,10 +74,10 @@ const fieldEntries = computed((): FieldEntry[] | null => {
 			"number",
 			dvActive[String(n.base.id)]
 				? "DV%"
-				: n.base.unit.toLowerCase()
+				: getNutrientLabelInfo(n.base)
 		)
-	})) 
-})
+	}));
+});
 
 const isValid = computed(() => formValidation.value?.isValid ?? false);
 const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});

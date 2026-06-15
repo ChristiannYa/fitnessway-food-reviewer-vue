@@ -25,9 +25,15 @@ export type NutrientPreferences = {
 	goal?: number;
 };
 
+export type NutrientConfiguration = {
+	parentId?: number;
+	sortOrder: number;
+}
+
 export type NutrientData = NutrientGroupable & {
 	base: NutrientBase;
 	preferences: NutrientPreferences;
+	configuration: NutrientConfiguration;
 };
 
 export type NutrientDataAmount = NutrientGroupable & {

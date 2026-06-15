@@ -99,7 +99,7 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 </script>
 
 <template>
-	<View>	
+	<View>
 		<div class="view-child-w h-full relative">
 			<p 
 				v-if="adminSubissionsReqState.isSuccess" 
@@ -156,22 +156,23 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 			>
 				Failed to load submissions
 			</p>
-
-			<BackgrundBlur
-				:is-visible="wantsToUpdate && clickedEdible !== null"
-				@click="wantsToUpdate = false"
-			/>
-
-			<EdibleWritePopup
-				v-if="wantsToUpdate && clickedEdible !== null"
-				:edible-type="clickedEdible.edible.information.type"
-				:edible-base="clickedEdible.edible.information.base"
-				:nutrients-by-type="clickedEdible.edible.information.nutrients"
-				:barcode="clickedEdible.barcode"
-				:write-type="'UPDATE'"
-				@cancel="wantsToUpdate = false"
-				@write="onWrite"
-			/>	
 		</div>
+
+		<BackgrundBlur
+			:is-visible="wantsToUpdate && clickedEdible !== null"
+			@click="wantsToUpdate = false"
+			class=""
+		/>
+
+		<EdibleWritePopup
+			v-if="wantsToUpdate && clickedEdible !== null"
+			:edible-type="clickedEdible.edible.information.type"
+			:edible-base="clickedEdible.edible.information.base"
+			:nutrients-by-type="clickedEdible.edible.information.nutrients"
+			:barcode="clickedEdible.barcode"
+			:write-type="'UPDATE'"
+			@cancel="wantsToUpdate = false"
+			@write="onWrite"
+		/>	
 	</View>
 </template>
