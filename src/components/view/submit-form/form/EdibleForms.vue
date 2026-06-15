@@ -157,12 +157,7 @@ defineExpose({ resetAllForms, stopScanning });
 	<div class="flex flex-col gap-y-0">
 		<div
 			v-show="isContentVisible"
-			class="flex flex-col gap-y-4"
-			:class="[
-				currentStep >= 2
-				? 'overflow-scroll no-scrollbar pb-5'
-				: ''
-			]"
+			class="overflow-y-scroll no-scrollbar pb-5 flex flex-col gap-y-4"
 			@wheel="(e) => {
 				if (currentStep >= 2) {
 					// Allows proper usage of the scroll wheel when modifying

@@ -100,7 +100,7 @@ watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 
 <template>
 	<View>
-		<div class="view-child-w h-full relative">
+		<div class="view-child-w h-full flex flex-col relative">
 			<p 
 				v-if="adminSubissionsReqState.isSuccess" 
 				class="text-center text-smoke"
