@@ -172,7 +172,7 @@ defineExpose({ initForms })
 				@reset="entry.fieldData.deleteError"
 				:class="[
 					(nutrientMains as readonly number[]).includes(entry.nutrient.base.id)
-						? 'text-white font-semibold'
+						? 'text-white font-extrabold'
 						: ''	
 				]"
 			>
