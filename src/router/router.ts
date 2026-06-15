@@ -37,18 +37,24 @@ const router = createRouter({
 	routes
 });
 
-router.beforeEach(async () => {
-	const store = useAccessTokenStore();
-	if (store.accessToken) return;
+router.beforeEach(async (to) => {
+	const isInLogin = to.path === "/login";
 
-	const refreshTokenPxyRes = await getRefreshTokenPxy();
-	const refreshToken = refreshTokenPxyRes.data?.refreshToken;
+	const store = useAccessTokenStore();
+	if (store.accessToken) {
+		if (isInLogin) return "/submission/write-form";
+		return;
+	};
+
+	const refreshToken = (await getRefreshTokenPxy()).data?.refreshToken;
 	if (!refreshToken) return;
 
 	const res = await refreshAccessToken(refreshToken);
 	if (!res.data) return;
 
 	store.set(res.data.accessToken);
+
+	if (isInLogin) return "/submission/write-form";
 });
 
 export default router;
