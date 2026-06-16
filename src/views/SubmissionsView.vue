@@ -27,23 +27,27 @@ const {
 	scrollTop
  } = useAdminSubmissionsState();
 
-const { getOptions: getAdminSubmissionsQueryOptions } = getAdminSubmissionsQuery();
-const adminSubmmissionsQueryOptions = computed(() => getAdminSubmissionsQueryOptions({ offset: offset.value }));
-
 const {
 	data: adminSubmissionsRes,
 	isPending: isAdminSubmissionsPending,
 	isFetching: isAdminSubmissionsFetching,
 	isError: isAdminSubmissionsError,
-} = useQuery(adminSubmmissionsQueryOptions);
+} = useQuery(computed(() => {
+	const { getOptions } = getAdminSubmissionsQuery();
+	return ({ ...getOptions({ offset: offset.value }) });
+}));
 
 const adminSubissionsReqState = computed((): RequestState => ({
 	isLoading: isAdminSubmissionsPending.value || isAdminSubmissionsFetching.value,
 	isSuccess: adminSubmissionsRes.value?.success === true,
 	isError: isAdminSubmissionsError.value || (adminSubmissionsRes.value?.success === false)
-}))
+}));
 
-const endReached = computed(() => !hasMore.value && accumulatedSubmissions.value.length === adminSubmissionsRes?.value?.data?.submittedAppEdibles.totalCount);
+const endReached = computed(() => {
+	const accLen = accumulatedSubmissions.value.length;
+	const totalCount = adminSubmissionsRes?.value?.data?.submittedAppEdibles.totalCount;
+	return !hasMore.value && accLen === totalCount;
+});
 
 function loadMore() {
 	if (!adminSubissionsReqState.value.isLoading && hasMore.value) {

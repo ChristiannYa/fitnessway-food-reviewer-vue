@@ -119,7 +119,6 @@ const visibleSubmissionError = computed((): string | null => {
 	return `Failed to ${writeType.value.toLowerCase()} ${req?.edibleRequest.edibleType.toLowerCase()}`
 });
 
-
 watch(edibleByIdRes, (wedibleByIdRes) => {
 	if (!wedibleByIdRes?.data?.appEdible) {
 		router.push("/submission/write-form");
