@@ -1,5 +1,5 @@
 import { nutrientIds } from "@/constants/nutrientConstants";
-import type { NutrientBase } from "@/types/nutrientTypes";
+import type { NutrientBase, NutrientData, NutrientDataAmount, NutrientIdWithAmount } from "@/types/nutrientTypes";
 
 export type NutrientDvOperation = "DV_TO_UNIT" | "UNIT_TO_DV";
 
@@ -52,6 +52,16 @@ export const getNutrientDv = (
 		default: throw new RangeError(`Nutrient with id #${id} does not support %DV conversion`);
 	};
 };
+
+export const getNutrientDataAmountsFromIds = (
+	list: NutrientIdWithAmount[],
+	apiList: NutrientData[]
+): NutrientDataAmount[] => list.flatMap((n) => {
+	const found = apiList.find(an => an.base.id === n.id);
+	return found
+		? [{ data: found, amount: n.amount }]
+		: []
+});
 
 export const getNutrientLabelInfo = (base: NutrientBase) =>
 	isNutrientSymbolVisible(base) 

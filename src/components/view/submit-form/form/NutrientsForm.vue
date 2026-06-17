@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { buildNutrientListsByType } from '@/builders/nutrientBuilders';
+import { buildNutrientListFilter } from '@/builders/nutrientBuilders';
 import { useFormValidation, type FieldData, type FormValidation } from '@/hooks/composables/useFormValidation.ts';
 import { useNutrientsByTypeQuery } from '@/hooks/queries/nutrientQueries';
 import { buildNutrientSchema, type NutrientSchema } from '@/schemas/NutrientSchema';
@@ -55,7 +55,7 @@ const nutrients = computed((): NutrientData[] | null => {
 	const list = data?.value?.data?.nutrientsByType;
 	if (list === undefined) return null;
 
-	return buildNutrientListsByType(list, nutrientType);
+	return buildNutrientListFilter(list, nutrientType);
 });
 
 const initialValuesRef = toRef(() => initialValues);

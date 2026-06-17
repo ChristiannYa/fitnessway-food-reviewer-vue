@@ -1,10 +1,11 @@
 import type { AppEdibleWriteReq } from "@/types/foodTypes";
 import type { NutrientDataAmount, NutrientsByType } from "@/types/nutrientTypes";
 import { computed, ref, type ShallowRef } from "vue";
-import { buildNutrientListFromType, buildNutrientsByTypeFromList } from "@/builders/nutrientBuilders";
-import { useNutrientsByTypeQuery } from "../queries/nutrientQueries";
+import { buildNutrientList, buildNutrientsByTypeFromList } from "@/builders/nutrientBuilders";
 import type { ComponentExposed } from 'vue-component-type-helpers';
 import type EdibleForms from "@/components/view/submit-form/form/EdibleForms.vue";
+import { getNutrientDataAmountsFromIds } from "@/utils/nutrientUtils";
+import { useNutrientsByTypeQuery } from "../queries/nutrientQueries";
 
 type FormsRef = Readonly<ShallowRef<ComponentExposed<typeof EdibleForms> | null>>;
 
@@ -14,7 +15,6 @@ export const useEdibleWriteForm = (edibleFormsRef: FormsRef) => {
 	const isNextEnabled = ref(false);
 
 	const request = ref<AppEdibleWriteReq | null>(null);
-
 	const { data: nutrientsByTypeRes } = useNutrientsByTypeQuery();
 
 	const finalNutrientsByType = computed((): NutrientsByType<NutrientDataAmount> | null => {
@@ -22,27 +22,19 @@ export const useEdibleWriteForm = (edibleFormsRef: FormsRef) => {
 
 		const finalBareNutrientList = request?.value?.edibleRequest?.nutrients
 		if (finalBareNutrientList === undefined) return null;
-		
-		const appNutrientsByType = nutrientsByTypeRes.value?.data?.nutrientsByType;
-		if (appNutrientsByType === undefined) return null;
-		const appNutrientList = buildNutrientListFromType(appNutrientsByType);
-		
-		const finalNutrientList = finalBareNutrientList.flatMap((bareNutrient): NutrientDataAmount[] => {
-			const nutrientData = appNutrientList.find((appNutrient) => 
-				appNutrient.base.id === bareNutrient.id
-			)
 
-			return nutrientData
-				? [{ data: nutrientData, amount: bareNutrient.amount }]
-				: []
-		})
+		const finalNutrientList = (() => {
+			const apiNutrients = nutrientsByTypeRes.value?.data?.nutrientsByType;
+			if (!apiNutrients) return null;
+
+			return getNutrientDataAmountsFromIds(
+				finalBareNutrientList, 
+				buildNutrientList(apiNutrients)
+			);
+		})();
+		if (finalNutrientList === null) return null;
 		
-		const nutrientsByType = buildNutrientsByTypeFromList(
-			finalNutrientList, 
-			(n) => n.data.base.type
-		)
-		
-		return nutrientsByType;
+		return buildNutrientsByTypeFromList(finalNutrientList, (n) => n.data.base.type);
 	});
 
 	async function onWrite(mutateFn: () => void) {

@@ -4,7 +4,7 @@ import type {
 	NutrientType 
 } from "@/types/nutrientTypes";
 
-export const buildNutrientListFromType = <T extends NutrientGroupable> (
+export const buildNutrientList = <T extends NutrientGroupable> (
 	nutrientsByType: NutrientsByType<T>
 ): T[] => [
 	nutrientsByType.basic, 
@@ -20,7 +20,7 @@ export const buildNutrientListTyped = <T extends NutrientGroupable>(
 	{ type: "MINERAL", nutrients: nutrientsByType.mineral }
 ]);
 
-export const buildNutrientListsByType = <T extends NutrientGroupable>(
+export const buildNutrientListFilter = <T extends NutrientGroupable>(
 	nutrients: NutrientsByType<T>,
 	type: NutrientType
 ): T[] => {
@@ -33,9 +33,9 @@ export const buildNutrientListsByType = <T extends NutrientGroupable>(
 
 export const buildNutrientsByTypeFromList = <T extends NutrientGroupable> (
 	list: T[],
-	typeGetter: (n: T) => NutrientType
+	getType: (n: T) => NutrientType
 ): NutrientsByType<T> => {
-	const grouped = Object.groupBy(list, typeGetter);
+	const grouped = Object.groupBy(list, getType);
 
 	return {
 		basic: grouped['BASIC'] ?? [],

@@ -91,13 +91,12 @@ const reqState = computed((): RequestState => {
 			? isSubmitIdle.value 
 			: isUpdateIdle.value,
 
-        isLoading: isSubmit 
-			? isSubmitPending.value : 
-			isUpdatePending.value,
+		// Skipped loading for "UPDATE" due to optimistic update
+        isLoading: isSubmitPending.value,
 
         isSuccess: isSubmit 
             ? submissionData.value?.success === true 
-            : updateData.value?.success === true,
+            : isUpdatePending.value || updateData.value?.success === true,
 			
         isError: isSubmit 
             ? (isSubmitError.value || submissionData.value?.success === false)
@@ -201,10 +200,10 @@ function onStartOverLocal() {
 		/>
 
 		<EdibleWritePopup
-			v-if="wantsToWrite && request !== null"
+			v-if="wantsToWrite && request !== null && finalNutrientsByType !== null"
 			:edible-type="request.edibleRequest.edibleType"
 			:edible-base="request.edibleRequest.base"
-			:nutrients-by-type="finalNutrientsByType!"
+			:nutrients-by-type="finalNutrientsByType"
 			:barcode="request.barcode"
 			:write-type="writeType"
 			@cancel="wantsToWrite = false"

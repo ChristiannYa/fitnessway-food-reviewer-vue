@@ -19,7 +19,7 @@ function handleNameClick() {
     isFullNameVisible.value = !isFullNameVisible.value
 }
 
-watch([props.foodBase], async () => {
+watch(() => props.foodBase, async () => {
 	await nextTick()
 
 	const el = nameRef.value
