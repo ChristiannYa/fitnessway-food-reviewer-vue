@@ -7,7 +7,9 @@ import { useBarcodeScanner } from '@/hooks/composables/useBarcodeScanner';
 import { getAppEdibleByBarcodeQuery } from '@/hooks/queries/edibleQueries';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const queryClient = useQueryClient();
 
 const wantsToScan = ref(false);
@@ -42,6 +44,11 @@ const byBarcode = computed(() => byBarcodeRes.value?.data?.appEdible);
 watch(scannedBarcode, (wscannedBarcode) => {
 	if (!!wscannedBarcode) byBarcodeRefetch();
 });
+
+function onUpdateScanned() {
+	if (!byBarcode.value) return;
+	router.push(`/submission/write-form/${byBarcode.value.edible.id}`);
+}
 
 async function onWantsToScan() {
 	wantsToScan.value = true;
@@ -108,12 +115,24 @@ defineExpose({ onWantsToScan })
 				class="overflow-y-scroll no-scrollbar w-full h-full p-2"
 			/>
 
-			<ActionButton
+			<div 
 				v-if="isScanning || byBarcodeStatus === 'success'"
-				@click="onCancelScan"
-				:label="isScanning ? 'Stop Scan' : 'Ok'"
-				background-color="#6a7282"
-			/>	
+				class="flex gap-x-4"
+			>
+				<ActionButton
+					@click="onCancelScan"
+					:label="isScanning ? 'Stop Scan' : 'Ok'"
+					background-color="#6a7282"
+					class="grow basis-0"
+				/>	
+				<ActionButton
+					v-if="byBarcodeStatus === 'success'"
+					@click="onUpdateScanned"
+					label="Update"
+					background-color="#088f8f"
+					class="grow basis-0"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
