@@ -4,7 +4,7 @@ import type { PaginationResult } from "@/types/appTypes";
 export const EDIBLE_TYPE = ["FOOD", "SUPPLEMENT"] as const;
 export type EdibleType = typeof EDIBLE_TYPE[number];
 
-export const SERVING_UNIT = ["G", "MG", "MCG", "ML", "OZ", "KCAL"] as const;
+export const SERVING_UNIT = ["G", "MG", "MCG", "ML", "OZ", "KCAL", "UNIT"] as const;
 export type ServingUnit = typeof SERVING_UNIT[number];
 
 export const PENDING_FOOD_STATUS = ["APPROVED", "PENDING", "REJECTED"] as const

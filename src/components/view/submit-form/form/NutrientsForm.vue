@@ -82,31 +82,25 @@ const fieldEntries = computed((): FieldEntry[] | null => {
 const isValid = computed(() => formValidation.value?.isValid ?? false);
 const focusedFields = computed(() => formValidation.value?.focusedFields ?? {});
 
-function initForms() {
-    const nutrientsCopy = nutrients.value;
-    if (nutrientsCopy === null) return;
-
-    nutrientsCopy.forEach(nutrient => {
-        const id = String(nutrient.base.id);
-		
-        form[id] = initialValues?.[id] ?? 0;
-        dvForm[id] = initialValues?.[id] ?? 0;
-        dvActive[id] = false;
-    });
-};
-
-// Handle initial form seedings upon component mount
-watch([nutrients, initialValuesRef], () => {
-	const wnutrients = nutrients.value;
+// Re-seed form values only when the nutrients' load or initial values change
+watch([nutrients, initialValuesRef], ([wnutrients]) => {
 	if (wnutrients === null) return;
-
-	initForms()
-	
-	formValidation.value =  useFormValidation(
+	initForms();
+	formValidation.value = useFormValidation(
 		buildNutrientSchema(wnutrients, shouldRequireAny),
 		form
 	);
 }, { immediate: true });
+
+// Only rebuild the validation schema when `shouldRequireAny` changes,
+// without resetting the basic nutrients form values
+watch(() => shouldRequireAny, (wshouldRequireAny) => {
+	if (nutrients.value === null) return;
+	formValidation.value = useFormValidation(
+		buildNutrientSchema(nutrients.value, wshouldRequireAny),
+		form
+	);
+});
 
 watch(form, (f) => {
 	Object
@@ -149,7 +143,21 @@ watch(dvActive, (da, prev) => {
 
 watch(isValid, (iv) => emit('validation-change', iv), { immediate: true });
 
-defineExpose({ initForms })
+defineExpose({ initForms });
+
+function initForms() {
+    const nutrientsCopy = nutrients.value;
+    if (nutrientsCopy === null) return;
+
+    nutrientsCopy.forEach(nutrient => {
+        const id = String(nutrient.base.id);
+		
+        form[id] = initialValues?.[id] ?? 0;
+        dvForm[id] = initialValues?.[id] ?? 0;
+        dvActive[id] = false;
+    });
+};
+
 </script>
 
 <template>

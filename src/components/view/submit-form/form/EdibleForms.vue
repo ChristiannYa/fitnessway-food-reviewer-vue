@@ -71,7 +71,12 @@ const isNextEnabled = computed(() => {
 		case 2: return isNutrientsFormValid.value;
 		case 3: return isVitaminsFormValid.value;
 		case 4: return isMineralsFormValid.value;
-		case 5: return isBarcodeValid.value;
+		case 5: {
+			const finalNutrients = getFinalNutrientListOrNull();
+			return isBarcodeValid.value &&
+				   finalNutrients !== null &&
+				   finalNutrients.length > 0;
+		};
 		default: return false;
 	};
 });
@@ -185,7 +190,7 @@ defineExpose({ resetAllForms, stopScanning });
 				v-show="currentStep === 2"
 				nutrient-type="BASIC"
 				:initial-values="initialNutrients"
-				:should-require-any="true"
+				:should-require-any="edibleType === 'FOOD'"
 				@validation-change="isNutrientsFormValid = $event"
 				@set="nutrientsForm = $event"
 			/>
