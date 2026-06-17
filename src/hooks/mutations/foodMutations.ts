@@ -70,7 +70,7 @@ export const useUpdateMutation = (id: string) => {
 		mutationFn: (req: AppEdibleWriteReq) => 
 			apiClientAppKt.req<never>({
 				method: "PUT",
-				path: "/edible/app/foo",
+				path: "/edible/app",
 				body: req,
 				params: { edibleId: id }
 			}),
