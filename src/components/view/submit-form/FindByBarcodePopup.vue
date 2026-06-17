@@ -126,7 +126,7 @@ defineExpose({ onWantsToScan })
 					class="grow basis-0"
 				/>	
 				<ActionButton
-					v-if="byBarcodeStatus === 'success'"
+					v-if="byBarcodeStatus === 'success' && byBarcode"
 					@click="onUpdateScanned"
 					label="Update"
 					background-color="#088f8f"
