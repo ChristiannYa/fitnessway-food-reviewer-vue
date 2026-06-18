@@ -2,10 +2,10 @@ import { refreshAccessToken } from "@/auth/authHandlers";
 import { getRefreshTokenPxy } from "@/proxy/refreshTokenPxy";
 import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
 import { createRouter, createWebHistory } from "vue-router";
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteLocationNormalizedGeneric, RouteRecordRaw } from "vue-router";
 import { getUserQuery } from "@/hooks/queries/userQueries";
 import queryClient from "@/integrations/tanstackQuery";
-import { useAuthStore } from "@/hooks/composables/stores/authStore";
+import { useAppStore } from "@/hooks/composables/stores/authStore";
 
 const routes: RouteRecordRaw[] = [
 	{ path: "/login", component: () => import("@/views/LoginView.vue") },
@@ -70,12 +70,22 @@ async function handleActiveSession(
 	return;
 };
 
+async function preloadRouteComponents(to: RouteLocationNormalizedGeneric) {
+	const matched = router.resolve(to);
+	await Promise.all(
+		matched.matched.map(record => {
+			const comp = record.components?.default;
+			if (typeof comp === "function") return (comp as Function)();
+		})
+	);
+};
+
 router.beforeEach(async (to) => {
 	const isLoginRoute = to.path === "/login";
 	const isUnauthorizedRoute = to.path === "/unauthorized";
 
-	const authStore = useAuthStore();
-	authStore.setIsAuthLoading(true);
+	const appStore = useAppStore();
+	appStore.setIsLoading(true);
 
 	try {
 		const accessTokenStore = useAccessTokenStore();
@@ -96,7 +106,8 @@ router.beforeEach(async (to) => {
 
 		return await handleActiveSession(isLoginRoute, isUnauthorizedRoute);
 	} finally {
-		authStore.setIsAuthLoading(false);
+		await preloadRouteComponents(to);
+		appStore.setIsLoading(false);
 	};
 });
 

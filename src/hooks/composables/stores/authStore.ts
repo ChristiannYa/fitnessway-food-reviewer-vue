@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useAuthStore = defineStore("auth", () => {
-	const isAuthLoading = ref(true);
+export const useAppStore = defineStore("app", () => {
+	const isLoading = ref(true);
 
-	function setIsAuthLoading(is: boolean) {
-		isAuthLoading.value = is;
+	function setIsLoading(is: boolean) {
+		isLoading.value = is;
 	};
 
-	return { isAuthLoading, setIsAuthLoading };
+	return { isLoading, setIsLoading };
 });

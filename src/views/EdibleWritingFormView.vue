@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import View from "@/components/shared/View.vue";
 import SubmissionHeader from "@/components/view/submit-form/header/SubmissionHeader.vue";
-import { computed, useTemplateRef, watch } from "vue";
+import { computed, useTemplateRef, watch, defineAsyncComponent } from "vue";
 import { useSubmitMutation, useUpdateMutation } from "@/hooks/mutations/foodMutations";
 import EdibleWritePopup from "@/components/view/submit-form/form/EdibleWritePopup.vue";
 import EdibleForms from "@/components/view/submit-form/form/EdibleForms.vue";
@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/vue-query";
 import WriteFormTopbar from "@/components/view/submit-form/WriteFormTopbar.vue";
 import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
 import Spinner from "@/components/shared/Spinner.vue";
-import FindByBarcodePopup from "@/components/view/submit-form/FindByBarcodePopup.vue";
+const FindByBarcodePopup = defineAsyncComponent(() =>import("@/components/view/submit-form/FindByBarcodePopup.vue"));
 
 const edibleFormsRef = useTemplateRef("edibleFormsRef");
 const findByBarcodePopupRef = useTemplateRef("findByBarcodePopupRef");

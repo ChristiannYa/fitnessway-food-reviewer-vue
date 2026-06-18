@@ -2,7 +2,7 @@
 import type { EdibleBaseSchema } from '@/schemas/EdibleBaseSchema';
 import type { NutrientSchema } from '@/schemas/NutrientSchema';
 import { isBarcodeValid as uIsBarcodeValid } from "@/utils/textUtils";
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
 import EdibleBaseForm from './EdibleBaseForm.vue';
 import NutrientsForm from './NutrientsForm.vue';
 import { EDIBLE_TYPE, type AppEdibleData, type AppEdibleWriteReq, type EdibleType, type WriteType } from '@/types/foodTypes';
@@ -11,10 +11,10 @@ import type { RequestState } from '@/types/appTypes.ts';
 import Spinner from '@/components/shared/Spinner.vue';
 import ActionButton from '@/components/shared/ActionButton.vue';
 import EdibleRadio from './EdibleRadio.vue';
-import EdibleBarcodeField from './EdibleBarcodeField.vue';
 import { useErrorTimeout } from '@/hooks/composables/useErrorTimeout.ts';
 import TemporaryError from '@/components/shared/TemporaryError.vue';
 import { useNutrientSchemaFromList } from '@/hooks/composables/useNutrientsSchemaFromList.ts';
+const EdibleBarcodeField = defineAsyncComponent(() => import("./EdibleBarcodeField.vue"));
 
 const {
 	currentStep,
