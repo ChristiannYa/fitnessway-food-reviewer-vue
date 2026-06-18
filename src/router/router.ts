@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
 import { getUserQuery } from "@/hooks/queries/userQueries";
 import queryClient from "@/integrations/tanstackQuery";
+import { useAuthStore } from "@/hooks/composables/stores/authStore";
 
 const routes: RouteRecordRaw[] = [
 	{ path: "/login", component: () => import("@/views/LoginView.vue") },
@@ -73,23 +74,30 @@ router.beforeEach(async (to) => {
 	const isLoginRoute = to.path === "/login";
 	const isUnauthorizedRoute = to.path === "/unauthorized";
 
-	const accessTokenSt = useAccessTokenStore();
-	if (accessTokenSt.token) return handleActiveSession(isLoginRoute, isUnauthorizedRoute);
+	const authStore = useAuthStore();
+	authStore.setIsAuthLoading(true);
 
-	const refreshToken = (await getRefreshTokenPxy()).data?.refreshToken;
-	if (!refreshToken) { 
-		// Do not attempt token refresh for non-logged in users
-		return;
+	try {
+		const accessTokenStore = useAccessTokenStore();
+		if (accessTokenStore.token) return await handleActiveSession(isLoginRoute, isUnauthorizedRoute);
+
+		const refreshToken = (await getRefreshTokenPxy()).data?.refreshToken;
+		if (!refreshToken) { 
+			// Do not attempt token refresh for non-logged in users
+			return;
+		};
+
+		// Always refresh token on page load
+		const accessToken = (await refreshAccessToken(refreshToken)).data?.accessToken;
+		if (!accessToken) return;
+		accessTokenStore.set(accessToken);
+
+		if (isLoginRoute) return "/";
+
+		return await handleActiveSession(isLoginRoute, isUnauthorizedRoute);
+	} finally {
+		authStore.setIsAuthLoading(false);
 	};
-
-	// Always refresh token on page load
-	const accessToken = (await refreshAccessToken(refreshToken)).data?.accessToken;
-	if (!accessToken) return;
-	accessTokenSt.set(accessToken);
-
-	if (isLoginRoute) return "/";
-
-	return handleActiveSession(isLoginRoute, isUnauthorizedRoute);
 });
 
 export default router;
