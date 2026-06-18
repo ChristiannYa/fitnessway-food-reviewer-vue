@@ -67,4 +67,4 @@ export async function logout() {
 	await deleteRefreshTokenPxy();
 
 	return res;
-}
+};

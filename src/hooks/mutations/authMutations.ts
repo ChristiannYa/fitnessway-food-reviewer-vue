@@ -1,5 +1,6 @@
 import { login, logout } from "@/auth/authHandlers";
 import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
+import queryClient from "@/integrations/tanstackQuery";
 import { useMutation } from "@tanstack/vue-query";
 import { useRouter } from "vue-router";
 
@@ -29,17 +30,17 @@ export const useLogoutMutation = () => {
     return useMutation({
         mutationFn: logout,
         onSuccess: async (ctx) => {
-            store.clear()
-
             if (!ctx.success) {
                 // Just log error to not block user in their account
                 console.log("error when logging out: ", ctx.message)
             }
 
+			queryClient.clear();
+			store.clear()
             await router.push("/login")
         },
         onError: (error) => {
             console.log("error logging out: ", error.message)
         }
     })
-}
+};

@@ -37,7 +37,7 @@ const createApiClient = (
 		const headers = new Headers();
 		headers.set("Content-Type", "application/json");
 
-		const accessToken = useAccessTokenStore().accessToken;
+		const accessToken = useAccessTokenStore().token;
 
 		if (accessToken) {
 			headers.set("Authorization", `Bearer ${accessToken}`);

@@ -3,19 +3,16 @@ import { getRefreshTokenPxy } from "@/proxy/refreshTokenPxy";
 import { useAccessTokenStore } from "@/hooks/composables/stores/accessTokenStore";
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
-
-function handleProtectedOutletBeforeEnter() {
-	const store = useAccessTokenStore();
-	if (!store.accessToken) return "/login"
-}
+import { getUserQuery } from "@/hooks/queries/userQueries";
+import queryClient from "@/integrations/tanstackQuery";
 
 const routes: RouteRecordRaw[] = [
 	{ path: "/login", component: () => import("@/views/LoginView.vue") },
+	{ path: "/unauthorized", component: () => import("@/views/UnauthorizedView.vue") },
 	{ path: "/", redirect: "/submission/write-form" },
 	{
 		path: "/",
 		component: () => import("@/layouts/ProtectedOutlet.vue"),
-		beforeEnter: handleProtectedOutletBeforeEnter,
 		children: [
 			{ 
 				path: "/submission", 
@@ -37,24 +34,62 @@ const router = createRouter({
 	routes
 });
 
-router.beforeEach(async (to) => {
-	const isInLogin = to.path === "/login";
+async function handleActiveSession(
+	isLoginRoute: boolean,
+	isUnauthorizedPath: boolean,
+): Promise<string | undefined> {
 
-	const store = useAccessTokenStore();
-	if (store.accessToken) {
-		if (isInLogin) return "/submission/write-form";
+	if (isLoginRoute) return "/";
+
+	// Handles edge case where if an infinite loop on the user type check 
+	// would occur if a non-admin lands with a valid token
+	if (isUnauthorizedPath) return;
+
+	try {
+		const { 
+			queryFn: userQueryFn,
+			getOptions: getUserQueryOptions,
+		} = getUserQuery();
+
+		const userQk = getUserQueryOptions().queryKey;
+		let user = queryClient.getQueryData(userQk)?.data?.user;
+
+		// Fetch directly if not cached
+		if (!user) {
+			const userRes = await userQueryFn();
+			user = userRes.data?.user;
+			queryClient.setQueryData(userQk, userRes);
+		};
+
+		if (user && user.type !== 'ADMIN') return "/unauthorized";
+	} catch {
+		return "/login";
+	}
+
+	return;
+};
+
+router.beforeEach(async (to) => {
+	const isLoginRoute = to.path === "/login";
+	const isUnauthorizedRoute = to.path === "/unauthorized";
+
+	const accessTokenSt = useAccessTokenStore();
+	if (accessTokenSt.token) return handleActiveSession(isLoginRoute, isUnauthorizedRoute);
+
+	const refreshToken = (await getRefreshTokenPxy()).data?.refreshToken;
+	if (!refreshToken) { 
+		// Do not attempt token refresh for non-logged in users
 		return;
 	};
 
-	const refreshToken = (await getRefreshTokenPxy()).data?.refreshToken;
-	if (!refreshToken) return;
+	// Always refresh token on page load
+	const accessToken = (await refreshAccessToken(refreshToken)).data?.accessToken;
+	if (!accessToken) return;
+	accessTokenSt.set(accessToken);
 
-	const res = await refreshAccessToken(refreshToken);
-	if (!res.data) return;
+	if (isLoginRoute) return "/";
 
-	store.set(res.data.accessToken);
-
-	if (isInLogin) return "/submission/write-form";
+	return handleActiveSession(isLoginRoute, isUnauthorizedRoute);
 });
 
 export default router;
