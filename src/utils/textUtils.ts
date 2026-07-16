@@ -57,6 +57,8 @@ export const stringToIsoDate = (isoDate: string) => {
 	});
 };
 
+export const getFirstPathSegment = (str: string) => str.split('/')[1];
+
 export function isBarcodeValid(barcode: string) {
 	// Must be 12 (UPC-A) or 13 (EAN-13) digits
 	if (!/^\d{12,13}$/.test(barcode)) return false;
