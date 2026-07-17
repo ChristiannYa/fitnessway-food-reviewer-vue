@@ -1,7 +1,7 @@
 import { apiClientAppKt } from "@/api/apiClient"
 import { pagination } from "@/constants/pagination"
 import { queryKeys } from "@/constants/queryKeys"
-import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, AppEdibleByBarcodeRes, AppEdibleByIdRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
+import type { AdminEdibleSubmissionsReqParams, AdminEdibleSubmissionsRes, AppEdibleByBarcodeRes, AppEdibleByIdRes, AppEdibleReportsReqParams, AppEdibleReportsRes, PendingFoodsByUserIdRes, PendingFoodsReqParams } from "@/types/foodTypes"
 import { withDelay } from "@/utils/appUtils"
 import { queryOptions, useQuery as useTanstackQuery  } from "@tanstack/vue-query"
 
@@ -108,3 +108,30 @@ export function getAdminSubmissionsQuery() {
 
 	return { getOptions, useQuery }
 };
+
+export function getReportsQuery() {
+
+    const getOptions = (req: AppEdibleReportsReqParams) => queryOptions({
+        queryKey: queryKeys.edible.app.reports(req),
+        queryFn: () => withDelay(() => apiClientAppKt.req<AppEdibleReportsRes>({
+            method: "GET",
+            path: "/edible/app/reports",
+            params: {
+                limit: `${pagination.limit}`,
+                offset: `${req.offset}`,
+                status: `${req.status}`
+            }
+        }))
+    });
+
+    const useQuery = (
+        params: AppEdibleReportsReqParams,
+        extraOptions?: Partial<NonNullable<ReturnType<typeof getOptions>>>
+    ) => useTanstackQuery({
+        ...getOptions(params),
+        ...extraOptions
+    });
+
+    return { getOptions, useQuery };
+}
+

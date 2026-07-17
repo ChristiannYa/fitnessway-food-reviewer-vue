@@ -33,9 +33,26 @@ export type AppFood = {
 	updatedAt?: string;
 };
 
+export type AppEdibleReport = {
+    id: number;
+    edibleId: number;
+    reportedBy: string;
+    reasons: (
+        "incorrect_info" |
+        "incorrect_nutrients" |
+        "incorrect_barcode" |
+        "incorrect_type"
+    )[];
+    status: "pending" | "reviewied";
+    createdAt: string;
+    reviewedAt: string | null;
+    reviewedBy: string | null;
+};
+
 export type AppEdibleData = {
 	edible: AppFood;
 	barcode: string;
+    reports: AppEdibleReport[];
 };
 
 export type PendingFood = {
@@ -69,6 +86,12 @@ export type AdminEdibleSubmissionsReqParams = {
 
 export type AdminEdibleSubmissionsRes = {
 	submittedAppEdibles: PaginationResult<AppEdibleData>;
+};
+
+
+export type AppEdibleReportsReqParams = {
+    offset: number;
+    status: Pick<AppEdibleReport, "status">;
 };
 
 export type PendingFoodsReqParams = (
@@ -108,3 +131,8 @@ export type AppEdibleWriteReq = {
 export type ApPedibleSubmitRes = {
 	appEdible: AppFood
 }
+
+export type AppEdibleReportsRes = {
+    appEdibleReports: AppEdibleData[];
+}
+

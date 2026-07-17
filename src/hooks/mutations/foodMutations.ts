@@ -9,7 +9,6 @@ import type {
 	AdminEdibleSubmissionsRes,
 } from "@/types/foodTypes"
 import { useMutation, useQueryClient, type QueryKey } from "@tanstack/vue-query"
-import { useAdminSubmissionsState } from "../composables/useAdminSubmissionsState";
 import { buildNutrientList, buildNutrientsByTypeFromList } from "@/builders/nutrientBuilders";
 import { getNutrientDataAmountsFromIds } from "@/utils/nutrientUtils";
 import { getAdminSubmissionsQuery } from "../queries/edibleQueries";
@@ -17,6 +16,7 @@ import { produce } from "immer";
 import { useNutrientsByTypeQuery } from "../queries/nutrientQueries";
 import { toRaw } from "vue";
 import type { ClientResponse } from "@/builders/clientResponseBuilders";
+import { useAdminSubmissionsScrollState } from "../composables/useScrollState";
 
 export const useReviewMutation = () => useMutation({
 	mutationFn: (req: PendingFoodReviewReq) => 
@@ -41,7 +41,7 @@ export const useSubmitMutation = () => {
 			queryClient.resetQueries({ 
 				queryKey: queryKeys.edible.app.adminSubmissionsAll() 
 			});
-			useAdminSubmissionsState().reset();
+			useAdminSubmissionsScrollState().reset();
 		}
 	})
 };
@@ -55,7 +55,7 @@ export const useUpdateMutation = (id: string) => {
 
 	const queryClient = useQueryClient();
 	const { data: nutrientsByTypeRes } = useNutrientsByTypeQuery();
-	const { accumulatedSubmissions, offset } = useAdminSubmissionsState();
+	const { accumulatedItems: accumulatedSubmissions, offset } = useAdminSubmissionsScrollState();
 
 	function onRollback(ctx: MutateCtx) {
 		if (!ctx) return;

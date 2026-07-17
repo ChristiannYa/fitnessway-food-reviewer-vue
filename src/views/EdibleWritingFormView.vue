@@ -9,13 +9,13 @@ import type { RequestState } from "@/types/appTypes";
 import { stringToTitleCase } from "@/utils/textUtils";
 import { useEdibleWriteForm } from "@/hooks/composables/useEdibleWriteForm";
 import { useRoute, useRouter } from "vue-router";
-import { useAdminSubmissionsState } from "@/hooks/composables/useAdminSubmissionsState";
 import type { AppEdibleData, WriteType } from "@/types/foodTypes";
 import { getAppEdibleByIdQuery } from "@/hooks/queries/edibleQueries";
 import { useQuery } from "@tanstack/vue-query";
 import WriteFormTopbar from "@/components/view/submit-form/WriteFormTopbar.vue";
 import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
 import Spinner from "@/components/shared/Spinner.vue";
+import { useAdminSubmissionsScrollState } from "@/hooks/composables/useScrollState";
 const FindByBarcodePopup = defineAsyncComponent(() =>import("@/components/view/submit-form/FindByBarcodePopup.vue"));
 
 const edibleFormsRef = useTemplateRef("edibleFormsRef");
@@ -26,7 +26,7 @@ const router = useRouter();
 
 const edibleIdPathParam = computed(() => route.params.edibleId as string | undefined);
 
-const { accumulatedSubmissions } = useAdminSubmissionsState();
+const { accumulatedItems: accumulatedSubmissions } = useAdminSubmissionsScrollState();
 const edibleFromMemory = computed(() => accumulatedSubmissions.value.find(s => s.edible.id === Number(edibleIdPathParam.value)));
 
 const { 

@@ -1,4 +1,4 @@
-import type { AdminEdibleSubmissionsReqParams, PendingFoodsReqParams } from "@/types/foodTypes";
+import type { AdminEdibleSubmissionsReqParams, AppEdibleReportsReqParams, PendingFoodsReqParams } from "@/types/foodTypes";
 
 export const queryKeys = {
     user: {
@@ -15,6 +15,9 @@ export const queryKeys = {
 
 			adminSubmissionsAll: () =>                                 ["edible", "app", "adminSubmissions"] as const,
 			adminsSubmissions: (p: AdminEdibleSubmissionsReqParams) => [...queryKeys.edible.app.adminSubmissionsAll(), p] as const,
+
+            reportsAll: () =>                                          ["edible", "app", "reports"] as const,
+            reports: (req: AppEdibleReportsReqParams) =>               [...queryKeys.edible.app.reportsAll(), req] as const
 		},
         pending: {
             all: () => 									   ["edible", "pending"] as const,

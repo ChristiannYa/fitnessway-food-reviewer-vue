@@ -8,11 +8,11 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import EdibleBase from '@/components/foods/EdibleBase.vue';
 import { stringToIsoDate } from '@/utils/textUtils';
-import { useAdminSubmissionsState } from '@/hooks/composables/useAdminSubmissionsState';
 import EdibleWritePopup from '@/components/view/submit-form/form/EdibleWritePopup.vue';
 import type { AppEdibleData } from '@/types/foodTypes';
 import BackgrundBlur from '@/components/shared/BackgrundBlur.vue';
 import { useRouter } from 'vue-router';
+import { useAdminSubmissionsScrollState } from '@/hooks/composables/useScrollState';
 
 const router = useRouter();
 
@@ -21,11 +21,11 @@ const clickedEdible = ref<AppEdibleData | null>(null);
 const scrollRef = ref<HTMLElement | null>(null);
 
 const { 
-	accumulatedSubmissions,
+	accumulatedItems: accumulatedSubmissions,
 	offset,
 	hasMore,
 	scrollTop
- } = useAdminSubmissionsState();
+ } = useAdminSubmissionsScrollState();
 
 const {
 	data: adminSubmissionsRes,
