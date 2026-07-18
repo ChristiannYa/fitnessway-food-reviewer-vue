@@ -35,8 +35,8 @@ export type AppFood = {
 
 export type AppEdibleReport = {
     id: number;
-    edibleId: number;
-    reportedBy: string;
+    edibleid: number;
+    reportedby: string;
     reasons: (
         "incorrect_info" |
         "incorrect_nutrients" |
@@ -44,9 +44,9 @@ export type AppEdibleReport = {
         "incorrect_type"
     )[];
     status: "pending" | "reviewied";
-    createdAt: string;
-    reviewedAt: string | null;
-    reviewedBy: string | null;
+    createdat: string;
+    reviewedat: string | null;
+    reviewedby: string | null;
 };
 
 export type AppEdibleData = {
@@ -91,7 +91,7 @@ export type AdminEdibleSubmissionsRes = {
 
 export type AppEdibleReportsReqParams = {
     offset: number;
-    status: Pick<AppEdibleReport, "status">;
+    status: AppEdibleReport["status"];
 };
 
 export type PendingFoodsReqParams = (

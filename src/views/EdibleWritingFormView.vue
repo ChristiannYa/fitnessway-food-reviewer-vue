@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/vue-query";
 import WriteFormTopbar from "@/components/view/submit-form/WriteFormTopbar.vue";
 import BackgrundBlur from "@/components/shared/BackgrundBlur.vue";
 import Spinner from "@/components/shared/Spinner.vue";
-import { useAdminSubmissionsScrollState } from "@/hooks/composables/useScrollState";
+import { adminSubmissionsScrollState } from "@/state/scrollState";
 const FindByBarcodePopup = defineAsyncComponent(() =>import("@/components/view/submit-form/FindByBarcodePopup.vue"));
 
 const edibleFormsRef = useTemplateRef("edibleFormsRef");
@@ -26,7 +26,7 @@ const router = useRouter();
 
 const edibleIdPathParam = computed(() => route.params.edibleId as string | undefined);
 
-const { accumulatedItems: accumulatedSubmissions } = useAdminSubmissionsScrollState();
+const { accumulatedItems: accumulatedSubmissions } = adminSubmissionsScrollState;
 const edibleFromMemory = computed(() => accumulatedSubmissions.value.find(s => s.edible.id === Number(edibleIdPathParam.value)));
 
 const { 

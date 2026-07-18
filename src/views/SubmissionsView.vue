@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import View from '@/components/shared/View.vue';
-import { pagination } from '@/constants/pagination';
 import { getAdminSubmissionsQuery } from '@/hooks/queries/edibleQueries';
 import type { RequestState } from '@/types/appTypes';
 import { useQuery } from '@tanstack/vue-query';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import Spinner from '@/components/shared/Spinner.vue';
 import EdibleBase from '@/components/foods/EdibleBase.vue';
 import { stringToIsoDate } from '@/utils/textUtils';
@@ -12,7 +11,7 @@ import EdibleWritePopup from '@/components/view/submit-form/form/EdibleWritePopu
 import type { AppEdibleData } from '@/types/foodTypes';
 import BackgrundBlur from '@/components/shared/BackgrundBlur.vue';
 import { useRouter } from 'vue-router';
-import { useAdminSubmissionsScrollState } from '@/hooks/composables/useScrollState';
+import { adminSubmissionsScrollState } from '@/state/scrollState';
 
 const router = useRouter();
 
@@ -23,9 +22,11 @@ const scrollRef = ref<HTMLElement | null>(null);
 const { 
 	accumulatedItems: accumulatedSubmissions,
 	offset,
-	hasMore,
-	scrollTop
- } = useAdminSubmissionsScrollState();
+    isEndReached,
+    handleAcc,
+    onMount,
+    onUnmount
+ } = adminSubmissionsScrollState;
 
 const {
 	data: adminSubmissionsRes,
@@ -43,27 +44,10 @@ const adminSubissionsReqState = computed((): RequestState => ({
 	isError: isAdminSubmissionsError.value || (adminSubmissionsRes.value?.success === false)
 }));
 
-const endReached = computed(() => {
-	const accLen = accumulatedSubmissions.value.length;
-	const totalCount = adminSubmissionsRes?.value?.data?.submittedAppEdibles.totalCount;
-	return !hasMore.value && accLen === totalCount;
+const endReached = computed((): boolean => {
+    const total = adminSubmissionsRes.value?.data?.submittedAppEdibles.totalCount;
+    return !!total && isEndReached(total);
 });
-
-function loadMore() {
-	if (!adminSubissionsReqState.value.isLoading && hasMore.value) {
-		offset.value += pagination.limit;
-	}
-};
-
-function handleScroll() {
-	const el = scrollRef.value;
-	if (!el) return;
-
-	scrollTop.value = el.scrollTop;
-
-	const isNearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 10;
-	if (isNearBottom) loadMore();
-};
 
 function onEdibleClick(edible: AppEdibleData) {
 	wantsToUpdate.value = true;
@@ -75,29 +59,13 @@ function onWrite() {
 	router.push(`/submission/write-form/${clickedEdible.value.edible.id}`);
 };
 
-onMounted(() => { 
-	scrollRef.value?.addEventListener("scroll", handleScroll);
-
-	nextTick(() => {
-		if (scrollRef.value) scrollRef.value.scrollTop = scrollTop.value;
-	});
-});
-
-onUnmounted(() => { 
-	scrollRef.value?.removeEventListener("scroll", handleScroll);
-});
+onMounted(() => { onMount(scrollRef.value, () => adminSubissionsReqState.value.isLoading) });
+onUnmounted(onUnmount);
 
 watch(adminSubissionsReqState, (wAdminSubissionsReqState) => {
 	if (!wAdminSubissionsReqState.isSuccess) return;
-
 	const items = adminSubmissionsRes.value!.data!.submittedAppEdibles.data;
-
-	// Only push if this offset's items aren't already accumulated
-	if (accumulatedSubmissions.value.length <= offset.value) {
-		accumulatedSubmissions.value.push(...items);
-	};
-
-	if (items.length < pagination.limit) hasMore.value = false;
+    handleAcc(items);
 }, { immediate: true });
 
 </script>

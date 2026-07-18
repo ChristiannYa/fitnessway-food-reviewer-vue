@@ -16,7 +16,7 @@ import { produce } from "immer";
 import { useNutrientsByTypeQuery } from "../queries/nutrientQueries";
 import { toRaw } from "vue";
 import type { ClientResponse } from "@/builders/clientResponseBuilders";
-import { useAdminSubmissionsScrollState } from "../composables/useScrollState";
+import { adminSubmissionsScrollState } from "@/state/scrollState";
 
 export const useReviewMutation = () => useMutation({
 	mutationFn: (req: PendingFoodReviewReq) => 
@@ -41,7 +41,7 @@ export const useSubmitMutation = () => {
 			queryClient.resetQueries({ 
 				queryKey: queryKeys.edible.app.adminSubmissionsAll() 
 			});
-			useAdminSubmissionsScrollState().reset();
+			adminSubmissionsScrollState.reset();
 		}
 	})
 };
@@ -55,7 +55,7 @@ export const useUpdateMutation = (id: string) => {
 
 	const queryClient = useQueryClient();
 	const { data: nutrientsByTypeRes } = useNutrientsByTypeQuery();
-	const { accumulatedItems: accumulatedSubmissions, offset } = useAdminSubmissionsScrollState();
+	const { accumulatedItems: accumulatedSubmissions, offset } = adminSubmissionsScrollState;
 
 	function onRollback(ctx: MutateCtx) {
 		if (!ctx) return;
