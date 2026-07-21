@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import type { FoodBase } from '@/types/foodTypes';
-import type { NutrientDataAmount, NutrientsByType } from '@/types/nutrientTypes';
-import EdibleBase from './EdibleBase.vue';
-import NutrientSection from '../nutrients/NutrientSection.vue';
+import type { FoodBase } from "@/types/foodTypes";
+import type {
+    NutrientDataAmount,
+    NutrientsByType,
+} from "@/types/nutrientTypes";
+import EdibleBase from "./EdibleBase.vue";
+import Nutrients from "@/components/nutrients/Nutrients.vue";
 
 defineProps<{
-	edibleBase: FoodBase,
-	nutrientsByType: NutrientsByType<NutrientDataAmount>
+    edibleBase: FoodBase;
+    nutrientsByType: NutrientsByType<NutrientDataAmount>;
 }>();
 </script>
 
 <template>
-	<section class="flex flex-col gap-y-2">
-		<EdibleBase :food-base="edibleBase" />
-		<NutrientSection :nutrientDataAmountArr="nutrientsByType.basic" />
-		<NutrientSection :nutrient-data-amount-arr="nutrientsByType.vitamin" />
-		<NutrientSection :nutrient-data-amount-arr="nutrientsByType.mineral" />
-	</section>
+    <section class="flex flex-col gap-y-2">
+        <EdibleBase :food-base="edibleBase" />
+        <Nutrients :nutrients="nutrientsByType" />
+    </section>
 </template>
