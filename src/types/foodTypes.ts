@@ -1,36 +1,49 @@
-import type { NutrientDataAmount, NutrientGroupable, NutrientIdWithAmount, NutrientsByType } from "@/types/nutrientTypes";
+import type {
+    NutrientDataAmount,
+    NutrientGroupable,
+    NutrientIdWithAmount,
+    NutrientsByType,
+} from "@/types/nutrientTypes";
 import type { PaginationResult } from "@/types/appTypes";
 
 export const EDIBLE_TYPE = ["FOOD", "SUPPLEMENT"] as const;
-export type EdibleType = typeof EDIBLE_TYPE[number];
+export type EdibleType = (typeof EDIBLE_TYPE)[number];
 
-export const SERVING_UNIT = ["G", "MG", "MCG", "ML", "OZ", "KCAL", "UNIT"] as const;
-export type ServingUnit = typeof SERVING_UNIT[number];
+export const SERVING_UNIT = [
+    "G",
+    "MG",
+    "MCG",
+    "ML",
+    "OZ",
+    "KCAL",
+    "UNIT",
+] as const;
+export type ServingUnit = (typeof SERVING_UNIT)[number];
 
-export const PENDING_FOOD_STATUS = ["APPROVED", "PENDING", "REJECTED"] as const
-export type PendingFoodStatus = typeof PENDING_FOOD_STATUS[number]
+export const PENDING_FOOD_STATUS = ["APPROVED", "PENDING", "REJECTED"] as const;
+export type PendingFoodStatus = (typeof PENDING_FOOD_STATUS)[number];
 
 export type WriteType = "UPDATE" | "SUBMIT";
 
 export type FoodBase = {
-	name: string;
-	brand: string | undefined;
-	amountPerServing: number;
-	servingUnit: ServingUnit;
+    name: string;
+    brand: string | undefined;
+    amountPerServing: number;
+    servingUnit: ServingUnit;
 };
 
 export type FoodInformation<T extends NutrientGroupable> = {
-	base: FoodBase;
-	nutrients: NutrientsByType<T>;
-	type: EdibleType
+    base: FoodBase;
+    nutrients: NutrientsByType<T>;
+    type: EdibleType;
 };
 
 export type AppFood = {
-	id: number;
-	information: FoodInformation<NutrientDataAmount>;
-	createdBy?: string;
-	createdAt: string;
-	updatedAt?: string;
+    id: number;
+    information: FoodInformation<NutrientDataAmount>;
+    createdBy?: string;
+    createdAt: string;
+    updatedAt?: string;
 };
 
 export type AppEdibleReport = {
@@ -38,56 +51,56 @@ export type AppEdibleReport = {
     edibleid: number;
     reportedby: string;
     reasons: (
-        "incorrect_info" |
-        "incorrect_nutrients" |
-        "incorrect_barcode" |
-        "incorrect_type"
+        | "INCORRECT_INFO"
+        | "INCORRECT_NUTRIENTS"
+        | "INCORRECT_BARCODE"
+        | "INCORRECT_TYPE"
     )[];
-    status: "pending" | "reviewied";
+    notes: string | undefined;
+    status: "PENDING" | "REVIEWIED";
     createdat: string;
     reviewedat: string | null;
     reviewedby: string | null;
 };
 
 export type AppEdibleData = {
-	edible: AppFood;
-	barcode: string;
+    edible: AppFood;
+    barcode: string;
     reports: AppEdibleReport[];
 };
 
 export type PendingFood = {
-	id: number;
-	information: FoodInformation<NutrientDataAmount>;
-	status: PendingFoodStatus;
-	createdBy?: string;
-	reviewedBy?: string;
-	reviewedAt?: string;
-	createdAt: string;
-	rejectionReason?: string;
+    id: number;
+    information: FoodInformation<NutrientDataAmount>;
+    status: PendingFoodStatus;
+    createdBy?: string;
+    reviewedBy?: string;
+    reviewedAt?: string;
+    createdAt: string;
+    rejectionReason?: string;
 };
 
 export type PendingFoodReview = Pick<
-	PendingFood,
-	"status" | "createdBy" | "reviewedBy" | "reviewedAt" | "rejectionReason"
+    PendingFood,
+    "status" | "createdBy" | "reviewedBy" | "reviewedAt" | "rejectionReason"
 >;
 
 export type AppEdibleByIdRes = {
-	appEdible?: AppEdibleData;
+    appEdible?: AppEdibleData;
 };
 
 export type AppEdibleByBarcodeRes = {
-	appEdible: AppEdibleData | null;
-}
+    appEdible: AppEdibleData | null;
+};
 
 export type AdminEdibleSubmissionsReqParams = {
-	offset: number;
-	date?: string;
+    offset: number;
+    date?: string;
 };
 
 export type AdminEdibleSubmissionsRes = {
-	submittedAppEdibles: PaginationResult<AppEdibleData>;
+    submittedAppEdibles: PaginationResult<AppEdibleData>;
 };
-
 
 export type AppEdibleReportsReqParams = {
     offset: number;
@@ -95,44 +108,43 @@ export type AppEdibleReportsReqParams = {
 };
 
 export type PendingFoodsReqParams = (
-    | { userId: string, userType?: never } 
-    | { userId?: never, userType: string }
+    | { userId: string; userType?: never }
+    | { userId?: never; userType: string }
 ) & {
-    status?: PendingFoodStatus,
-    offset: number
-}
+    status?: PendingFoodStatus;
+    offset: number;
+};
 
 export type PendingFoodsByUserIdRes = {
-	pendingFoodsPagination: PaginationResult<PendingFood>;
+    pendingFoodsPagination: PaginationResult<PendingFood>;
 };
 
 export type PendingFoodsByUserTypeRes = {
-	pendingFoodsPagination: PaginationResult<PendingFood>;
+    pendingFoodsPagination: PaginationResult<PendingFood>;
 };
 
 export type PendingFoodReviewReq = {
-	pendingFoodId: number;
-	rejectionReason: string | null;
+    pendingFoodId: number;
+    rejectionReason: string | null;
 };
 
 export type PendingFoodReviewRes = {
-	pendingFoodReviewed: PendingFood;
+    pendingFoodReviewed: PendingFood;
 };
 
 export type AppEdibleWriteReq = {
-	edibleRequest: {
-		base: FoodBase,
-		nutrients: NutrientIdWithAmount[],
-		edibleType: EdibleType
-	};
-	barcode: string;
-}
+    edibleRequest: {
+        base: FoodBase;
+        nutrients: NutrientIdWithAmount[];
+        edibleType: EdibleType;
+    };
+    barcode: string;
+};
 
 export type ApPedibleSubmitRes = {
-	appEdible: AppFood
-}
+    appEdible: AppFood;
+};
 
 export type AppEdibleReportsRes = {
-    appEdibleReports: AppEdibleData[];
-}
-
+    appEdibleReports: PaginationResult<AppEdibleData>;
+};

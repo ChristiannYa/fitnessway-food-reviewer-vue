@@ -11,45 +11,51 @@
     --color-accent-primary: #088f8f;
 
     --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
-    --font-mono: ui-monospace, Consolas, monospace
+    --font-mono: ui-monospace, Consolas, monospace;
 }
 
 @layer utilities {
-	.no-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-    
-	.no-scrollbar {
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
-	}
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
 }
 
 :root {
-	font: 18px/145% var(--font-sans);
-	letter-spacing: 0.18px;
-	color-scheme: light dark;
-	background: var(--color-dark-primary);
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+    font: 18px/145% var(--font-sans);
+    letter-spacing: 0.18px;
+    color-scheme: light dark;
+    background: var(--color-dark-primary);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-	@media (max-width: 1024px) {
-		font-size: 16px;
-	}
+    @media (max-width: 1024px) {
+        font-size: 16px;
+    }
 }
 
 .input-base {
-	@apply focus:outline-none font-semibold text-cyan-500 placeholder-chalk
-	       placeholder:opacity-30 placeholder:font-normal
+    @apply focus:outline-none font-semibold text-cyan-500 placeholder-chalk
+	       placeholder:opacity-30 placeholder:font-normal;
 }
 
 .view-child-w {
-	@apply w-100 max-w-full
+    @apply w-100 max-w-full;
 }
 
 .barcode-scan-text-indicator {
-	@apply opacity-90 text-chalk text-sm absolute bottom-2 left-1/2 
-		   -translate-x-1/2
+    @apply opacity-90 text-chalk text-sm absolute bottom-2 left-1/2 
+		   -translate-x-1/2;
+}
+
+.action-popup {
+    @apply flex flex-col gap-y-4 p-4 bg-dark-secondary border border-accent-primary/60
+           rounded-lg transition-opacity overflow-y-hidden w-96 max-w-5/6 max-h-3/5
+           absolute top-1/10 left-1/2 -translate-x-1/2;
 }
